@@ -1,16 +1,16 @@
 'use strict';
 
 // ソース元の対象ファイル
-var source = './src/js/app.js';
+var source_file = './src/js/main.js';
 
 // 出力ディレクトリ
 var dist_dir = './public/js/';
 
 // アプリファイル
-var appjs = 'app.js';
+var appjs = 'main.js';
 
 // minify後のアプリ名ファイル
-var appminjs = 'app.min.js';
+var appminjs = 'main.min.js';
 
 var watch      = require('gulp-watch');
 var browserify = require('browserify');
@@ -23,12 +23,10 @@ var runSequence= require('run-sequence');
 var path       = require('path');
 
 gulp.task('browserify', function() {
-	return browserify(source)
+	return browserify(source_file)
 		.bundle()
 		.pipe(plumber())
-		//Pass desired output filename to vinyl-source-stream
 		.pipe(source(appjs))
-		// Start piping stream to tasks!
 		.pipe(gulp.dest(dist_dir));
 });
 
