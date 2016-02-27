@@ -1,17 +1,19 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+var LoadingScene = require('./scene/loading');
+
 var Game = function(mainCanvas) {
 	// ゲームの現在のシーン
 	this.state = this.LOADING_SCENE;
 
+	// シーン一覧
+	this.scenes = [];
 	// ローディング画面
-	//this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
+	this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
 
 	// 経過フレーム数
 	this.frame_count = 0;
-
-
 };
 
 // デバッグモード
@@ -31,11 +33,9 @@ Game.prototype.handleKeyUp   = function(e){
 
 // ゲーム起動
 Game.prototype.run = function(){
-	if(this.DEBUG) { console.log('run!'); }
-
 	// シーン更新
-	//this.scenes[ this.state ].run();
-	//this.scenes[ this.state ].updateDisplay();
+	this.scenes[ this.state ].run();
+	this.scenes[ this.state ].updateDisplay();
 
 	// 経過フレーム数更新
 	this.frame_count++;
@@ -46,7 +46,7 @@ Game.prototype.run = function(){
 
 module.exports = Game;
 
-},{}],2:[function(require,module,exports){
+},{"./scene/loading":3}],2:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -63,4 +63,23 @@ window.onload = function() {
 };
 
 
-},{"./game":1}]},{},[2]);
+},{"./game":1}],3:[function(require,module,exports){
+'use strict';
+
+var LoadingScene = function(game) {
+
+};
+
+// ゲーム起動
+LoadingScene.prototype.run = function(){
+
+};
+
+// 画面更新
+LoadingScene.prototype.updateDisplay = function(){
+
+};
+
+module.exports = LoadingScene;
+
+},{}]},{},[2]);

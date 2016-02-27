@@ -1,16 +1,18 @@
 'use strict';
 
+var LoadingScene = require('./scene/loading');
+
 var Game = function(mainCanvas) {
 	// ゲームの現在のシーン
 	this.state = this.LOADING_SCENE;
 
+	// シーン一覧
+	this.scenes = [];
 	// ローディング画面
-	//this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
+	this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
 
 	// 経過フレーム数
 	this.frame_count = 0;
-
-
 };
 
 // デバッグモード
@@ -30,11 +32,9 @@ Game.prototype.handleKeyUp   = function(e){
 
 // ゲーム起動
 Game.prototype.run = function(){
-	if(this.DEBUG) { console.log('run!'); }
-
 	// シーン更新
-	//this.scenes[ this.state ].run();
-	//this.scenes[ this.state ].updateDisplay();
+	this.scenes[ this.state ].run();
+	this.scenes[ this.state ].updateDisplay();
 
 	// 経過フレーム数更新
 	this.frame_count++;
