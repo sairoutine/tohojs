@@ -14948,7 +14948,7 @@ var Game = function(mainCanvas) {
 	this.height = Number(mainCanvas.getAttribute('height'));
 
 	// ゲームの現在のシーン
-	this.state = this.LOADING_SCENE;
+	this.state = null;
 
 	// シーン一覧
 	this.scenes = [];
@@ -14972,6 +14972,12 @@ var Game = function(mainCanvas) {
 Game.prototype.DEBUG = true;
 // ローディング画面
 Game.prototype.LOADING_SCENE = 0;
+// ゲーム開始画面
+Game.prototype.OPENING_SCENE = 1;
+// ゲーム画面
+Game.prototype.STAGE_SCENE   = 2;
+// エンディング画面
+Game.prototype.ENDING_SCENE  = 3;
 
 
 // キー押下
@@ -15009,6 +15015,22 @@ Game.prototype.changeScene = function(scene) {
 	// 切り替え後のシーンを初期化
 	this.scenes[ this.state ].init();
 };
+
+/*
+*******************************************
+* 通知を受け取るメソッド
+********************************************
+*/
+
+// ローディング画面が終わったら
+Game.prototype.notifyLoadingDone = function( ) {
+	// オープニング画面に切り替え
+	this.changeScene(this.OPENING_SCENE);
+};
+
+
+
+
 
 module.exports = Game;
 
@@ -15096,7 +15118,16 @@ LoadingScene.prototype.init = function() {
 
 // フレーム処理
 LoadingScene.prototype.run = function(){
+	// 全素材数
+	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	// 読み込んだ素材数
+	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 
+	// 素材を全て読み込んだら
+	if(loaded_material_num >= material_num) {
+		// 読み込み終わったことをゲームに通知
+		this.game.notifyLoadingDone();
+	}
 };
 
 // 画面更新

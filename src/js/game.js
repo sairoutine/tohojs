@@ -10,7 +10,7 @@ var Game = function(mainCanvas) {
 	this.height = Number(mainCanvas.getAttribute('height'));
 
 	// ゲームの現在のシーン
-	this.state = this.LOADING_SCENE;
+	this.state = null;
 
 	// シーン一覧
 	this.scenes = [];
@@ -34,6 +34,12 @@ var Game = function(mainCanvas) {
 Game.prototype.DEBUG = true;
 // ローディング画面
 Game.prototype.LOADING_SCENE = 0;
+// ゲーム開始画面
+Game.prototype.OPENING_SCENE = 1;
+// ゲーム画面
+Game.prototype.STAGE_SCENE   = 2;
+// エンディング画面
+Game.prototype.ENDING_SCENE  = 3;
 
 
 // キー押下
@@ -71,5 +77,21 @@ Game.prototype.changeScene = function(scene) {
 	// 切り替え後のシーンを初期化
 	this.scenes[ this.state ].init();
 };
+
+/*
+*******************************************
+* 通知を受け取るメソッド
+********************************************
+*/
+
+// ローディング画面が終わったら
+Game.prototype.notifyLoadingDone = function( ) {
+	// オープニング画面に切り替え
+	this.changeScene(this.OPENING_SCENE);
+};
+
+
+
+
 
 module.exports = Game;

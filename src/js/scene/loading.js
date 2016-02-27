@@ -37,7 +37,16 @@ LoadingScene.prototype.init = function() {
 
 // フレーム処理
 LoadingScene.prototype.run = function(){
+	// 全素材数
+	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	// 読み込んだ素材数
+	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 
+	// 素材を全て読み込んだら
+	if(loaded_material_num >= material_num) {
+		// 読み込み終わったことをゲームに通知
+		this.game.notifyLoadingDone();
+	}
 };
 
 // 画面更新
