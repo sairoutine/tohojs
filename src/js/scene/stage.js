@@ -27,6 +27,8 @@ StageScene.prototype.SIDE_WIDTH = 160;
 // 背景画像のスクロールスピード
 StageScene.prototype.BACKGROUND_SCROLL_SPEED = 3;
 
+// ステージタイトルの表示秒数
+StageScene.prototype.SHOW_TITLE_COUNT = 100;
 
 // 初期化
 StageScene.prototype.init = function() {
@@ -47,14 +49,17 @@ StageScene.prototype.updateDisplay = function(){
 	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height);
 
 	// サイドバー表示
-	this._show_sidebar();
+	this._showSidebar();
 
 	// 背景画像表示
-	this._show_background();
+	this._showBackground();
+
+	// ステージタイトル表示
+	this._showStageTitle();
 };
 
 // サイドバー表示
-StageScene.prototype._show_sidebar = function(){
+StageScene.prototype._showSidebar = function(){
 	var x = this.game.width - this.SIDE_WIDTH;
 	var y = 0;
 
@@ -78,7 +83,7 @@ StageScene.prototype._show_sidebar = function(){
 };
 
 // 背景画像表示
-StageScene.prototype._show_background = function() {
+StageScene.prototype._showBackground = function() {
 	var x = 0;
 	// 背景画像をスクロールさせる
 	var y = (this.frame_count * this.BACKGROUND_SCROLL_SPEED) % this.game.height;
@@ -110,5 +115,38 @@ StageScene.prototype._show_background = function() {
 
 	this.game.surface.restore();
 };
+
+// ステージタイトルの表示
+StageScene.prototype._showStageTitle = function() {
+	// タイトル表示時間を過ぎたら表示しない
+	if(this.frame_count > this.SHOW_TITLE_COUNT) {
+		return;
+	}
+
+	this.game.surface.save( ) ;
+
+	var alpha = 1.0 ;
+	if( this.frame_count < (this.SHOW_TITLE_COUNT / 2)) {
+		alpha = (this.frame_count * 2) / this.SHOW_TITLE_COUNT;
+	}
+	else if( this.frame_count >= (this.SHOW_TITLE_COUNT / 2)) {
+		alpha = (this.SHOW_TITLE_COUNT - this.frame_count) / this.SHOW_TITLE_COUNT;
+	}
+
+	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
+	this.game.surface.globalAlpha = alpha * 0.2 ;
+	this.game.surface.fillRect( 0, 170, 480, 100 ) ;
+
+	this.game.surface.globalAlpha = alpha ;
+	this.game.surface.fillStyle = 'rgb( 255, 255, 255 )' ;
+	this.game.surface.textAlign = 'left' ;
+	this.game.surface.font = '16px Arial' ;
+	this.game.surface.fillText( 'Stage 1', 100, 210 ) ;
+	this.game.surface.textAlign = 'right' ;
+	this.game.surface.fillText('夢幻夜行絵巻 ～ Mystic Flier', 380, 250 ) ;
+	this.game.surface.fillRect( 100, 225, 280, 1 ) ;
+	this.game.surface.restore();
+} ;
+
 
 module.exports = StageScene;
