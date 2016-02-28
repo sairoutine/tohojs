@@ -14997,7 +14997,7 @@ Game.prototype.SOUNDS = {};
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
-	title_bgm: 'bgm/title.mp3',
+	title: 'bgm/title.mp3',
 };
 
 
@@ -15015,6 +15015,9 @@ Game.prototype.handleKeyUp   = function(e){
 
 // 初期化
 Game.prototype.init = function () {
+	// 経過フレーム数を初期化
+	this.frame_count = 0;
+
 	// シーンをローディング画面にする
 	this.changeScene(this.LOADING_SCENE);
 };
@@ -15038,6 +15041,30 @@ Game.prototype.changeScene = function(scene) {
 	this.state = scene;
 	// 切り替え後のシーンを初期化
 	this.scenes[ this.state ].init();
+};
+
+// 画像を取得
+Game.prototype.getImage = function(key) {
+	return this.images[key];
+};
+
+// BGMを再生
+Game.prototype.playBGM = function(key) {
+	// 全てのBGM再生をストップ
+	for(var i = 0; i < this.bgms.length; i++) {
+		this.bgms[i].pause();
+		this.bgms[i].currentTime = 0;
+	}
+
+	// 再生をループする
+	this.bgms[key].loop = true ;
+	// 再生
+	this.bgms[key].play();
+} ;
+
+// SEを再生
+Game.prototype.playSound = function(key) {
+
 };
 
 /*
@@ -15081,17 +15108,24 @@ window.onload = function() {
 'use strict';
 
 var BaseScene = function(game) {
+	// ゲームインスタンス
 	this.game = game;
+
+	// 経過フレーム数
+	this.frame_count = 0;
 };
 
 // 初期化
 BaseScene.prototype.init = function(){
-
+	// 経過フレーム数初期化
+	this.frame_count = 0;
 };
 
 
 // フレーム処理
 BaseScene.prototype.run = function(){
+	// 経過フレーム数更新
+	this.frame_count++;
 
 };
 
@@ -15241,16 +15275,57 @@ var OpeningScene = function(game) {
 _.extend(OpeningScene.prototype, BaseScene.prototype);
 _.extend(OpeningScene, BaseScene);
 
+// 画面切り替え効果時間
+OpeningScene.prototype.SHOW_TRANSITION_COUNT = 1000;
+
+
 // 初期化
 OpeningScene.prototype.init = function() {
+	BaseScene.prototype.init.apply(this, arguments);
+
+	this.game.playBGM('title');
 };
 
 // フレーム処理
 OpeningScene.prototype.run = function(){
+	BaseScene.prototype.run.apply(this, arguments);
 };
 
 // 画面更新
 OpeningScene.prototype.updateDisplay = function(){
+	this.game.surface.save( ) ;
+
+	// 切り替え効果
+	if( this.frame_count < this.SHOW_TRANSITION_COUNT ) {
+		this.game.surface.globalAlpha = this.frame_count / this.SHOW_TRANSITION_COUNT;
+	}
+	else {
+		this.game.surface.globalAlpha = 1.0 ;
+	}
+
+	var title_bg = this.game.getImage('title_bg');
+
+	// 魔理沙背景画像表示
+	this.game.surface.drawImage(title_bg,
+					0,
+					0,
+					title_bg.width,
+					title_bg.height,
+					0,
+					0,
+					this.game.width,
+					this.game.height);
+
+	this.game.surface.font = "24px 'Comic Sans MS'" ;
+	this.game.surface.textAlign = 'center' ;
+	this.game.surface.textBaseAlign = 'middle' ;
+	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
+	this.game.surface.fillText( 'Touhou Project', 120, 200 ) ;
+	this.game.surface.fillText( 'on Javascript',  120, 250 ) ;
+	this.game.surface.fillText('Press Z to Start',120, 350 ) ;
+
+	this.game.surface.restore( ) ;
+
 };
 
 module.exports = OpeningScene;

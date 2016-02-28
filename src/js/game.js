@@ -59,7 +59,7 @@ Game.prototype.SOUNDS = {};
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
-	title_bgm: 'bgm/title.mp3',
+	title: 'bgm/title.mp3',
 };
 
 
@@ -77,6 +77,9 @@ Game.prototype.handleKeyUp   = function(e){
 
 // 初期化
 Game.prototype.init = function () {
+	// 経過フレーム数を初期化
+	this.frame_count = 0;
+
 	// シーンをローディング画面にする
 	this.changeScene(this.LOADING_SCENE);
 };
@@ -100,6 +103,30 @@ Game.prototype.changeScene = function(scene) {
 	this.state = scene;
 	// 切り替え後のシーンを初期化
 	this.scenes[ this.state ].init();
+};
+
+// 画像を取得
+Game.prototype.getImage = function(key) {
+	return this.images[key];
+};
+
+// BGMを再生
+Game.prototype.playBGM = function(key) {
+	// 全てのBGM再生をストップ
+	for(var i = 0; i < this.bgms.length; i++) {
+		this.bgms[i].pause();
+		this.bgms[i].currentTime = 0;
+	}
+
+	// 再生をループする
+	this.bgms[key].loop = true ;
+	// 再生
+	this.bgms[key].play();
+} ;
+
+// SEを再生
+Game.prototype.playSound = function(key) {
+
 };
 
 /*
