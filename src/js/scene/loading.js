@@ -66,15 +66,50 @@ LoadingScene.prototype.updateDisplay = function(){
 };
 
 LoadingScene.prototype._loadImages = function() {
+	var self = this;
+
+	// 画像が読み込まれたら読み込んだ数を+1
+	var onload_function = function() {
+		self.loadedImageNum++;
+	};
+
+	for(var key in this.game.IMAGES) {
+		this.game.images[key] = new Image();
+		this.game.images[key].src = this.game.IMAGES[key] ;
+		this.game.images[key].onload = onload_function;
+	}
 
 };
 
 LoadingScene.prototype._loadSounds = function() {
+	var self = this;
+
+	// SEが読み込まれたら読み込んだ数を+1
+	var onload_function = function(e) {
+		self.loadedBGMNum++;
+	};
+
+	for(var key in this.game.SOUNDS) {
+		this.game.sounds[key] = new Audio(this.game.SOUNDS[key]);
+		this.game.sounds[key].addEventListener('canplay', onload_function);
+		this.game.sounds[key].load();
+	}
 
 };
 
 LoadingScene.prototype._loadBGMs = function() {
+	var self = this;
 
+	// BGMが読み込まれたら読み込んだ数を+1
+	var onload_function = function(e) {
+		self.loadedBGMNum++;
+	};
+
+	for(var key in this.game.BGMS) {
+		this.game.bgms[key] = new Audio(this.game.BGMS[key]);
+		this.game.bgms[key].addEventListener('canplay', onload_function);
+		this.game.bgms[key].load();
+	}
 };
 
 

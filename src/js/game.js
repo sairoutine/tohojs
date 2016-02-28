@@ -1,6 +1,7 @@
 'use strict';
 
 var LoadingScene = require('./scene/loading');
+var OpeningScene = require('./scene/opening');
 
 var Game = function(mainCanvas) {
 	// メインCanvas
@@ -16,6 +17,12 @@ var Game = function(mainCanvas) {
 	this.scenes = [];
 	// ローディング画面
 	this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
+	// オープニング画面
+	this.scenes[ this.OPENING_SCENE ] = new OpeningScene(this);
+	// ゲーム画面
+	this.scenes[ this.STAGE_SCENE ]   = null;
+	// エンディング画面
+	this.scenes[ this.ENDING_SCENE ]  = null;
 
 	// 画像一覧
 	this.images = [];
@@ -32,6 +39,7 @@ var Game = function(mainCanvas) {
 
 // デバッグモード
 Game.prototype.DEBUG = true;
+
 // ローディング画面
 Game.prototype.LOADING_SCENE = 0;
 // ゲーム開始画面
@@ -40,6 +48,22 @@ Game.prototype.OPENING_SCENE = 1;
 Game.prototype.STAGE_SCENE   = 2;
 // エンディング画面
 Game.prototype.ENDING_SCENE  = 3;
+
+// ゲームに必要な画像一覧
+Game.prototype.IMAGES = {
+	title_bg: 'image/title_bg.png',
+};
+
+// ゲームに必要なSE一覧
+Game.prototype.SOUNDS = {};
+
+// ゲームに必要なBGM一覧
+Game.prototype.BGMS = {
+	title_bgm: 'bgm/title.mp3',
+};
+
+
+
 
 
 // キー押下

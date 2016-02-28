@@ -14939,6 +14939,7 @@
 'use strict';
 
 var LoadingScene = require('./scene/loading');
+var OpeningScene = require('./scene/opening');
 
 var Game = function(mainCanvas) {
 	// メインCanvas
@@ -14954,6 +14955,12 @@ var Game = function(mainCanvas) {
 	this.scenes = [];
 	// ローディング画面
 	this.scenes[ this.LOADING_SCENE ] = new LoadingScene(this);
+	// オープニング画面
+	this.scenes[ this.OPENING_SCENE ] = new OpeningScene(this);
+	// ゲーム画面
+	this.scenes[ this.STAGE_SCENE ]   = null;
+	// エンディング画面
+	this.scenes[ this.ENDING_SCENE ]  = null;
 
 	// 画像一覧
 	this.images = [];
@@ -14970,6 +14977,7 @@ var Game = function(mainCanvas) {
 
 // デバッグモード
 Game.prototype.DEBUG = true;
+
 // ローディング画面
 Game.prototype.LOADING_SCENE = 0;
 // ゲーム開始画面
@@ -14978,6 +14986,22 @@ Game.prototype.OPENING_SCENE = 1;
 Game.prototype.STAGE_SCENE   = 2;
 // エンディング画面
 Game.prototype.ENDING_SCENE  = 3;
+
+// ゲームに必要な画像一覧
+Game.prototype.IMAGES = {
+	title_bg: 'image/title_bg.png',
+};
+
+// ゲームに必要なSE一覧
+Game.prototype.SOUNDS = {};
+
+// ゲームに必要なBGM一覧
+Game.prototype.BGMS = {
+	title_bgm: 'bgm/title.mp3',
+};
+
+
+
 
 
 // キー押下
@@ -15034,7 +15058,7 @@ Game.prototype.notifyLoadingDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":5}],3:[function(require,module,exports){
+},{"./scene/loading":5,"./scene/opening":6}],3:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -15147,18 +15171,88 @@ LoadingScene.prototype.updateDisplay = function(){
 };
 
 LoadingScene.prototype._loadImages = function() {
+	var self = this;
+
+	// 画像が読み込まれたら読み込んだ数を+1
+	var onload_function = function() {
+		self.loadedImageNum++;
+	};
+
+	for(var key in this.game.IMAGES) {
+		this.game.images[key] = new Image();
+		this.game.images[key].src = this.game.IMAGES[key] ;
+		this.game.images[key].onload = onload_function;
+	}
 
 };
 
 LoadingScene.prototype._loadSounds = function() {
+	var self = this;
+
+	// SEが読み込まれたら読み込んだ数を+1
+	var onload_function = function(e) {
+		self.loadedBGMNum++;
+	};
+
+	for(var key in this.game.SOUNDS) {
+		this.game.sounds[key] = new Audio(this.game.SOUNDS[key]);
+		this.game.sounds[key].addEventListener('canplay', onload_function);
+		this.game.sounds[key].load();
+	}
 
 };
 
 LoadingScene.prototype._loadBGMs = function() {
+	var self = this;
 
+	// BGMが読み込まれたら読み込んだ数を+1
+	var onload_function = function(e) {
+		self.loadedBGMNum++;
+	};
+
+	for(var key in this.game.BGMS) {
+		this.game.bgms[key] = new Audio(this.game.BGMS[key]);
+		this.game.bgms[key].addEventListener('canplay', onload_function);
+		this.game.bgms[key].load();
+	}
 };
 
 
 module.exports = LoadingScene;
+
+},{"./base":4,"lodash":1}],6:[function(require,module,exports){
+'use strict';
+
+/* オープニング画面 */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseScene = require('./base');
+
+// constructor
+var OpeningScene = function(game) {
+	// 継承元new呼び出し
+	BaseScene.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(OpeningScene.prototype, BaseScene.prototype);
+_.extend(OpeningScene, BaseScene);
+
+// 初期化
+OpeningScene.prototype.init = function() {
+};
+
+// フレーム処理
+OpeningScene.prototype.run = function(){
+};
+
+// 画面更新
+OpeningScene.prototype.updateDisplay = function(){
+};
+
+module.exports = OpeningScene;
 
 },{"./base":4,"lodash":1}]},{},[3]);
