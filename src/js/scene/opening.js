@@ -29,6 +29,17 @@ OpeningScene.prototype.init = function() {
 	this.game.playBGM('title');
 };
 
+// キー押下
+OpeningScene.prototype.handleKeyDown = function(e){
+	switch( e.keyCode ) {
+		case 90: // z
+			console.log('ok');
+			this.game.playSound('select') ;
+			this.game.notifyOpeningDone( ) ;
+			break;
+	}
+};
+
 // フレーム処理
 OpeningScene.prototype.run = function(){
 	BaseScene.prototype.run.apply(this, arguments);

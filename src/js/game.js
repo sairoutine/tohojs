@@ -55,7 +55,9 @@ Game.prototype.IMAGES = {
 };
 
 // ゲームに必要なSE一覧
-Game.prototype.SOUNDS = {};
+Game.prototype.SOUNDS = {
+	select: 'sound/select.wav',
+};
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
@@ -68,11 +70,13 @@ Game.prototype.BGMS = {
 
 // キー押下
 Game.prototype.handleKeyDown = function(e){
-
+	this.scenes[ this.state ].handleKeyDown(e);
+	e.preventDefault( ) ;
 };
 // キー押下解除
 Game.prototype.handleKeyUp   = function(e){
-
+	this.scenes[ this.state ].handleKeyUp(e);
+	e.preventDefault( ) ;
 };
 
 // 初期化
@@ -126,7 +130,9 @@ Game.prototype.playBGM = function(key) {
 
 // SEを再生
 Game.prototype.playSound = function(key) {
-
+	this.sounds[key].pause();
+	this.sounds[key].currentTime = 0;
+	this.sounds[key].play();
 };
 
 /*
@@ -141,7 +147,11 @@ Game.prototype.notifyLoadingDone = function( ) {
 	this.changeScene(this.OPENING_SCENE);
 };
 
-
+// タイトル画面が終わったら
+Game.prototype.notifyOpeningDone = function( ) {
+	// ゲーム画面に切り替え
+	this.changeScene(this.STAGE_SCENE);
+};
 
 
 

@@ -27,4 +27,14 @@ BaseScene.prototype.updateDisplay = function(){
 
 };
 
+// キー押下
+BaseScene.prototype.handleKeyDown = function(e){
+
+};
+
+// キー押下解除
+BaseScene.prototype.handleKeyUp   = function(e){
+
+};
+
 module.exports = BaseScene;
