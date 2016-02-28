@@ -38,7 +38,7 @@ LoadingScene.prototype.init = function() {
 // フレーム処理
 LoadingScene.prototype.run = function(){
 	// 全素材数
-	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	var material_num = Object.keys(this.game.images).length + Object.keys(this.game.sounds).length + Object.keys(this.game.bgms).length;
 	// 読み込んだ素材数
 	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 
@@ -52,7 +52,7 @@ LoadingScene.prototype.run = function(){
 // 画面更新
 LoadingScene.prototype.updateDisplay = function(){
 	// 全素材数
-	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	var material_num = Object.keys(this.game.images).length + Object.keys(this.game.sounds).length + Object.keys(this.game.bgms).length;
 	// 読み込んだ素材数
 	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 

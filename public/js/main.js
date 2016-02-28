@@ -14940,6 +14940,7 @@
 
 var LoadingScene = require('./scene/loading');
 var OpeningScene = require('./scene/opening');
+var StageScene   = require('./scene/stage');
 
 var Game = function(mainCanvas) {
 	// メインCanvas
@@ -14958,18 +14959,18 @@ var Game = function(mainCanvas) {
 	// オープニング画面
 	this.scenes[ this.OPENING_SCENE ] = new OpeningScene(this);
 	// ゲーム画面
-	this.scenes[ this.STAGE_SCENE ]   = null;
+	this.scenes[ this.STAGE_SCENE ]   = new StageScene(this);
 	// エンディング画面
 	this.scenes[ this.ENDING_SCENE ]  = null;
 
 	// 画像一覧
-	this.images = [];
+	this.images = {};
 
 	// SE一覧
-	this.sounds = [];
+	this.sounds = {};
 
 	// BGM一覧
-	this.bgms = [];
+	this.bgms = {};
 
 	// 経過フレーム数
 	this.frame_count = 0;
@@ -14999,7 +15000,8 @@ Game.prototype.SOUNDS = {
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
-	title: 'bgm/title.mp3',
+	title:  'bgm/title.mp3',
+	stage1: 'bgm/stage1.mp3',
 };
 
 
@@ -15053,17 +15055,17 @@ Game.prototype.getImage = function(key) {
 };
 
 // BGMを再生
-Game.prototype.playBGM = function(key) {
+Game.prototype.playBGM = function(bgm) {
 	// 全てのBGM再生をストップ
-	for(var i = 0; i < this.bgms.length; i++) {
-		this.bgms[i].pause();
-		this.bgms[i].currentTime = 0;
+	for(var key in this.bgms) {
+		this.bgms[key].pause();
+		this.bgms[key].currentTime = 0;
 	}
 
 	// 再生をループする
-	this.bgms[key].loop = true ;
+	this.bgms[bgm].loop = true ;
 	// 再生
-	this.bgms[key].play();
+	this.bgms[bgm].play();
 } ;
 
 // SEを再生
@@ -15095,7 +15097,7 @@ Game.prototype.notifyOpeningDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":5,"./scene/opening":6}],3:[function(require,module,exports){
+},{"./scene/loading":5,"./scene/opening":6,"./scene/stage":7}],3:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -15197,7 +15199,7 @@ LoadingScene.prototype.init = function() {
 // フレーム処理
 LoadingScene.prototype.run = function(){
 	// 全素材数
-	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	var material_num = Object.keys(this.game.images).length + Object.keys(this.game.sounds).length + Object.keys(this.game.bgms).length;
 	// 読み込んだ素材数
 	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 
@@ -15211,7 +15213,7 @@ LoadingScene.prototype.run = function(){
 // 画面更新
 LoadingScene.prototype.updateDisplay = function(){
 	// 全素材数
-	var material_num = this.game.images.length + this.game.sounds.length + this.game.bgms.length;
+	var material_num = Object.keys(this.game.images).length + Object.keys(this.game.sounds).length + Object.keys(this.game.bgms).length;
 	// 読み込んだ素材数
 	var loaded_material_num = this.loadedImageNum + this.loadedSoundNum  + this.loadedBGMNum;
 
@@ -15296,7 +15298,7 @@ _.extend(OpeningScene.prototype, BaseScene.prototype);
 _.extend(OpeningScene, BaseScene);
 
 // 画面切り替え効果時間
-OpeningScene.prototype.SHOW_TRANSITION_COUNT = 1000;
+OpeningScene.prototype.SHOW_TRANSITION_COUNT = 100;
 
 
 // 初期化
@@ -15310,7 +15312,6 @@ OpeningScene.prototype.init = function() {
 OpeningScene.prototype.handleKeyDown = function(e){
 	switch( e.keyCode ) {
 		case 90: // z
-			console.log('ok');
 			this.game.playSound('select') ;
 			this.game.notifyOpeningDone( ) ;
 			break;
@@ -15324,7 +15325,9 @@ OpeningScene.prototype.run = function(){
 
 // 画面更新
 OpeningScene.prototype.updateDisplay = function(){
-	this.game.surface.save( ) ;
+	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height ) ;
+
+	this.game.surface.save();
 
 	// 切り替え効果
 	if( this.frame_count < this.SHOW_TRANSITION_COUNT ) {
@@ -15355,10 +15358,85 @@ OpeningScene.prototype.updateDisplay = function(){
 	this.game.surface.fillText( 'on Javascript',  120, 250 ) ;
 	this.game.surface.fillText('Press Z to Start',120, 350 ) ;
 
-	this.game.surface.restore( ) ;
+	this.game.surface.restore();
 
 };
 
 module.exports = OpeningScene;
+
+},{"./base":4,"lodash":1}],7:[function(require,module,exports){
+'use strict';
+
+/* ゲームステージ画面 */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseScene = require('./base');
+
+// constructor
+var StageScene = function(game) {
+	// 継承元new呼び出し
+	BaseScene.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(StageScene.prototype, BaseScene.prototype);
+_.extend(StageScene, BaseScene);
+
+StageScene.prototype.SIDE_WIDTH = 160;
+
+
+// 初期化
+StageScene.prototype.init = function() {
+	BaseScene.prototype.init.apply(this, arguments);
+
+	this.game.playBGM('stage1');
+
+};
+
+// フレーム処理
+StageScene.prototype.run = function(){
+};
+
+// 画面更新
+StageScene.prototype.updateDisplay = function(){
+	var side_x = this.game.width - this.SIDE_WIDTH;
+
+	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height ) ;
+
+	this.game.surface.save();
+	this.game.surface.fillStyle = 'rgb(0, 0, 0)' ;
+	this.game.surface.fillRect(side_x, 0, this.SIDE_WIDTH, this.game.height);
+	this.game.surface.fillStyle = 'rgb(255, 255, 255)';
+
+  /*
+  surface.textAlign = 'right';
+  surface.fillText('Score:', this.getWidth() + 70,  100);
+  surface.fillText(this.viewScore, this.getWidth() + 140, 100);
+  surface.fillText('Power:', this.getWidth() + 70, 120);
+  surface.fillText(this.fighter.getPower(), this.getWidth() + 140, 120);
+  surface.fillText('Graze:', this.getWidth() + 70, 140);
+  surface.fillText(this.graze, this.getWidth() + 140, 140);
+  surface.fillText('Players:', this.getWidth() + 70, 160);
+  surface.fillText(this.players, this.getWidth() + 140, 160);
+  surface.fillText('Bomb:', this.getWidth() + 70, 180);
+  surface.fillText(this.bombs, this.getWidth() + 140, 180);
+
+  surface.fillText(this.count, this.getWidth() + 80, 230);
+  surface.fillText(this.bulletManager.getNum(), this.getWidth() + 80, 250);
+  surface.fillText(this.enemyManager.getNum(), this.getWidth() + 80, 270);
+  surface.fillText(this.enemyBulletManager.getNum(), this.getWidth() + 80, 290);
+  surface.fillText(this.itemManager.getNum(), this.getWidth() + 80, 310);
+
+  surface.fillText(parseInt(this.bgScale*1000), this.getWidth() + 140, 230);
+  surface.fillText(this.effectManager.getNum(), this.getWidth() + 140, 250);
+  */
+	this.game.surface.restore();
+};
+
+
+module.exports = StageScene;
 
 },{"./base":4,"lodash":1}]},{},[3]);

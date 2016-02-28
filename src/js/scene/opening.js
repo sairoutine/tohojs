@@ -19,7 +19,7 @@ _.extend(OpeningScene.prototype, BaseScene.prototype);
 _.extend(OpeningScene, BaseScene);
 
 // 画面切り替え効果時間
-OpeningScene.prototype.SHOW_TRANSITION_COUNT = 1000;
+OpeningScene.prototype.SHOW_TRANSITION_COUNT = 100;
 
 
 // 初期化
@@ -33,7 +33,6 @@ OpeningScene.prototype.init = function() {
 OpeningScene.prototype.handleKeyDown = function(e){
 	switch( e.keyCode ) {
 		case 90: // z
-			console.log('ok');
 			this.game.playSound('select') ;
 			this.game.notifyOpeningDone( ) ;
 			break;
@@ -47,7 +46,9 @@ OpeningScene.prototype.run = function(){
 
 // 画面更新
 OpeningScene.prototype.updateDisplay = function(){
-	this.game.surface.save( ) ;
+	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height ) ;
+
+	this.game.surface.save();
 
 	// 切り替え効果
 	if( this.frame_count < this.SHOW_TRANSITION_COUNT ) {
@@ -78,7 +79,7 @@ OpeningScene.prototype.updateDisplay = function(){
 	this.game.surface.fillText( 'on Javascript',  120, 250 ) ;
 	this.game.surface.fillText('Press Z to Start',120, 350 ) ;
 
-	this.game.surface.restore( ) ;
+	this.game.surface.restore();
 
 };
 

@@ -2,6 +2,7 @@
 
 var LoadingScene = require('./scene/loading');
 var OpeningScene = require('./scene/opening');
+var StageScene   = require('./scene/stage');
 
 var Game = function(mainCanvas) {
 	// メインCanvas
@@ -20,18 +21,18 @@ var Game = function(mainCanvas) {
 	// オープニング画面
 	this.scenes[ this.OPENING_SCENE ] = new OpeningScene(this);
 	// ゲーム画面
-	this.scenes[ this.STAGE_SCENE ]   = null;
+	this.scenes[ this.STAGE_SCENE ]   = new StageScene(this);
 	// エンディング画面
 	this.scenes[ this.ENDING_SCENE ]  = null;
 
 	// 画像一覧
-	this.images = [];
+	this.images = {};
 
 	// SE一覧
-	this.sounds = [];
+	this.sounds = {};
 
 	// BGM一覧
-	this.bgms = [];
+	this.bgms = {};
 
 	// 経過フレーム数
 	this.frame_count = 0;
@@ -61,7 +62,8 @@ Game.prototype.SOUNDS = {
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
-	title: 'bgm/title.mp3',
+	title:  'bgm/title.mp3',
+	stage1: 'bgm/stage1.mp3',
 };
 
 
@@ -115,17 +117,17 @@ Game.prototype.getImage = function(key) {
 };
 
 // BGMを再生
-Game.prototype.playBGM = function(key) {
+Game.prototype.playBGM = function(bgm) {
 	// 全てのBGM再生をストップ
-	for(var i = 0; i < this.bgms.length; i++) {
-		this.bgms[i].pause();
-		this.bgms[i].currentTime = 0;
+	for(var key in this.bgms) {
+		this.bgms[key].pause();
+		this.bgms[key].currentTime = 0;
 	}
 
 	// 再生をループする
-	this.bgms[key].loop = true ;
+	this.bgms[bgm].loop = true ;
 	// 再生
-	this.bgms[key].play();
+	this.bgms[bgm].play();
 } ;
 
 // SEを再生
