@@ -52,7 +52,8 @@ Game.prototype.ENDING_SCENE  = 3;
 
 // ゲームに必要な画像一覧
 Game.prototype.IMAGES = {
-	title_bg: 'image/title_bg.png',
+	title_bg:  'image/title_bg.png',
+	stage1_bg: 'image/stage1_bg.jpg',
 };
 
 // ゲームに必要なSE一覧

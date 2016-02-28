@@ -14990,7 +14990,8 @@ Game.prototype.ENDING_SCENE  = 3;
 
 // ゲームに必要な画像一覧
 Game.prototype.IMAGES = {
-	title_bg: 'image/title_bg.png',
+	title_bg:  'image/title_bg.png',
+	stage1_bg: 'image/stage1_bg.jpg',
 };
 
 // ゲームに必要なSE一覧
@@ -15379,13 +15380,20 @@ var BaseScene = require('./base');
 var StageScene = function(game) {
 	// 継承元new呼び出し
 	BaseScene.apply(this, arguments);
+
+	// スコア
+	this.score = 0;
 };
 
 // 基底クラスを継承
 _.extend(StageScene.prototype, BaseScene.prototype);
 _.extend(StageScene, BaseScene);
 
+// サイドバーの横の長さ
 StageScene.prototype.SIDE_WIDTH = 160;
+
+// 背景画像のスクロールスピード
+StageScene.prototype.BACKGROUND_SCROLL_SPEED = 3;
 
 
 // 初期化
@@ -15398,44 +15406,78 @@ StageScene.prototype.init = function() {
 
 // フレーム処理
 StageScene.prototype.run = function(){
+	BaseScene.prototype.run.apply(this, arguments);
 };
 
 // 画面更新
 StageScene.prototype.updateDisplay = function(){
-	var side_x = this.game.width - this.SIDE_WIDTH;
+	// 初期化
+	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height);
 
-	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height ) ;
+	// サイドバー表示
+	this._show_sidebar();
+
+	// 背景画像表示
+	this._show_background();
+};
+
+// サイドバー表示
+StageScene.prototype._show_sidebar = function(){
+	var x = this.game.width - this.SIDE_WIDTH;
+	var y = 0;
 
 	this.game.surface.save();
-	this.game.surface.fillStyle = 'rgb(0, 0, 0)' ;
-	this.game.surface.fillRect(side_x, 0, this.SIDE_WIDTH, this.game.height);
+	this.game.surface.fillStyle = 'rgb(0, 0, 0)';
+	this.game.surface.fillRect(x, y, this.SIDE_WIDTH, this.game.height);
 	this.game.surface.fillStyle = 'rgb(255, 255, 255)';
 
-  /*
-  surface.textAlign = 'right';
-  surface.fillText('Score:', this.getWidth() + 70,  100);
-  surface.fillText(this.viewScore, this.getWidth() + 140, 100);
-  surface.fillText('Power:', this.getWidth() + 70, 120);
-  surface.fillText(this.fighter.getPower(), this.getWidth() + 140, 120);
-  surface.fillText('Graze:', this.getWidth() + 70, 140);
-  surface.fillText(this.graze, this.getWidth() + 140, 140);
-  surface.fillText('Players:', this.getWidth() + 70, 160);
-  surface.fillText(this.players, this.getWidth() + 140, 160);
-  surface.fillText('Bomb:', this.getWidth() + 70, 180);
-  surface.fillText(this.bombs, this.getWidth() + 140, 180);
+	this.game.surface.font = "16px 'Comic Sans MS'" ;
+	this.game.surface.textAlign = 'right';
+	this.game.surface.fillText('Score:', x + 70, y + 100);
+	this.game.surface.fillText(this.score, x + 140, y + 100);
 
-  surface.fillText(this.count, this.getWidth() + 80, 230);
-  surface.fillText(this.bulletManager.getNum(), this.getWidth() + 80, 250);
-  surface.fillText(this.enemyManager.getNum(), this.getWidth() + 80, 270);
-  surface.fillText(this.enemyBulletManager.getNum(), this.getWidth() + 80, 290);
-  surface.fillText(this.itemManager.getNum(), this.getWidth() + 80, 310);
+	this.game.surface.fillText('Player:', x + 70, y + 140);
+	this.game.surface.fillText('0', x + 140, y + 140); // TODO:
 
-  surface.fillText(parseInt(this.bgScale*1000), this.getWidth() + 140, 230);
-  surface.fillText(this.effectManager.getNum(), this.getWidth() + 140, 250);
-  */
+	this.game.surface.fillText('Bomb:', x + 70, y + 180);
+	this.game.surface.fillText('0', x + 140, y + 180); // TODO:
+
 	this.game.surface.restore();
 };
 
+// 背景画像表示
+StageScene.prototype._show_background = function() {
+	var x = 0;
+	// 背景画像をスクロールさせる
+	var y = (this.frame_count * this.BACKGROUND_SCROLL_SPEED) % this.game.height;
+
+	this.game.surface.save();
+
+	var stage1_bg = this.game.getImage('stage1_bg');
+	this.game.surface.drawImage(stage1_bg,
+		0,
+		0,
+		stage1_bg.width,
+		stage1_bg.height,
+		x,
+		y,
+		this.game.width - this.SIDE_WIDTH,
+		this.game.height
+	);
+
+	this.game.surface.drawImage(stage1_bg,
+		0,
+		0,
+		stage1_bg.width,
+		stage1_bg.height,
+		x,
+		y - this.game.height,
+		this.game.width - this.SIDE_WIDTH,
+		this.game.height
+	);
+
+	this.game.surface.restore();
+};
 
 module.exports = StageScene;
 
