@@ -14992,6 +14992,7 @@ Game.prototype.ENDING_SCENE  = 3;
 Game.prototype.IMAGES = {
 	title_bg:  'image/title_bg.png',
 	stage1_bg: 'image/stage1_bg.jpg',
+	reimu:     'image/reimu.png',
 };
 
 // ゲームに必要なSE一覧
@@ -15098,7 +15099,7 @@ Game.prototype.notifyOpeningDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":5,"./scene/opening":6,"./scene/stage":7}],3:[function(require,module,exports){
+},{"./scene/loading":6,"./scene/opening":7,"./scene/stage":8}],3:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -15118,6 +15119,74 @@ window.onload = function() {
 
 
 },{"./game":2}],4:[function(require,module,exports){
+'use strict';
+
+/* 自機オブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// constructor
+var Character = function(scene) {
+	// 継承元new呼び出し
+	//BaseObject.apply(this, arguments);
+
+	// StageScene インスタンス
+	this.scene = scene;
+	// Game インスタンス
+	this.game = scene.game;
+
+	// x座標
+	this.x = 0;
+	// y座標
+	this.y = 0;
+	// スプライトの開始位置
+	this.indexX = 0;
+	// スプライトの開始位置
+	this.indexY = 0;
+};
+
+// 基底クラスを継承
+//_.extend(Character.prototype, BaseObject.prototype);
+//_.extend(Character, BaseObject);
+
+Character.prototype.WIDTH  = 32;
+Character.prototype.HEIGHT = 48;
+
+
+
+// 初期化
+Character.prototype.init = function() {
+	//BaseObject.prototype.init.apply(this, arguments);
+
+	this.x = (this.scene.width / 2);
+	this.y = ( this.scene.height - 100);
+};
+
+// フレーム処理
+Character.prototype.run = function(){
+	//BaseObject.prototype.run.apply(this, arguments);
+};
+
+// 画面更新
+Character.prototype.updateDisplay = function(){
+	var character_image = this.game.getImage('reimu');
+
+	this.game.surface.drawImage(character_image,
+		// スプライトの位置
+		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
+		// スプライトのサイズ
+		this.WIDTH,                this.HEIGHT,
+		// アイテムのゲーム上の位置
+		this.x,                    this.y,
+		// アイテムのゲーム上のサイズ
+		this.WIDTH,                this.HEIGHT
+	);
+};
+
+module.exports = Character;
+
+},{"lodash":1}],5:[function(require,module,exports){
 'use strict';
 
 var BaseScene = function(game) {
@@ -15159,7 +15228,7 @@ BaseScene.prototype.handleKeyUp   = function(e){
 
 module.exports = BaseScene;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 /* ローディング画面 */
@@ -15277,7 +15346,7 @@ LoadingScene.prototype._loadBGMs = function() {
 
 module.exports = LoadingScene;
 
-},{"./base":4,"lodash":1}],6:[function(require,module,exports){
+},{"./base":5,"lodash":1}],7:[function(require,module,exports){
 'use strict';
 
 /* オープニング画面 */
@@ -15365,7 +15434,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 module.exports = OpeningScene;
 
-},{"./base":4,"lodash":1}],7:[function(require,module,exports){
+},{"./base":5,"lodash":1}],8:[function(require,module,exports){
 'use strict';
 
 /* ゲームステージ画面 */
@@ -15376,6 +15445,8 @@ var _ = require('lodash');
 // 基底クラス
 var BaseScene = require('./base');
 
+var Character = require('../object/character');
+
 // constructor
 var StageScene = function(game) {
 	// 継承元new呼び出し
@@ -15383,11 +15454,29 @@ var StageScene = function(game) {
 
 	// スコア
 	this.score = 0;
+	// 自機
+	this.character = new Character(this);
+	// キー押下フラグ
+	this.keyflag = 0x0;
+
+	// サイドバーを除いたステージの大きさ
+	this.width = this.game.width - this.SIDE_WIDTH;
+	this.height= this.game.height;
 };
 
 // 基底クラスを継承
 _.extend(StageScene.prototype, BaseScene.prototype);
 _.extend(StageScene, BaseScene);
+
+// キー押下フラグ
+StageScene.prototype.BUTTON_LEFT  = 0x01;
+StageScene.prototype.BUTTON_UP    = 0x02;
+StageScene.prototype.BUTTON_RIGHT = 0x04;
+StageScene.prototype.BUTTON_DOWN  = 0x08;
+StageScene.prototype.BUTTON_Z     = 0x10;
+StageScene.prototype.BUTTON_X     = 0x20;
+StageScene.prototype.BUTTON_SHIFT = 0x40;
+StageScene.prototype.BUTTON_SPACE = 0x80;
 
 // サイドバーの横の長さ
 StageScene.prototype.SIDE_WIDTH = 160;
@@ -15402,13 +15491,67 @@ StageScene.prototype.SHOW_TITLE_COUNT = 300;
 StageScene.prototype.init = function() {
 	BaseScene.prototype.init.apply(this, arguments);
 
+	// 自機を初期化
+	this.character.init();
+
+	// BGM再生
 	this.game.playBGM('stage1');
 
+};
+
+// キー押下
+StageScene.prototype.handleKeyDown = function(e){
+	this.keyflag |= this._keyCodeToBitCode(e.keyCode);
+};
+
+// キー押下解除
+StageScene.prototype.handleKeyUp   = function(e){
+	this.keyflag &= ~this._keyCodeToBitCode(e.keyCode);
+};
+
+// 指定のキーが押下状態か確認する
+StageScene.prototype.isKeyDown = function(flag) {
+	return this.keyflag & flag;
+};
+
+// キーコードをBitに変換
+StageScene.prototype._keyCodeToBitCode = function(keyCode) {
+	var flag;
+	switch(keyCode) {
+		case 16: // shift
+			flag = this.BUTTON_SHIFT;
+			break;
+		case 32: // space
+			flag = this.BUTTON_SPACE;
+			break;
+		case 37: // left
+			flag = this.BUTTON_LEFT;
+			break;
+		case 38: // up
+			flag = this.BUTTON_UP;
+			break;
+		case 39: // right
+			flag = this.BUTTON_RIGHT;
+			break;
+		case 40: // down
+			flag = this.BUTTON_DOWN;
+			break;
+		case 88: // x
+			flag = this.BUTTON_X;
+			break;
+		case 90: // z
+			flag = this.BUTTON_Z;
+			break;
+	}
+	return flag;
 };
 
 // フレーム処理
 StageScene.prototype.run = function(){
 	BaseScene.prototype.run.apply(this, arguments);
+
+	// 自機
+	this.character.run();
 };
 
 // 画面更新
@@ -15421,6 +15564,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 背景画像表示
 	this._showBackground();
+
+	// 自機描画
+	this.character.updateDisplay();
 
 	// ステージタイトル表示
 	this._showStageTitle();
@@ -15526,4 +15672,4 @@ StageScene.prototype._showStageTitle = function() {
 
 module.exports = StageScene;
 
-},{"./base":4,"lodash":1}]},{},[3]);
+},{"../object/character":4,"./base":5,"lodash":1}]},{},[3]);

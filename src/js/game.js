@@ -54,6 +54,7 @@ Game.prototype.ENDING_SCENE  = 3;
 Game.prototype.IMAGES = {
 	title_bg:  'image/title_bg.png',
 	stage1_bg: 'image/stage1_bg.jpg',
+	reimu:     'image/reimu.png',
 };
 
 // ゲームに必要なSE一覧

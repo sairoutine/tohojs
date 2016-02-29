@@ -8,6 +8,8 @@ var _ = require('lodash');
 // 基底クラス
 var BaseScene = require('./base');
 
+var Character = require('../object/character');
+
 // constructor
 var StageScene = function(game) {
 	// 継承元new呼び出し
@@ -15,11 +17,29 @@ var StageScene = function(game) {
 
 	// スコア
 	this.score = 0;
+	// 自機
+	this.character = new Character(this);
+	// キー押下フラグ
+	this.keyflag = 0x0;
+
+	// サイドバーを除いたステージの大きさ
+	this.width = this.game.width - this.SIDE_WIDTH;
+	this.height= this.game.height;
 };
 
 // 基底クラスを継承
 _.extend(StageScene.prototype, BaseScene.prototype);
 _.extend(StageScene, BaseScene);
+
+// キー押下フラグ
+StageScene.prototype.BUTTON_LEFT  = 0x01;
+StageScene.prototype.BUTTON_UP    = 0x02;
+StageScene.prototype.BUTTON_RIGHT = 0x04;
+StageScene.prototype.BUTTON_DOWN  = 0x08;
+StageScene.prototype.BUTTON_Z     = 0x10;
+StageScene.prototype.BUTTON_X     = 0x20;
+StageScene.prototype.BUTTON_SHIFT = 0x40;
+StageScene.prototype.BUTTON_SPACE = 0x80;
 
 // サイドバーの横の長さ
 StageScene.prototype.SIDE_WIDTH = 160;
@@ -34,13 +54,67 @@ StageScene.prototype.SHOW_TITLE_COUNT = 300;
 StageScene.prototype.init = function() {
 	BaseScene.prototype.init.apply(this, arguments);
 
+	// 自機を初期化
+	this.character.init();
+
+	// BGM再生
 	this.game.playBGM('stage1');
 
+};
+
+// キー押下
+StageScene.prototype.handleKeyDown = function(e){
+	this.keyflag |= this._keyCodeToBitCode(e.keyCode);
+};
+
+// キー押下解除
+StageScene.prototype.handleKeyUp   = function(e){
+	this.keyflag &= ~this._keyCodeToBitCode(e.keyCode);
+};
+
+// 指定のキーが押下状態か確認する
+StageScene.prototype.isKeyDown = function(flag) {
+	return this.keyflag & flag;
+};
+
+// キーコードをBitに変換
+StageScene.prototype._keyCodeToBitCode = function(keyCode) {
+	var flag;
+	switch(keyCode) {
+		case 16: // shift
+			flag = this.BUTTON_SHIFT;
+			break;
+		case 32: // space
+			flag = this.BUTTON_SPACE;
+			break;
+		case 37: // left
+			flag = this.BUTTON_LEFT;
+			break;
+		case 38: // up
+			flag = this.BUTTON_UP;
+			break;
+		case 39: // right
+			flag = this.BUTTON_RIGHT;
+			break;
+		case 40: // down
+			flag = this.BUTTON_DOWN;
+			break;
+		case 88: // x
+			flag = this.BUTTON_X;
+			break;
+		case 90: // z
+			flag = this.BUTTON_Z;
+			break;
+	}
+	return flag;
 };
 
 // フレーム処理
 StageScene.prototype.run = function(){
 	BaseScene.prototype.run.apply(this, arguments);
+
+	// 自機
+	this.character.run();
 };
 
 // 画面更新
@@ -53,6 +127,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 背景画像表示
 	this._showBackground();
+
+	// 自機描画
+	this.character.updateDisplay();
 
 	// ステージタイトル表示
 	this._showStageTitle();
