@@ -15396,7 +15396,7 @@ StageScene.prototype.SIDE_WIDTH = 160;
 StageScene.prototype.BACKGROUND_SCROLL_SPEED = 3;
 
 // ステージタイトルの表示秒数
-StageScene.prototype.SHOW_TITLE_COUNT = 100;
+StageScene.prototype.SHOW_TITLE_COUNT = 300;
 
 // 初期化
 StageScene.prototype.init = function() {
@@ -15494,15 +15494,21 @@ StageScene.prototype._showStageTitle = function() {
 	this.game.surface.save( ) ;
 
 	var alpha = 1.0 ;
-	if( this.frame_count < (this.SHOW_TITLE_COUNT / 2)) {
-		alpha = (this.frame_count * 2) / this.SHOW_TITLE_COUNT;
+	if( this.frame_count < (this.SHOW_TITLE_COUNT / 3)) {
+		// 最初の1/3はフェードイン
+		alpha = (this.frame_count * 3) / this.SHOW_TITLE_COUNT;
 	}
-	else if( this.frame_count >= (this.SHOW_TITLE_COUNT / 2)) {
-		alpha = (this.SHOW_TITLE_COUNT - this.frame_count) / this.SHOW_TITLE_COUNT;
+	else if(this.SHOW_TITLE_COUNT / 3 < this.frame_count && this.frame_count < this.SHOW_TITLE_COUNT * 2 / 3) {
+		// 真ん中の1/3は表示
+		alpha = 1.0;
+	}
+	else if(this.SHOW_TITLE_COUNT * 2 / 3 < this.frame_count) {
+		// 最後の1/3はフェードアウト
+		alpha = (this.SHOW_TITLE_COUNT - this.frame_count) * 3 / this.SHOW_TITLE_COUNT;
 	}
 
 	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
-	this.game.surface.globalAlpha = alpha * 0.2 ;
+	this.game.surface.globalAlpha = alpha * 0.5; // タイトル背景黒は半透明
 	this.game.surface.fillRect( 0, 170, 480, 100 ) ;
 
 	this.game.surface.globalAlpha = alpha ;
@@ -15512,6 +15518,7 @@ StageScene.prototype._showStageTitle = function() {
 	this.game.surface.fillText( 'Stage 1', 100, 210 ) ;
 	this.game.surface.textAlign = 'right' ;
 	this.game.surface.fillText('夢幻夜行絵巻 ～ Mystic Flier', 380, 250 ) ;
+	// ステージ名とタイトルの間の白い棒線
 	this.game.surface.fillRect( 100, 225, 280, 1 ) ;
 	this.game.surface.restore();
 } ;
