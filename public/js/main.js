@@ -15190,14 +15190,32 @@ Character.prototype.run = function(){
 		this.y -= this.SPEED;
 	}
 
+	// 画面外に出させない
+	if(this.x < 0) {
+		this.x = 0;
+	}
+	if(this.x > this.stage.width) {
+		this.x = this.stage.width;
+	}
+	if(this.y < 0) {
+		this.y = 0;
+	}
+	if(this.y > this.stage.height) {
+		this.y = this.stage.height;
+	}
+
+
 	// 左右の移動に合わせて自機のアニメーションを変更
-	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
+	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT) && !this.stage.isKeyDown(this.stage.BUTTON_RIGHT)) {
+		// 左移動中
 		this.indexY = 1;
 	}
-	else if(this.stage.isKeyDown(this.stage.BUTTON_RIGHT)) {
+	else if(this.stage.isKeyDown(this.stage.BUTTON_RIGHT) && !this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
+		// 右移動中
 		this.indexY = 2;
 	}
 	else {
+		// 左右には未移動
 		this.indexY = 0;
 	}
 
@@ -15223,6 +15241,7 @@ Character.prototype.run = function(){
 Character.prototype.updateDisplay = function(){
 	var character_image = this.game.getImage('reimu');
 
+	this.game.surface.save();
 	// 自機描画
 	this.game.surface.drawImage(character_image,
 		// スプライトの位置
@@ -15234,6 +15253,8 @@ Character.prototype.updateDisplay = function(){
 		// 自機のゲーム上のサイズ
 		this.WIDTH,                this.HEIGHT
 	);
+
+	this.game.surface.restore();
 };
 
 module.exports = Character;
