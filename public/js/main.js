@@ -15636,14 +15636,14 @@ StageScene.prototype.updateDisplay = function(){
 	// 初期化
 	this.game.surface.clearRect( 0, 0, this.game.width, this.game.height);
 
-	// サイドバー表示
-	this._showSidebar();
-
 	// 背景画像表示
 	this._showBackground();
 
 	// 自機描画
 	this.character.updateDisplay();
+
+	// サイドバー表示
+	this._showSidebar();
 
 	// ステージタイトル表示
 	this._showStageTitle();
