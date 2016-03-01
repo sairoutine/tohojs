@@ -7,11 +7,6 @@ var _ = require('lodash');
 
 // constructor
 var ObjectBase = function(scene) {
-	// StageScene インスタンス
-	this.stage = scene;
-	// Game インスタンス
-	this.game = scene.game;
-
 	this.frame_count = 0;
 	// x座標(中心)
 	this.x = 0;

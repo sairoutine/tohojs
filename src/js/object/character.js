@@ -12,6 +12,11 @@ var BaseObject = require('./base');
 var Character = function(scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
+
+	// StageScene インスタンス
+	this.stage = scene;
+	// Game インスタンス
+	this.game = scene.game;
 };
 
 // 基底クラスを継承
