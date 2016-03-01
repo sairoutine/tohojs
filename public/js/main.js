@@ -15240,8 +15240,8 @@ Character.prototype.run = function(){
 // 画面更新
 Character.prototype.updateDisplay = function(){
 	// スプライトの描画開始座標
-	var sprite_x = Math.round(this.x - this.width / 2);
-	var sprite_y = Math.round(this.y - this.height / 2);
+	var sprite_x = Math.round(this.x - this.WIDTH / 2);
+	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
 
 	var character_image = this.game.getImage('reimu');
 
