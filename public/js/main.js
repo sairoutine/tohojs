@@ -14993,11 +14993,13 @@ Game.prototype.IMAGES = {
 	title_bg:  'image/title_bg.png',
 	stage1_bg: 'image/stage1_bg.jpg',
 	reimu:     'image/reimu.png',
+	shot :     'image/shot.png',
 };
 
 // ゲームに必要なSE一覧
 Game.prototype.SOUNDS = {
 	select: 'sound/select.wav',
+	shot:   'sound/shot.wav',
 };
 
 // ゲームに必要なBGM一覧
@@ -15099,7 +15101,7 @@ Game.prototype.notifyOpeningDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":6,"./scene/opening":7,"./scene/stage":8}],3:[function(require,module,exports){
+},{"./scene/loading":9,"./scene/opening":10,"./scene/stage":11}],3:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -15121,13 +15123,16 @@ window.onload = function() {
 },{"./game":2}],4:[function(require,module,exports){
 'use strict';
 
-/* 自機オブジェクト */
+/* 自機の弾を管理するクラス */
 
 // lodash
 var _ = require('lodash');
 
+// 自機弾クラス
+var Shot = require('../object/shot');
+
 // constructor
-var Character = function(scene) {
+var ShotManager = function(scene) {
 	// 継承元new呼び出し
 	//BaseObject.apply(this, arguments);
 
@@ -15136,24 +15141,197 @@ var Character = function(scene) {
 	// Game インスタンス
 	this.game = scene.game;
 
+	// 弾生成クラス
+	this.factory = new ShotFactory(this);
+
+	// 画面上の弾一覧
+	this.objects = {};
+
 	this.frame_count = 0;
-	// x座標(自機中心)
+	// x座標(弾の中心)
 	this.x = 0;
-	// y座標(自機中心)
+	// y座標(弾の中心)
+	this.y = 0;
+};
+
+// 基底クラスを継承
+//_.extend(ShotManager.prototype, BaseObject.prototype);
+//_.extend(ShotManager, BaseObject);
+
+// 自機のスプライトサイズ
+ShotManager.prototype.WIDTH  = 32;
+ShotManager.prototype.HEIGHT = 48;
+
+// 自機の移動速度
+ShotManager.prototype.SPEED = 4;
+
+// Nフレーム毎に自機をアニメーション
+ShotManager.prototype.ANIMATION_SPAN = 2;
+
+
+// 初期化
+ShotManager.prototype.init = function() {
+	//BaseObject.prototype.init.apply(this, arguments);
+};
+
+// 弾生成
+ShotManager.prototype.create = function(character) {
+	var shot = this.factory.get();
+
+	this.objects[shot.id] = shot;
+};
+
+// フレーム処理
+ShotManager.prototype.run = function(){
+	//BaseObject.prototype.run.apply(this, arguments);
+	this.frame_count++;
+
+	// 弾一覧
+	for(var id in this.objects) {
+		this.objects[id].run();
+	}
+};
+
+// 画面更新
+ShotManager.prototype.updateDisplay = function(){
+	//BaseObject.prototype.run.apply(this, arguments);
+
+	// 弾一覧
+	for(var id in this.objects) {
+		this.objects[id].updateDisplay();
+	}
+
+};
+
+module.exports = ShotManager;
+
+
+/* 自機の弾を生成するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// constructor
+var ShotFactory = function(manager) {
+	// 継承元new呼び出し
+	//BaseObject.apply(this, arguments);
+
+	// ステージシーン
+	this.stage = manager.stage;
+
+	// 生成した弾
+	this.pool = [];
+};
+
+// 基底クラスを継承
+//_.extend(ShotManager.prototype, BaseObject.prototype);
+//_.extend(ShotManager, BaseObject);
+
+// 弾を生成
+ShotFactory.prototype.get = function() {
+	var shot = new Shot(this.stage);
+	// 初期化
+	shot.init();
+
+	return shot;
+};
+
+
+
+},{"../object/shot":7,"lodash":1}],5:[function(require,module,exports){
+'use strict';
+
+/* オブジェクトの基底クラス */
+
+// lodash
+var _ = require('lodash');
+
+// constructor
+var ObjectBase = function(scene) {
+	this.frame_count = 0;
+
+	// StageScene インスタンス
+	this.stage = scene;
+	// Game インスタンス
+	this.game = scene.game;
+
+	// x座標(中心)
+	this.x = 0;
+	// y座標(中心)
 	this.y = 0;
 	// スプライトの開始位置
 	this.indexX = 0;
 	// スプライトの開始位置
 	this.indexY = 0;
+
+};
+
+// 初期化
+ObjectBase.prototype.init = function() {
+	// 経過フレーム数初期化
+	this.frame_count = 0;
+};
+
+// フレーム処理
+ObjectBase.prototype.run = function(){
+	// 経過フレーム数更新
+	this.frame_count++;
+};
+
+//TODO: this.WIDTH, this.HEIGHT, this.IMAGE_KEY を関数化してオーバーライドしないとエラーにしたい
+// 画面更新
+ObjectBase.prototype.updateDisplay = function(){
+	// スプライトの描画開始座標
+	var sprite_x = Math.round(this.x - this.WIDTH / 2);
+	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
+
+	var image = this.game.getImage(this.IMAGE_KEY);
+	this.game.surface.save();
+	// 自機描画
+	this.game.surface.drawImage(image,
+		// スプライトの取得位置
+		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
+		// スプライトのサイズ
+		this.WIDTH,                this.HEIGHT,
+		// 自機のゲーム上の位置
+		sprite_x,                  sprite_y,
+		// 自機のゲーム上のサイズ
+		this.WIDTH,                this.HEIGHT
+	);
+
+	this.game.surface.restore();
+};
+
+
+module.exports = ObjectBase;
+
+},{"lodash":1}],6:[function(require,module,exports){
+'use strict';
+
+/* 自機オブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseObject = require('./base');
+
+// constructor
+var Character = function(scene) {
+	// 継承元new呼び出し
+	BaseObject.apply(this, arguments);
 };
 
 // 基底クラスを継承
-//_.extend(Character.prototype, BaseObject.prototype);
-//_.extend(Character, BaseObject);
+_.extend(Character.prototype, BaseObject.prototype);
+_.extend(Character, BaseObject);
 
 // 自機のスプライトサイズ
 Character.prototype.WIDTH  = 32;
 Character.prototype.HEIGHT = 48;
+
+// 霊夢画像
+Character.prototype.IMAGE_KEY = 'reimu';
 
 // 自機の移動速度
 Character.prototype.SPEED = 4;
@@ -15164,7 +15342,7 @@ Character.prototype.ANIMATION_SPAN = 2;
 
 // 初期化
 Character.prototype.init = function() {
-	//BaseObject.prototype.init.apply(this, arguments);
+	BaseObject.prototype.init.apply(this, arguments);
 
 	// 自機の初期位置
 	this.x = (this.stage.width / 2);
@@ -15173,8 +15351,16 @@ Character.prototype.init = function() {
 
 // フレーム処理
 Character.prototype.run = function(){
-	//BaseObject.prototype.run.apply(this, arguments);
-	this.frame_count++;
+	BaseObject.prototype.run.apply(this, arguments);
+
+	// Zが押下されていればショット生成
+	if(this.stage.isKeyDown(this.stage.BUTTON_Z)) {
+		// 5フレーム置きにショットを生成 TODO:
+		if(this.frame_count % 5 == 0) {
+			this.stage.shotmanager.create();
+			this.game.playSound('shot');
+		}
+	}
 
 	// 自機移動
 	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
@@ -15237,34 +15423,69 @@ Character.prototype.run = function(){
 	}
 };
 
-// 画面更新
-Character.prototype.updateDisplay = function(){
-	// スプライトの描画開始座標
-	var sprite_x = Math.round(this.x - this.WIDTH / 2);
-	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
-
-	var character_image = this.game.getImage('reimu');
-
-	this.game.surface.save();
-	// 自機描画
-	this.game.surface.drawImage(character_image,
-		// スプライトの取得位置
-		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
-		// スプライトのサイズ
-		this.WIDTH,                this.HEIGHT,
-		// 自機のゲーム上の位置
-		sprite_x,                  sprite_y,
-		// 自機のゲーム上のサイズ
-		this.WIDTH,                this.HEIGHT
-	);
-
-	this.game.surface.restore();
-};
-
 module.exports = Character;
 
-},{"lodash":1}],5:[function(require,module,exports){
+},{"./base":5,"lodash":1}],7:[function(require,module,exports){
 'use strict';
+
+/* 自機弾オブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseObject = require('./base');
+
+// constructor
+var Shot = function(scene) {
+	// 継承元new呼び出し
+	BaseObject.apply(this, arguments);
+
+	// 弾を一意に特定するID
+	this.id = Math.random() * 1000; // TODO:
+
+	// 弾のスプライト上の位置
+	this.indexX = 3; this.indexY = 3; //TODO:
+
+};
+
+// 基底クラスを継承
+_.extend(Shot.prototype, BaseObject.prototype);
+_.extend(Shot, BaseObject);
+
+// 自機弾のスプライトサイズ
+Shot.prototype.WIDTH  = 16;
+Shot.prototype.HEIGHT = 48;
+
+// 自機弾画像
+Shot.prototype.IMAGE_KEY = 'shot';
+
+// 自機弾の移動速度
+Shot.prototype.SPEED = 8;
+
+// 初期化
+Shot.prototype.init = function() {
+	BaseObject.prototype.init.apply(this, arguments);
+
+	// 弾の初期位置は自機の位置
+	this.x = this.stage.character.x;
+	this.y = this.stage.character.y;
+};
+
+// フレーム処理
+Shot.prototype.run = function(){
+	BaseObject.prototype.run.apply(this, arguments);
+
+	// 弾を直進させる
+	this.y -= this.SPEED;
+};
+
+module.exports = Shot;
+
+},{"./base":5,"lodash":1}],8:[function(require,module,exports){
+'use strict';
+
+/* シーンの基底クラス */
 
 var BaseScene = function(game) {
 	// ゲームインスタンス
@@ -15290,22 +15511,12 @@ BaseScene.prototype.run = function(){
 
 // 画面更新
 BaseScene.prototype.updateDisplay = function(){
-
-};
-
-// キー押下
-BaseScene.prototype.handleKeyDown = function(e){
-
-};
-
-// キー押下解除
-BaseScene.prototype.handleKeyUp   = function(e){
-
+	console.error("updateDisplay method must be overridden");
 };
 
 module.exports = BaseScene;
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 'use strict';
 
 /* ローディング画面 */
@@ -15423,7 +15634,7 @@ LoadingScene.prototype._loadBGMs = function() {
 
 module.exports = LoadingScene;
 
-},{"./base":5,"lodash":1}],7:[function(require,module,exports){
+},{"./base":8,"lodash":1}],10:[function(require,module,exports){
 'use strict';
 
 /* オープニング画面 */
@@ -15511,7 +15722,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 module.exports = OpeningScene;
 
-},{"./base":5,"lodash":1}],8:[function(require,module,exports){
+},{"./base":8,"lodash":1}],11:[function(require,module,exports){
 'use strict';
 
 /* ゲームステージ画面 */
@@ -15523,6 +15734,7 @@ var _ = require('lodash');
 var BaseScene = require('./base');
 
 var Character = require('../object/character');
+var ShotManager = require('../manager/shot');
 
 // constructor
 var StageScene = function(game) {
@@ -15533,6 +15745,10 @@ var StageScene = function(game) {
 	this.score = 0;
 	// 自機
 	this.character = new Character(this);
+
+	// 自機の弾
+	this.shotmanager = new ShotManager(this);
+
 	// キー押下フラグ
 	this.keyflag = 0x0;
 
@@ -15570,6 +15786,9 @@ StageScene.prototype.init = function() {
 
 	// 自機を初期化
 	this.character.init();
+
+	// 自機弾を初期化
+	this.shotmanager.init();
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -15629,6 +15848,11 @@ StageScene.prototype.run = function(){
 
 	// 自機
 	this.character.run();
+
+	// 自機弾
+	this.shotmanager.run();
+
+
 };
 
 // 画面更新
@@ -15641,6 +15865,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 自機描画
 	this.character.updateDisplay();
+
+	// 自機弾
+	this.shotmanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
@@ -15749,4 +15976,4 @@ StageScene.prototype._showStageTitle = function() {
 
 module.exports = StageScene;
 
-},{"../object/character":4,"./base":5,"lodash":1}]},{},[3]);
+},{"../manager/shot":4,"../object/character":6,"./base":8,"lodash":1}]},{},[3]);
