@@ -1,5 +1,7 @@
 'use strict';
 
+/* シーンの基底クラス */
+
 var BaseScene = function(game) {
 	// ゲームインスタンス
 	this.game = game;
@@ -24,17 +26,7 @@ BaseScene.prototype.run = function(){
 
 // 画面更新
 BaseScene.prototype.updateDisplay = function(){
-
-};
-
-// キー押下
-BaseScene.prototype.handleKeyDown = function(e){
-
-};
-
-// キー押下解除
-BaseScene.prototype.handleKeyUp   = function(e){
-
+	console.error("updateDisplay method must be overridden");
 };
 
 module.exports = BaseScene;
