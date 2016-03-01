@@ -9,6 +9,7 @@ var _ = require('lodash');
 var BaseScene = require('./base');
 
 var Character = require('../object/character');
+var ShotManager = require('../manager/shot');
 
 // constructor
 var StageScene = function(game) {
@@ -19,6 +20,10 @@ var StageScene = function(game) {
 	this.score = 0;
 	// 自機
 	this.character = new Character(this);
+
+	// 自機の弾
+	this.shotmanager = new ShotManager(this);
+
 	// キー押下フラグ
 	this.keyflag = 0x0;
 
@@ -56,6 +61,9 @@ StageScene.prototype.init = function() {
 
 	// 自機を初期化
 	this.character.init();
+
+	// 自機弾を初期化
+	this.shotmanager.init();
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -115,6 +123,11 @@ StageScene.prototype.run = function(){
 
 	// 自機
 	this.character.run();
+
+	// 自機弾
+	this.shotmanager.run();
+
+
 };
 
 // 画面更新
@@ -127,6 +140,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 自機描画
 	this.character.updateDisplay();
+
+	// 自機弾
+	this.shotmanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
