@@ -12,11 +12,6 @@ var BaseObject = require('./base');
 var Character = function(scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
-
-	// StageScene インスタンス
-	this.stage = scene;
-	// Game インスタンス
-	this.game = scene.game;
 };
 
 // 基底クラスを継承
@@ -52,7 +47,11 @@ Character.prototype.run = function(){
 
 	// Zが押下されていればショット生成
 	if(this.stage.isKeyDown(this.stage.BUTTON_Z)) {
-		this.stage.shotmanager.create();
+		// 5フレーム置きにショットを生成 TODO:
+		if(this.frame_count % 5 == 0) {
+			this.stage.shotmanager.create();
+			this.game.playSound('shot');
+		}
 	}
 
 	// 自機移動

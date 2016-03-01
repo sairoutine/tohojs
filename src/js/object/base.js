@@ -8,6 +8,12 @@ var _ = require('lodash');
 // constructor
 var ObjectBase = function(scene) {
 	this.frame_count = 0;
+
+	// StageScene インスタンス
+	this.stage = scene;
+	// Game インスタンス
+	this.game = scene.game;
+
 	// x座標(中心)
 	this.x = 0;
 	// y座標(中心)
@@ -16,6 +22,7 @@ var ObjectBase = function(scene) {
 	this.indexX = 0;
 	// スプライトの開始位置
 	this.indexY = 0;
+
 };
 
 // 初期化
