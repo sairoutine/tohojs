@@ -5,30 +5,18 @@
 // lodash
 var _ = require('lodash');
 
+// 基底クラス
+var BaseObject = require('./base');
+
 // constructor
 var Character = function(scene) {
 	// 継承元new呼び出し
-	//BaseObject.apply(this, arguments);
-
-	// StageScene インスタンス
-	this.stage = scene;
-	// Game インスタンス
-	this.game = scene.game;
-
-	this.frame_count = 0;
-	// x座標(自機中心)
-	this.x = 0;
-	// y座標(自機中心)
-	this.y = 0;
-	// スプライトの開始位置
-	this.indexX = 0;
-	// スプライトの開始位置
-	this.indexY = 0;
+	BaseObject.apply(this, arguments);
 };
 
 // 基底クラスを継承
-//_.extend(Character.prototype, BaseObject.prototype);
-//_.extend(Character, BaseObject);
+_.extend(Character.prototype, BaseObject.prototype);
+_.extend(Character, BaseObject);
 
 // 自機のスプライトサイズ
 Character.prototype.WIDTH  = 32;
@@ -43,7 +31,7 @@ Character.prototype.ANIMATION_SPAN = 2;
 
 // 初期化
 Character.prototype.init = function() {
-	//BaseObject.prototype.init.apply(this, arguments);
+	BaseObject.prototype.init.apply(this, arguments);
 
 	// 自機の初期位置
 	this.x = (this.stage.width / 2);
@@ -52,8 +40,12 @@ Character.prototype.init = function() {
 
 // フレーム処理
 Character.prototype.run = function(){
-	//BaseObject.prototype.run.apply(this, arguments);
-	this.frame_count++;
+	BaseObject.prototype.run.apply(this, arguments);
+
+	// Zが押下されていればショット生成
+	if(this.stage.isKeyDown(this.stage.BUTTON_Z)) {
+		this.stage.shotmanager.create();
+	}
 
 	// 自機移動
 	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
