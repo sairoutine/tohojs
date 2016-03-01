@@ -30,9 +30,29 @@ ObjectBase.prototype.run = function(){
 	this.frame_count++;
 };
 
+//TODO: this.WIDTH, this.HEIGHT, this.IMAGE_KEY を関数化してオーバーライドしないとエラーにしたい
 // 画面更新
 ObjectBase.prototype.updateDisplay = function(){
-	console.error("updateDisplay method must be overridden");
+	// スプライトの描画開始座標
+	var sprite_x = Math.round(this.x - this.WIDTH / 2);
+	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
+
+	var image = this.game.getImage(this.IMAGE_KEY);
+	this.game.surface.save();
+	// 自機描画
+	this.game.surface.drawImage(image,
+		// スプライトの取得位置
+		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
+		// スプライトのサイズ
+		this.WIDTH,                this.HEIGHT,
+		// 自機のゲーム上の位置
+		sprite_x,                  sprite_y,
+		// 自機のゲーム上のサイズ
+		this.WIDTH,                this.HEIGHT
+	);
+
+	this.game.surface.restore();
 };
+
 
 module.exports = ObjectBase;

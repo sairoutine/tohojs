@@ -27,6 +27,9 @@ _.extend(Character, BaseObject);
 Character.prototype.WIDTH  = 32;
 Character.prototype.HEIGHT = 48;
 
+// 霊夢画像
+Character.prototype.IMAGE_KEY = 'reimu';
+
 // 自機の移動速度
 Character.prototype.SPEED = 4;
 
@@ -111,30 +114,6 @@ Character.prototype.run = function(){
 			this.indexX = 4 ;
 		}
 	}
-};
-
-// 画面更新
-Character.prototype.updateDisplay = function(){
-	// スプライトの描画開始座標
-	var sprite_x = Math.round(this.x - this.WIDTH / 2);
-	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
-
-	var character_image = this.game.getImage('reimu');
-
-	this.game.surface.save();
-	// 自機描画
-	this.game.surface.drawImage(character_image,
-		// スプライトの取得位置
-		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
-		// スプライトのサイズ
-		this.WIDTH,                this.HEIGHT,
-		// 自機のゲーム上の位置
-		sprite_x,                  sprite_y,
-		// 自機のゲーム上のサイズ
-		this.WIDTH,                this.HEIGHT
-	);
-
-	this.game.surface.restore();
 };
 
 module.exports = Character;
