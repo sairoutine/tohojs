@@ -16,9 +16,9 @@ var Character = function(scene) {
 	this.game = scene.game;
 
 	this.frame_count = 0;
-	// x座標
+	// x座標(自機中心)
 	this.x = 0;
-	// y座標
+	// y座標(自機中心)
 	this.y = 0;
 	// スプライトの開始位置
 	this.indexX = 0;
@@ -118,17 +118,21 @@ Character.prototype.run = function(){
 
 // 画面更新
 Character.prototype.updateDisplay = function(){
+	// スプライトの描画開始座標
+	var sprite_x = Math.round(this.x - this.width / 2);
+	var sprite_y = Math.round(this.y - this.height / 2);
+
 	var character_image = this.game.getImage('reimu');
 
 	this.game.surface.save();
 	// 自機描画
 	this.game.surface.drawImage(character_image,
-		// スプライトの位置
+		// スプライトの取得位置
 		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
 		// スプライトのサイズ
 		this.WIDTH,                this.HEIGHT,
 		// 自機のゲーム上の位置
-		this.x,                    this.y,
+		sprite_x,                  sprite_y,
 		// 自機のゲーム上のサイズ
 		this.WIDTH,                this.HEIGHT
 	);
