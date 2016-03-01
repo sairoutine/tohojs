@@ -55,11 +55,13 @@ Game.prototype.IMAGES = {
 	title_bg:  'image/title_bg.png',
 	stage1_bg: 'image/stage1_bg.jpg',
 	reimu:     'image/reimu.png',
+	shot :     'image/shot.png',
 };
 
 // ゲームに必要なSE一覧
 Game.prototype.SOUNDS = {
 	select: 'sound/select.wav',
+	shot:   'sound/shot.wav',
 };
 
 // ゲームに必要なBGM一覧
