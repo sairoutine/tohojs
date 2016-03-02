@@ -60,14 +60,26 @@ Game.prototype.IMAGES = {
 
 // ゲームに必要なSE一覧
 Game.prototype.SOUNDS = {
-	select: 'sound/select.wav',
-	shot:   'sound/shot.wav',
+	select: {
+		path:   'sound/select.wav',
+		volume: 1.00
+	},
+	shot: {
+		path: 'sound/shot.wav',
+		volume: 0.1
+	},
 };
 
 // ゲームに必要なBGM一覧
 Game.prototype.BGMS = {
-	title:  'bgm/title.mp3',
-	stage1: 'bgm/stage1.mp3',
+	title: {
+		path:   'bgm/title.mp3',
+		volume: 1.00
+	},
+	stage1: {
+		path:   'bgm/stage1.mp3',
+		volume: 1.00
+	},
 };
 
 

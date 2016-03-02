@@ -90,7 +90,8 @@ LoadingScene.prototype._loadSounds = function() {
 	};
 
 	for(var key in this.game.SOUNDS) {
-		this.game.sounds[key] = new Audio(this.game.SOUNDS[key]);
+		this.game.sounds[key] = new Audio(this.game.SOUNDS[key].path);
+		this.game.sounds[key].volume = this.game.SOUNDS[key].volume;
 		this.game.sounds[key].addEventListener('canplay', onload_function);
 		this.game.sounds[key].load();
 	}
@@ -106,7 +107,8 @@ LoadingScene.prototype._loadBGMs = function() {
 	};
 
 	for(var key in this.game.BGMS) {
-		this.game.bgms[key] = new Audio(this.game.BGMS[key]);
+		this.game.bgms[key] = new Audio(this.game.BGMS[key].path);
+		this.game.bgms[key].volume = this.game.BGMS[key].volume;
 		this.game.bgms[key].addEventListener('canplay', onload_function);
 		this.game.bgms[key].load();
 	}
