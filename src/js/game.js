@@ -55,7 +55,8 @@ Game.prototype.IMAGES = {
 	title_bg:  'image/title_bg.png',
 	stage1_bg: 'image/stage1_bg.jpg',
 	reimu:     'image/reimu.png',
-	shot :     'image/shot.png',
+	shot:      'image/shot.png',
+	enemy:     'image/enemy.png',
 };
 
 // ゲームに必要なSE一覧
