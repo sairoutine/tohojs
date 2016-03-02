@@ -49,18 +49,18 @@ ObjectBase.prototype.updateDisplay = function(){
 
 	var image = this.game.getImage(this.IMAGE_KEY);
 	this.game.surface.save();
-	// 自機描画
+	// オブジェクト描画
+
 	this.game.surface.drawImage(image,
 		// スプライトの取得位置
 		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
 		// スプライトのサイズ
 		this.WIDTH,                this.HEIGHT,
-		// 自機のゲーム上の位置
+		// オブジェクトのゲーム上の位置
 		sprite_x,                  sprite_y,
-		// 自機のゲーム上のサイズ
+		// オブジェクトのゲーム上のサイズ
 		this.WIDTH,                this.HEIGHT
 	);
-
 	this.game.surface.restore();
 };
 
