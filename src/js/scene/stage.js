@@ -10,6 +10,7 @@ var BaseScene = require('./base');
 
 var Character = require('../object/character');
 var ShotManager = require('../manager/shot');
+var EnemyManager = require('../manager/enemy');
 
 // constructor
 var StageScene = function(game) {
@@ -23,6 +24,9 @@ var StageScene = function(game) {
 
 	// 自機の弾
 	this.shotmanager = new ShotManager(this);
+
+	// 敵
+	this.enemymanager = new EnemyManager(this);
 
 	// キー押下フラグ
 	this.keyflag = 0x0;
@@ -64,6 +68,9 @@ StageScene.prototype.init = function() {
 
 	// 自機弾を初期化
 	this.shotmanager.init();
+
+	// 敵を初期化
+	this.enemymanager.init();
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -127,7 +134,8 @@ StageScene.prototype.run = function(){
 	// 自機弾
 	this.shotmanager.run();
 
-
+	// 自機弾
+	this.enemymanager.run();
 };
 
 // 画面更新
@@ -143,6 +151,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 自機弾
 	this.shotmanager.updateDisplay();
+
+	// 敵
+	this.enemymanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
@@ -247,6 +258,5 @@ StageScene.prototype._showStageTitle = function() {
 	this.game.surface.fillRect( 100, 225, 280, 1 ) ;
 	this.game.surface.restore();
 } ;
-
 
 module.exports = StageScene;
