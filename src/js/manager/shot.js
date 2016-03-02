@@ -25,26 +25,11 @@ var ShotManager = function(scene) {
 	this.objects = {};
 
 	this.frame_count = 0;
-	// x座標(弾の中心)
-	this.x = 0;
-	// y座標(弾の中心)
-	this.y = 0;
 };
 
 // 基底クラスを継承
 //_.extend(ShotManager.prototype, BaseObject.prototype);
 //_.extend(ShotManager, BaseObject);
-
-// 自機のスプライトサイズ
-ShotManager.prototype.WIDTH  = 32;
-ShotManager.prototype.HEIGHT = 48;
-
-// 自機の移動速度
-ShotManager.prototype.SPEED = 4;
-
-// Nフレーム毎に自機をアニメーション
-ShotManager.prototype.ANIMATION_SPAN = 2;
-
 
 // 初期化
 ShotManager.prototype.init = function() {
@@ -56,6 +41,13 @@ ShotManager.prototype.create = function(character) {
 	var shot = this.factory.get();
 
 	this.objects[shot.id] = shot;
+};
+
+// 弾削除
+ShotManager.prototype.remove = function(id) {
+	delete this.objects[id];
+
+	this.factory.free(id);
 };
 
 // フレーム処理
@@ -98,6 +90,9 @@ var ShotFactory = function(manager) {
 
 	// 生成した弾
 	this.pool = [];
+
+	// 弾に付与する一意なID(連番)
+	this.incremental_id = 0;
 };
 
 // 基底クラスを継承
@@ -106,11 +101,16 @@ var ShotFactory = function(manager) {
 
 // 弾を生成
 ShotFactory.prototype.get = function() {
-	var shot = new Shot(this.stage);
+	this.incremental_id++;
+
+	var shot = new Shot(this.incremental_id, this.stage);
 	// 初期化
 	shot.init();
 
 	return shot;
 };
 
+// 弾を削除
+ShotFactory.prototype.free = function(id) {
 
+};

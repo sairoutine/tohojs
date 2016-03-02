@@ -15148,26 +15148,11 @@ var ShotManager = function(scene) {
 	this.objects = {};
 
 	this.frame_count = 0;
-	// x座標(弾の中心)
-	this.x = 0;
-	// y座標(弾の中心)
-	this.y = 0;
 };
 
 // 基底クラスを継承
 //_.extend(ShotManager.prototype, BaseObject.prototype);
 //_.extend(ShotManager, BaseObject);
-
-// 自機のスプライトサイズ
-ShotManager.prototype.WIDTH  = 32;
-ShotManager.prototype.HEIGHT = 48;
-
-// 自機の移動速度
-ShotManager.prototype.SPEED = 4;
-
-// Nフレーム毎に自機をアニメーション
-ShotManager.prototype.ANIMATION_SPAN = 2;
-
 
 // 初期化
 ShotManager.prototype.init = function() {
@@ -15179,6 +15164,13 @@ ShotManager.prototype.create = function(character) {
 	var shot = this.factory.get();
 
 	this.objects[shot.id] = shot;
+};
+
+// 弾削除
+ShotManager.prototype.remove = function(id) {
+	delete this.objects[id];
+
+	this.factory.free(id);
 };
 
 // フレーム処理
@@ -15221,6 +15213,9 @@ var ShotFactory = function(manager) {
 
 	// 生成した弾
 	this.pool = [];
+
+	// 弾に付与する一意なID(連番)
+	this.incremental_id = 0;
 };
 
 // 基底クラスを継承
@@ -15229,14 +15224,19 @@ var ShotFactory = function(manager) {
 
 // 弾を生成
 ShotFactory.prototype.get = function() {
-	var shot = new Shot(this.stage);
+	this.incremental_id++;
+
+	var shot = new Shot(this.incremental_id, this.stage);
 	// 初期化
 	shot.init();
 
 	return shot;
 };
 
+// 弾を削除
+ShotFactory.prototype.free = function(id) {
 
+};
 
 },{"../object/shot":7,"lodash":1}],5:[function(require,module,exports){
 'use strict';
@@ -15247,13 +15247,16 @@ ShotFactory.prototype.get = function() {
 var _ = require('lodash');
 
 // constructor
-var ObjectBase = function(scene) {
+var ObjectBase = function(id, scene) {
 	this.frame_count = 0;
 
 	// StageScene インスタンス
 	this.stage = scene;
 	// Game インスタンス
 	this.game = scene.game;
+
+	// オブジェクトを識別する一意なID
+	this.id = id;
 
 	// x座標(中心)
 	this.x = 0;
@@ -15317,7 +15320,7 @@ var _ = require('lodash');
 var BaseObject = require('./base');
 
 // constructor
-var Character = function(scene) {
+var Character = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
 };
@@ -15437,16 +15440,14 @@ var _ = require('lodash');
 var BaseObject = require('./base');
 
 // constructor
-var Shot = function(scene) {
+var Shot = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
 
 	// 弾を一意に特定するID
-	this.id = Math.random() * 1000; // TODO:
 
 	// 弾のスプライト上の位置
 	this.indexX = 3; this.indexY = 3; //TODO:
-
 };
 
 // 基底クラスを継承
@@ -15744,7 +15745,7 @@ var StageScene = function(game) {
 	// スコア
 	this.score = 0;
 	// 自機
-	this.character = new Character(this);
+	this.character = new Character(1, this); //TODO:
 
 	// 自機の弾
 	this.shotmanager = new ShotManager(this);

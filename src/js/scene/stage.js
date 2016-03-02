@@ -19,7 +19,7 @@ var StageScene = function(game) {
 	// スコア
 	this.score = 0;
 	// 自機
-	this.character = new Character(this);
+	this.character = new Character(1, this); //TODO:
 
 	// 自機の弾
 	this.shotmanager = new ShotManager(this);

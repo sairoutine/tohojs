@@ -9,7 +9,7 @@ var _ = require('lodash');
 var BaseObject = require('./base');
 
 // constructor
-var Character = function(scene) {
+var Character = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
 };

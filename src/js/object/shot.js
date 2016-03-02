@@ -9,16 +9,14 @@ var _ = require('lodash');
 var BaseObject = require('./base');
 
 // constructor
-var Shot = function(scene) {
+var Shot = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
 
 	// 弾を一意に特定するID
-	this.id = Math.random() * 1000; // TODO:
 
 	// 弾のスプライト上の位置
 	this.indexX = 3; this.indexY = 3; //TODO:
-
 };
 
 // 基底クラスを継承
