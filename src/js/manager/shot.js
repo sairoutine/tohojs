@@ -7,69 +7,44 @@ var _ = require('lodash');
 
 // 自機弾クラス
 var Shot = require('../object/shot');
+var BaseManager = require('./base');
 
 // constructor
 var ShotManager = function(scene) {
 	// 継承元new呼び出し
-	//BaseObject.apply(this, arguments);
-
-	// StageScene インスタンス
-	this.stage = scene;
-	// Game インスタンス
-	this.game = scene.game;
+	BaseManager.apply(this, arguments);
 
 	// 弾生成クラス
 	this.factory = new ShotFactory(this);
-
-	// 画面上の弾一覧
-	this.objects = {};
-
-	this.frame_count = 0;
 };
 
 // 基底クラスを継承
-//_.extend(ShotManager.prototype, BaseObject.prototype);
-//_.extend(ShotManager, BaseObject);
+_.extend(ShotManager.prototype, BaseManager.prototype);
+_.extend(ShotManager, BaseManager);
 
 // 初期化
 ShotManager.prototype.init = function() {
-	//BaseObject.prototype.init.apply(this, arguments);
+	BaseManager.prototype.init.apply(this, arguments);
 };
 
 // 弾生成
-ShotManager.prototype.create = function(character) {
-	var shot = this.factory.get();
-
-	this.objects[shot.id] = shot;
+ShotManager.prototype.create = function() {
+	BaseManager.prototype.create.apply(this, arguments);
 };
 
 // 弾削除
 ShotManager.prototype.remove = function(id) {
-	delete this.objects[id];
-
-	this.factory.free(id);
+	BaseManager.prototype.remove.apply(this, arguments);
 };
 
 // フレーム処理
 ShotManager.prototype.run = function(){
-	//BaseObject.prototype.run.apply(this, arguments);
-	this.frame_count++;
-
-	// 弾一覧
-	for(var id in this.objects) {
-		this.objects[id].run();
-	}
+	BaseManager.prototype.run.apply(this, arguments);
 };
 
 // 画面更新
 ShotManager.prototype.updateDisplay = function(){
-	//BaseObject.prototype.run.apply(this, arguments);
-
-	// 弾一覧
-	for(var id in this.objects) {
-		this.objects[id].updateDisplay();
-	}
-
+	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
 module.exports = ShotManager;
