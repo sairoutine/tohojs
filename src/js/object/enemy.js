@@ -93,7 +93,6 @@ Enemy.prototype.run = function(){
 
 	this.x += Math.floor(this.calc_moveX());
 	this.y += Math.floor(this.calc_moveY());
-	console.log(this);
 
 	// Nフレーム毎に敵をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
