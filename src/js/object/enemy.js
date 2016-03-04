@@ -59,7 +59,7 @@ Enemy.prototype.init = function(params) {
 			vector.r = params.v[i].v.r;
 
 			// ベクトルの角度(方向)
-			vector.theta = params.v[i].v.theta || 0;
+			vector.theta = params.v[i].v.theta || 90;
 
 			this.vectors.push(vector);
 		}
@@ -75,7 +75,7 @@ Enemy.prototype.init = function(params) {
 		vector.r = params.v.r;
 
 		// ベクトルの角度(方向)
-		vector.theta = params.v.theta || 0;
+		vector.theta = params.v.theta || 90;
 
 		this.vectors.push(vector) ;
 	}
@@ -86,11 +86,12 @@ Enemy.prototype.run = function(){
 	BaseObject.prototype.run.apply(this, arguments);
 
 	// 次の動き変更するか
-	if(this.vectors[ this.vector_index + 1] &&
-	   this.vectors[ this.vector_index + 1 ].count <= this.frame_count) {
+	if(this.vectors[this.vector_index + 1] &&
+	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
 		this.vector_index++;
 	}
 
+	// 敵を動かす
 	this.x += Math.floor(this.calc_moveX());
 	this.y += Math.floor(this.calc_moveY());
 
