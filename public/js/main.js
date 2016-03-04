@@ -14938,6 +14938,7 @@
 },{}],2:[function(require,module,exports){
 var __stage1EnemiesParams = [ ] ;
 
+/*
 // テスト敵
 __stage1EnemiesParams.push({
 	// 出現フレーム TODO: appear_frame
@@ -14957,8 +14958,8 @@ __stage1EnemiesParams.push({
 	// 動き
 	'v': { 'r': 0,  'theta': 90, 'w':    0, 'ra': 0, 'wa':     0 },
 });
+*/
 
-/*
 // dummy
 var __randomizer = {};
 __randomizer.random = function(){};
@@ -15022,7 +15023,6 @@ for( var i = 0; i < 6 ; i++ ) {
     }
   ) ;
 }
-
 for( var i = 0; i < 8 ; i++ ) {
   __stage1EnemiesParams.push(
     { 'count': 900 + i * ( 80 - i * 5 ),
@@ -15531,12 +15531,16 @@ for( var i = 0; i < 8 ; i++ ) {
     }
   ) ;
 }
-*/
 /*
 var __enemiesParams = [ ] ;
 __enemiesParams.push( __stage1EnemiesParams ) ;
 __enemiesParams.push( __stage2EnemiesParams ) ;
 */
+
+// 出現順にソート
+__stage1EnemiesParams.sort( function( a, b ) {
+	return a.count - b.count ;
+});
 
 module.exports = __stage1EnemiesParams;
 
@@ -15950,7 +15954,6 @@ EnemyManager.prototype.create = function() {
 	// 現在フレームに出現予定の敵を出現させる
 	while(this.enemies_params[ this.enemy_index ] &&
 		this.enemies_params[ this.enemy_index ].count === this.frame_count) {
-
 		var obj = this.factory.get(this.enemies_params[this.enemy_index]);
 		this.objects[obj.id] = obj;
 		this.enemy_index++ ;
@@ -16284,6 +16287,36 @@ Enemy.prototype.init = function(params) {
 			// ベクトルの角度(方向)
 			vector.theta = params.v[i].v.theta || 90;
 
+			// 加速度
+			vector.w = params.v[i].v.w || 0;
+
+			// 角度の加速度
+			vector.ra = params.v[i].v.ra || 0;
+
+			// 加速度の加速度
+			vector.wa = params.v[i].v.wa || 0;
+
+			// 角度の加速度の加速度
+			vector.raa = params.v[i].v.raa || 0;
+
+			// 加速度の加速度の加速度
+			vector.waa = params.v[i].v.waa || 0;
+
+			// 速度の最大値
+			vector.trange = params.v[i].v.trange || null;
+
+			// 角度の最大値
+			vector.rrange = params.v[i].v.rrange || null;
+
+			// 速度の加速度の最大値
+			vector.wrange = params.v[i].v.wrange || null;
+
+			// 角度の加速度の最大値
+			vector.rarange = params.v[i].v.rarange || null;
+
+			// 速度の加速度の加速度の最大値
+			vector.warange = params.v[i].v.warange || null;
+
 			this.vectors.push(vector);
 		}
 	}
@@ -16300,6 +16333,36 @@ Enemy.prototype.init = function(params) {
 		// ベクトルの角度(方向)
 		vector.theta = params.v.theta || 90;
 
+		// 加速度
+		vector.w = params.v.w || 0;
+
+		// 角度の加速度
+		vector.ra = params.v.ra || 0;
+
+		// 加速度の加速度
+		vector.wa = params.v.wa || 0;
+
+		// 角度の加速度の加速度
+		vector.raa = params.v.raa || 0;
+
+		// 加速度の加速度の加速度
+		vector.waa = params.v.waa || 0;
+
+		// 速度の最大値
+		vector.trange = params.v.trange || null;
+
+		// 角度の最大値
+		vector.rrange = params.v.rrange || null;
+
+		// 速度の加速度の最大値
+		vector.wrange = params.v.wrange || null;
+
+		// 角度の加速度の最大値
+		vector.rarange = params.v.rarange || null;
+
+		// 速度の加速度の加速度の最大値
+		vector.warange = params.v.warange || null;
+
 		this.vectors.push(vector) ;
 	}
 };
@@ -16315,8 +16378,22 @@ Enemy.prototype.run = function(){
 	}
 
 	// 敵を動かす
-	this.x += Math.floor(this.calc_moveX());
-	this.y += Math.floor(this.calc_moveY());
+	this.x += this.calc_moveX();
+	this.y += this.calc_moveY();
+
+	// 加速度を追加
+	this.vectors[this.vector_index].theta += this.vectors[this.vector_index].w;
+	this.vectors[this.vector_index].r     += this.vectors[this.vector_index].ra;
+	this.vectors[this.vector_index].w     += this.vectors[this.vector_index].wa;
+	this.vectors[this.vector_index].ra    += this.vectors[this.vector_index].raa;
+	this.vectors[this.vector_index].wa    += this.vectors[this.vector_index].waa;
+
+	// 最大値を超えないようにする
+	this.vectors[this.vector_index].theta = this._beInRange( this.vectors[this.vector_index].theta, this.vectors[this.vector_index].trange);
+	this.vectors[this.vector_index].r     = this._beInRange( this.vectors[this.vector_index].r,     this.vectors[this.vector_index].rrange);
+	this.vectors[this.vector_index].w     = this._beInRange( this.vectors[this.vector_index].w,     this.vectors[this.vector_index].wrange);
+	this.vectors[this.vector_index].ra    = this._beInRange( this.vectors[this.vector_index].ra,    this.vectors[this.vector_index].rarange);
+	this.vectors[this.vector_index].wa    = this._beInRange( this.vectors[this.vector_index].wa,    this.vectors[this.vector_index].warange);
 
 	// Nフレーム毎に敵をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
@@ -16327,6 +16404,22 @@ Enemy.prototype.run = function(){
 	}
 
 };
+
+Enemy.prototype._beInRange = function(value, range) {
+	if(range === null) {
+		return value;
+	}
+
+	if(range.max !== void 0 && value > range.max) {
+		value = range.max;
+	}
+
+	if(range.min !== void 0 && value < range.min) {
+		value = range.min;
+	}
+	return value;
+};
+
 
 Enemy.prototype._getRadian = function(){
 	var radian = this.vectors[this.vector_index].theta / 180 * Math.PI;

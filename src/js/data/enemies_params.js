@@ -1,5 +1,6 @@
 var __stage1EnemiesParams = [ ] ;
 
+/*
 // テスト敵
 __stage1EnemiesParams.push({
 	// 出現フレーム TODO: appear_frame
@@ -19,8 +20,8 @@ __stage1EnemiesParams.push({
 	// 動き
 	'v': { 'r': 0,  'theta': 90, 'w':    0, 'ra': 0, 'wa':     0 },
 });
+*/
 
-/*
 // dummy
 var __randomizer = {};
 __randomizer.random = function(){};
@@ -84,7 +85,6 @@ for( var i = 0; i < 6 ; i++ ) {
     }
   ) ;
 }
-
 for( var i = 0; i < 8 ; i++ ) {
   __stage1EnemiesParams.push(
     { 'count': 900 + i * ( 80 - i * 5 ),
@@ -593,11 +593,15 @@ for( var i = 0; i < 8 ; i++ ) {
     }
   ) ;
 }
-*/
 /*
 var __enemiesParams = [ ] ;
 __enemiesParams.push( __stage1EnemiesParams ) ;
 __enemiesParams.push( __stage2EnemiesParams ) ;
 */
+
+// 出現順にソート
+__stage1EnemiesParams.sort( function( a, b ) {
+	return a.count - b.count ;
+});
 
 module.exports = __stage1EnemiesParams;

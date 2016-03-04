@@ -45,7 +45,6 @@ EnemyManager.prototype.create = function() {
 	// 現在フレームに出現予定の敵を出現させる
 	while(this.enemies_params[ this.enemy_index ] &&
 		this.enemies_params[ this.enemy_index ].count === this.frame_count) {
-
 		var obj = this.factory.get(this.enemies_params[this.enemy_index]);
 		this.objects[obj.id] = obj;
 		this.enemy_index++ ;
