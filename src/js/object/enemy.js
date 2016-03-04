@@ -61,6 +61,21 @@ Enemy.prototype.init = function(params) {
 			// ベクトルの角度(方向)
 			vector.theta = params.v[i].v.theta || 90;
 
+			// 加速度
+			vector.w = params.v[i].v.w || 0;
+
+			// 角度の加速度
+			vector.ra = params.v[i].v.ra || 0;
+
+			// 加速度の加速度
+			vector.wa = params.v[i].v.wa || 0;
+
+			// 角度の加速度の加速度
+			vector.raa = params.v[i].v.raa || 0;
+
+			// 加速度の加速度の加速度
+			vector.waa = params.v[i].v.waa || 0;
+
 			this.vectors.push(vector);
 		}
 	}
@@ -76,6 +91,21 @@ Enemy.prototype.init = function(params) {
 
 		// ベクトルの角度(方向)
 		vector.theta = params.v.theta || 90;
+
+		// 加速度
+		vector.w = params.v.w || 0;
+
+		// 角度の加速度
+		vector.ra = params.v.ra || 0;
+
+		// 加速度の加速度
+		vector.wa = params.v.wa || 0;
+
+		// 角度の加速度の加速度
+		vector.raa = params.v.raa || 0;
+
+		// 加速度の加速度の加速度
+		vector.waa = params.v.waa || 0;
 
 		this.vectors.push(vector) ;
 	}
@@ -94,6 +124,13 @@ Enemy.prototype.run = function(){
 	// 敵を動かす
 	this.x += Math.floor(this.calc_moveX());
 	this.y += Math.floor(this.calc_moveY());
+
+	// 加速度を追加
+	this.vectors[this.vector_index].theta += this.vectors[this.vector_index].w;
+	this.vectors[this.vector_index].r     += this.vectors[this.vector_index].ra;
+	this.vectors[this.vector_index].w     += this.vectors[this.vector_index].wa;
+	this.vectors[this.vector_index].ra    += this.vectors[this.vector_index].raa;
+	this.vectors[this.vector_index].wa    += this.vectors[this.vector_index].waa;
 
 	// Nフレーム毎に敵をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
