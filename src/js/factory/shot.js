@@ -8,24 +8,18 @@ var _ = require('lodash');
 // 自機弾クラス
 var Shot = require('../object/shot');
 
+// 基底クラス
+var BaseFactory = require('./base');
+
 // constructor
 var ShotFactory = function(manager) {
 	// 継承元new呼び出し
-	//BaseObject.apply(this, arguments);
-
-	// ステージシーン
-	this.stage = manager.stage;
-
-	// 生成した弾
-	this.pool = [];
-
-	// 弾に付与する一意なID(連番)
-	this.incremental_id = 0;
+	BaseFactory.apply(this, arguments);
 };
 
 // 基底クラスを継承
-//_.extend(ShotManager.prototype, BaseObject.prototype);
-//_.extend(ShotManager, BaseObject);
+_.extend(ShotFactory.prototype, BaseFactory.prototype);
+_.extend(ShotFactory, BaseFactory);
 
 // 弾を生成
 ShotFactory.prototype.get = function() {
