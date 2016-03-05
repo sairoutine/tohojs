@@ -41,16 +41,22 @@ Enemy.prototype.init = function(params) {
 	// 敵の体力
 	this.vital = params.vital;
 
+	// 敵の撃つ弾の設定
+	this.shots = params.s;
+	// どの弾を撃つ設定を適用するか
+	this.shotCountIndex = 0;
+
 	// 敵の動き(ベクトル)
 	this.vectors = [];
 
 	// どの動きを適用してるか
 	this.vector_index = 0;
 
+	var vector;
 	// 敵設定に動きが複数設定されている場合
 	if(params.v && params.v instanceof Array) {
 		for( var i = 0; i < params.v.length; i++ ) {
-			var vector = {};
+			vector = {};
 
 			// どのフレームからこの動きを適用するか
 			vector.count = params.v[i].count;
@@ -96,7 +102,7 @@ Enemy.prototype.init = function(params) {
 	}
 	// 敵設定に動きが一つ設定されている場合
 	else if (params.v) {
-		var vector = {};
+		vector = {};
 
 		// どのフレームからこの動きを適用するか
 		vector.count = 0;
@@ -145,7 +151,7 @@ Enemy.prototype.init = function(params) {
 Enemy.prototype.run = function(){
 	BaseObject.prototype.run.apply(this, arguments);
 
-	// 次の動き変更するか
+	// 次の動きに変更するか
 	if(this.vectors[this.vector_index + 1] &&
 	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
 		this.vector_index++;
@@ -168,6 +174,9 @@ Enemy.prototype.run = function(){
 	this.vectors[this.vector_index].w     = this._beInRange( this.vectors[this.vector_index].w,     this.vectors[this.vector_index].wrange);
 	this.vectors[this.vector_index].ra    = this._beInRange( this.vectors[this.vector_index].ra,    this.vectors[this.vector_index].rarange);
 	this.vectors[this.vector_index].wa    = this._beInRange( this.vectors[this.vector_index].wa,    this.vectors[this.vector_index].warange);
+
+	// 弾を撃つ
+	this.shot();
 
 	// Nフレーム毎に敵をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
@@ -201,15 +210,31 @@ Enemy.prototype._getRadian = function(){
 };
 
 
+// X軸の移動を計算
 Enemy.prototype.calc_moveX = function() {
 	var move_x = this.vectors[this.vector_index].r * Math.cos(this._getRadian());
 	return move_x;
 };
 
-
+// Y軸の移動を計算
 Enemy.prototype.calc_moveY = function() {
 	var move_y = this.vectors[this.vector_index].r * Math.sin(this._getRadian());
 	return move_y;
 } ;
+
+// 弾を撃つ
+Enemy.prototype.shot = function(){
+	if(!this.shots) {
+		return;
+	}
+
+	if(this.shots.shotCount[ this.shotCountIndex ] &&
+	   this.shots.shotCount[ this.shotCountIndex ] <= this.frame_count) {
+		this.shotCountIndex++;
+		//this.stage.bulletmanager.create(this.shots);
+		this.game.playSound('shot');
+	}
+};
+
 
 module.exports = Enemy;
