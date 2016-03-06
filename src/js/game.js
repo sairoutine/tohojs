@@ -57,6 +57,7 @@ Game.prototype.IMAGES = {
 	reimu:     'image/reimu.png',
 	shot:      'image/shot.png',
 	enemy:     'image/enemy.png',
+	bullet:    'image/bullet.png',
 };
 
 // ゲームに必要なSE一覧
