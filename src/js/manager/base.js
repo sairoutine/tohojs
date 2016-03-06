@@ -30,8 +30,8 @@ BaseManager.prototype.init = function() {
 };
 
 // オブジェクト生成
-BaseManager.prototype.create = function() {
-	var obj = this.factory.get();
+BaseManager.prototype.create = function(params) {
+	var obj = this.factory.get(params);
 
 	this.objects[obj.id] = obj;
 };
