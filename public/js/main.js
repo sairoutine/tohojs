@@ -14936,6 +14936,961 @@
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
+var DanmakuHelper = require('./danmaku_helper');
+
+var __danmakuHelper = new DanmakuHelper( ) ;
+
+var __enemyBulletsParams = [
+  [
+    {
+      'v': { 'r': 5, 'theta': 165, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 135, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 105, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  75, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  45, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  15, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+  ],
+  [
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta':  0, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 3 } },
+    },
+  ],
+  [
+    {
+      'v': { 'r': 5, 'theta':   0, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  23, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  45, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  68, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  90, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 113, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 135, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 158, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 180, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 203, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 225, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 248, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 270, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 293, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 315, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 338, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+  ],
+  // TODO: simplify
+  [
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':   0, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':   5, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  10, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  15, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  20, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  45, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  50, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  55, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  60, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  65, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  90, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  95, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 100, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 105, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 110, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 135, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 140, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 145, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 150, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 155, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 180, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 185, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 190, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 195, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 200, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 225, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 230, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 235, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 240, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 245, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 270, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 275, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 280, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 285, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 290, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 315, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count':  5, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 320, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 10, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 325, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 15, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 330, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 20, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 335, 'w': 0, 'ra':  0, 'wa': 0 } },
+        { 'count': 25, 'v': { 'r': 0,               'w': 0, 'ra':0.1, 'wa': 0, 'rrange': { 'max': 3 } } },
+      ]
+    },
+  ],
+  [
+    {
+      'v': { 'r': 5, 'theta':  12, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  35, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  57, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta':  80, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 102, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 125, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 147, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 170, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 192, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 215, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 237, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 260, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 282, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 305, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 327, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+    {
+      'v': { 'r': 5, 'theta': 350, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
+    },
+  ],
+  [
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta':-10, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 3 } },
+    },
+  ],
+  [
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta':  0, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 3 } },
+    },
+  ],
+  [
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta': 10, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 3 } },
+    },
+  ],
+  [
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  30, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  35, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  40, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  45, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  50, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.4 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  55, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.5 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  60, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.6 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  65, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.7 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  70, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.8 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  75, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.9 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  80, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.0 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  85, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  90, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  95, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 100, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.4 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 105, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.5 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 110, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.6 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 115, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.7 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 120, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.8 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 125, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.9 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 130, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.0 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 135, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 140, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 145, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 150, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.4 } } },
+      ]
+    },
+  ],
+  [
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':   0, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  10, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  20, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.4 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  30, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.6 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  40, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.8 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  50, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.0 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  60, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  70, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.4 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  80, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.6 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  90, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.8 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 100, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.0 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 110, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.2 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 120, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.4 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 130, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.6 } } },
+      ]
+    },
+  ],
+  [
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 175, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 165, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 155, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.5 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 145, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.7 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 135, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 3.9 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 125, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 115, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta': 105, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.5 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  95, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.7 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  85, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 4.9 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  75, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.1 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  65, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.3 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  55, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.5 } } },
+      ]
+    },
+    {
+      'v': [
+        { 'count':  0, 'v': { 'r': 0, 'theta':  45, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': 0.01, 'rrange': { 'max': 5.7 } } },
+      ]
+    },
+  ],
+  [
+    {
+      'laser': true,
+      'waitCount': 40,
+      'keep': 150,
+      'v': { 'r': 0, 'theta': 180, 'w': -0.01, 'ra':0, 'wa': -0.01, 'trange': { 'min': 110 } },
+    },
+    {
+      'laser': true,
+      'waitCount': 40,
+      'keep': 150,
+      'v': { 'r': 0, 'theta':   0, 'w':  0.01, 'ra':0, 'wa':  0.01, 'trange': { 'max':  70 } },
+    },
+  ],
+  [
+    {
+      'v': { 'r': 5, 'theta':   0, 'w': 0, 'ra': 0, 'wa': 0, 'rrandom': { 'min': 4, 'max': 5 }, 'trandom': { 'min': 0, 'max': 360 } },
+    },
+  ],
+  [
+    {
+      'v': { 'r': 3, 'theta':  45, 'w': 0, 'ra': 0, 'wa': 0, 'raa': 0 },
+    },
+    {
+      'v': { 'r': 3, 'theta': 135, 'w': 0, 'ra': 0, 'wa': 0, 'raa': 0 },
+    },
+    {
+      'v': { 'r': 3, 'theta': 225, 'w': 0, 'ra': 0, 'wa': 0, 'raa': 0 },
+    },
+    {
+      'v': { 'r': 3, 'theta': 315, 'w': 0, 'ra': 0, 'wa': 0, 'raa': 0 },
+    },
+  ],
+  __danmakuHelper.daiYousei1( ),
+  __danmakuHelper.daiYousei2( ),
+  __danmakuHelper.chilno1( ),
+  [
+    {
+      'v': { 'r': 2, 'theta':   0, 'w': 0, 'ra': 0, 'wa': 0, 'rrandom': { 'min': 2, 'max': 3 }, 'trandom': { 'min': 0, 'max': 360 },
+             'g': { 'r': 0, 'theta': 90, 'ra': 0.05 }
+           },
+    },
+  ],
+  __danmakuHelper.chilno2( ),
+  [
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta':-15, 'w': 0 },
+    },
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta': -5, 'w': 0 },
+    },
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta':  5, 'w': 0 },
+    },
+    {
+      'v': { 'aimed': true, 'r': 5, 'theta': 15, 'w': 0 },
+    },
+  ],
+  [
+    {
+      'beam': true,
+      'v': { 'rrandom': { 'min': 4, 'max': 6 }, 'trandom': { 'min': 180, 'max': 200 },
+             'g': { 'r': 0, 'theta': 90, 'ra': 0.3 }
+           },
+    },
+    {
+      'beam': true,
+      'v': { 'rrandom': { 'min': 4, 'max': 6 }, 'trandom': { 'min': 225, 'max': 245 },
+             'g': { 'r': 0, 'theta': 90, 'ra': 0.3 }
+           },
+    },
+    {
+      'beam': true,
+      'v': { 'rrandom': { 'min': 4, 'max': 6 }, 'trandom': { 'min': 270, 'max': 290 },
+             'g': { 'r': 0, 'theta': 90, 'ra': 0.3 }
+           },
+    },
+    {
+      'beam': true,
+      'v': { 'rrandom': { 'min': 4, 'max': 6 }, 'trandom': { 'min': 340, 'max': 360 },
+             'g': { 'r': 0, 'theta': 90, 'ra': 0.3 }
+           },
+    },
+  ],
+] ;
+
+
+var __enemyBulletTypes = [
+  {
+    'indexX':          15,
+    'indexY':           3,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':  10,
+    'collisionHeight': 10
+  },
+  {
+    'indexX':           2,
+    'indexY':           3,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':  10,
+    'collisionHeight': 10
+  },
+  {
+    'indexX':           8,
+    'indexY':           3,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':  10,
+    'collisionHeight': 10
+  },
+  {
+    'indexX':           6,
+    'indexY':           3,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':  10,
+    'collisionHeight': 10
+  },
+  {
+    'indexX':           7,
+    'indexY':           3,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':  10,
+    'collisionHeight': 10
+  },
+  {
+    'indexX':          13,
+    'indexY':           4,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':   5,
+    'collisionHeight':  5,
+    'rotate':        true,
+  },
+  {
+    'indexX':          10,
+    'indexY':           4,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':   5,
+    'collisionHeight':  5,
+    'rotate':        true,
+  },
+  {
+    'indexX':           7,
+    'indexY':           4,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':   5,
+    'collisionHeight':  5,
+    'rotate':        true,
+  },
+  {
+    'indexX':           1,
+    'indexY':           5,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':   5,
+    'collisionHeight':  5,
+    'rotate':        true,
+  },
+  {
+    'indexX':           9,
+    'indexY':           5,
+    'width':           16,
+    'height':          16,
+    'collisionWidth':   5,
+    'collisionHeight':  5,
+    'rotate':        true,
+  },
+] ;
+
+module.exports = __enemyBulletsParams;
+
+},{"./danmaku_helper":3}],3:[function(require,module,exports){
+"use strict";
+
+function DanmakuHelper( ) {
+
+}
+
+DanmakuHelper.prototype._calculateRadian = function( theta ) {
+  return theta * Math.PI / 180 ;
+} ;
+
+
+DanmakuHelper.prototype._calculateTheta = function( radian ) {
+  return parseInt( radian * 180 / Math.PI ) ;
+} ;
+
+
+DanmakuHelper.prototype.daiYousei1 = function( ) {
+  var array = [ ] ;
+  var r = 30 ;
+  for( var i = 0; i < 36; i++ ) {
+    var count = i * 1 ;
+    var t = ( ( i * 10 ) + 90 ) % 360 ;
+    var v = { 'x': r * Math.cos( this._calculateRadian( t ) ),
+              'y': r * Math.sin( this._calculateRadian( t ) ),
+              'count': i * 1,
+              'v': { 'r': 2 + ( i / 50 ), 'theta': t }
+            } ;
+    array.push( v ) ;
+  }
+  return array ;
+} ;
+
+
+DanmakuHelper.prototype.daiYousei2 = function( ) {
+  var array = [ ] ;
+  var r = 30 ;
+  for( var i = 0; i < 36; i++ ) {
+    var count = i * 1 ;
+    var t = ( ( i * -10 ) + 450 ) % 360 ;
+    var v = { 'x': r * Math.cos( this._calculateRadian( t ) ),
+              'y': r * Math.sin( this._calculateRadian( t ) ),
+              'count': count,
+              'v': { 'r': 2 + ( i / 50 ), 'theta': t }
+            } ;
+    array.push( v ) ;
+  }
+  return array ;
+} ;
+
+
+DanmakuHelper.prototype.chilno1 = function( ) {
+  var array = [ ] ;
+  var r = 50 ;
+  var r2 = 100 ;
+  var points = [ ] ;
+  var span = 10 ;
+  var i;
+  for(i = 0; i < 5; i++ ) {
+    points[ i ] = ( 126 + 144 * i ) % 360 ;
+  }
+  for(i = 0; i < 5; i++ ) {
+    var t1 = points[ i ] ;
+    var t2 = points[ ( i + 1 ) % 5 ] ;
+    var x1 = r * Math.cos( this._calculateRadian( t1 ) ) ;
+    var y1 = r * Math.sin( this._calculateRadian( t1 ) ) ;
+    var x2 = r * Math.cos( this._calculateRadian( t2 ) ) ;
+    var y2 = r * Math.sin( this._calculateRadian( t2 ) ) ;
+    for( var j = 0; j < span; j++ ) {
+      var count = ( j + i * span ) ;
+      var x = x1 + ( x2 - x1 ) / span * j ;
+      var y = y1 + ( y2 - y1 ) / span * j ;
+      var t = this._calculateTheta( Math.atan2( y, x ) ) ;
+      for( var k = 0; k < 5; k++ ) {
+        var at = points[ k ] ;
+        var ax = x + r2 * Math.cos( this._calculateRadian( at ) ) ;
+        var ay = y + r2 * Math.sin( this._calculateRadian( at ) ) ;
+        var v = { 'x': ax,
+                  'y': ay,
+                  'count': count,
+                  'v': [
+                    { 'count': 0,            'v': { 'r': 0, 'theta': t, } },
+                    { 'count': span*6-count, 'v': { 'r': 2, 'w': 0 } }
+                  ]
+                } ;
+        array.push( v ) ;
+      }
+    }
+  }
+  return array ;
+} ;
+
+
+DanmakuHelper.prototype.chilno2 = function( ) {
+  var array = [ ] ;
+  for( var i = 0; i < 200; i++ ) {
+    var count = i * 1 ;
+    var v = {
+              'count': count,
+              'v': [
+                { 'count': 0,
+                  'v': { 'r': 5, 'theta':   0, 'w': 0, 'ra': -0.01, 'wa': 0, 'rrandom': { 'min': 4, 'max': 5 }, 'rrange': { 'min': 2 }, 'trandom': { 'min': 0, 'max': 360 } },
+                },
+                { 'count': 200 - count,
+                  'v': { 'r': 0 },
+                },
+                { 'count': 400 - count,
+                  'v': { 'r': 1, 'theta':   0, 'w': 0, 'ra': 0.02, 'wa': 0, 'trandom': { 'min': 0, 'max': 360 } },
+                },
+              ]
+            } ;
+    array.push( v ) ;
+  }
+  return array ;
+} ;
+
+module.exports = DanmakuHelper;
+
+},{}],4:[function(require,module,exports){
 var __stage1EnemiesParams = [ ] ;
 
 /*
@@ -15544,7 +16499,80 @@ __stage1EnemiesParams.sort( function( a, b ) {
 
 module.exports = __stage1EnemiesParams;
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+'use strict';
+
+/* オブジェクトの生成をする基底クラス */
+
+// lodash
+var _ = require('lodash');
+
+// constructor
+var BaseFactory = function(manager) {
+	// ステージシーン
+	this.stage = manager.stage;
+
+	// 生成したオブジェクト
+	this.pool = [];
+
+	// オブジェクトに付与する一意なID(連番)
+	this.incremental_id = 0;
+};
+
+// オブジェクトを生成
+BaseFactory.prototype.get = function(params) {
+	console.error('get method must be overridden');
+};
+
+// オブジェクトを削除
+BaseFactory.prototype.free = function(id) {
+	console.error('get method must be overridden');
+};
+
+module.exports = BaseFactory;
+
+},{"lodash":1}],6:[function(require,module,exports){
+'use strict';
+
+/* 自機の弾を生成するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// 自機弾クラス
+var Bullet = require('../object/bullet');
+
+// 基底クラス
+var BaseFactory = require('./base');
+
+// constructor
+var BulletFactory = function(manager) {
+	// 継承元new呼び出し
+	BaseFactory.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(BulletFactory.prototype, BaseFactory.prototype);
+_.extend(BulletFactory, BaseFactory);
+
+// 弾を生成
+BulletFactory.prototype.get = function(enemy, params) {
+	this.incremental_id++;
+	var bullet = new Bullet(this.incremental_id, this.stage);
+	// 初期化
+	bullet.init(enemy, params);
+
+	return bullet;
+};
+
+// 弾を削除
+BulletFactory.prototype.free = function(id) {
+
+};
+
+module.exports = BulletFactory;
+
+},{"../object/bullet":16,"./base":5,"lodash":1}],7:[function(require,module,exports){
 'use strict';
 
 /* 敵を生成するクラス */
@@ -15555,24 +16583,18 @@ var _ = require('lodash');
 // 敵クラス
 var Enemy = require('../object/enemy');
 
+// 基底クラス
+var BaseFactory = require('./base');
+
 // constructor
 var EnemyFactory = function(manager) {
 	// 継承元new呼び出し
-	//BaseObject.apply(this, arguments);
-
-	// ステージシーン
-	this.stage = manager.stage;
-
-	// 生成した敵
-	this.pool = [];
-
-	// 敵に付与する一意なID(連番)
-	this.incremental_id = 0;
+	BaseFactory.apply(this, arguments);
 };
 
 // 基底クラスを継承
-//_.extend(EnemyManager.prototype, BaseObject.prototype);
-//_.extend(EnemyManager, BaseObject);
+_.extend(EnemyFactory.prototype, BaseFactory.prototype);
+_.extend(EnemyFactory, BaseFactory);
 
 // 敵を生成
 EnemyFactory.prototype.get = function(params) {
@@ -15592,7 +16614,7 @@ EnemyFactory.prototype.free = function(id) {
 
 module.exports = EnemyFactory;
 
-},{"../object/enemy":12,"lodash":1}],4:[function(require,module,exports){
+},{"../object/enemy":18,"./base":5,"lodash":1}],8:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を生成するクラス */
@@ -15603,24 +16625,18 @@ var _ = require('lodash');
 // 自機弾クラス
 var Shot = require('../object/shot');
 
+// 基底クラス
+var BaseFactory = require('./base');
+
 // constructor
 var ShotFactory = function(manager) {
 	// 継承元new呼び出し
-	//BaseObject.apply(this, arguments);
-
-	// ステージシーン
-	this.stage = manager.stage;
-
-	// 生成した弾
-	this.pool = [];
-
-	// 弾に付与する一意なID(連番)
-	this.incremental_id = 0;
+	BaseFactory.apply(this, arguments);
 };
 
 // 基底クラスを継承
-//_.extend(ShotManager.prototype, BaseObject.prototype);
-//_.extend(ShotManager, BaseObject);
+_.extend(ShotFactory.prototype, BaseFactory.prototype);
+_.extend(ShotFactory, BaseFactory);
 
 // 弾を生成
 ShotFactory.prototype.get = function() {
@@ -15640,7 +16656,7 @@ ShotFactory.prototype.free = function(id) {
 
 module.exports = ShotFactory;
 
-},{"../object/shot":13,"lodash":1}],5:[function(require,module,exports){
+},{"../object/shot":19,"./base":5,"lodash":1}],9:[function(require,module,exports){
 'use strict';
 
 var LoadingScene = require('./scene/loading');
@@ -15700,6 +16716,7 @@ Game.prototype.IMAGES = {
 	reimu:     'image/reimu.png',
 	shot:      'image/shot.png',
 	enemy:     'image/enemy.png',
+	bullet:    'image/bullet.png',
 };
 
 // ゲームに必要なSE一覧
@@ -15819,7 +16836,7 @@ Game.prototype.notifyOpeningDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":15,"./scene/opening":16,"./scene/stage":17}],6:[function(require,module,exports){
+},{"./scene/loading":22,"./scene/opening":23,"./scene/stage":24}],10:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -15838,7 +16855,7 @@ window.onload = function() {
 };
 
 
-},{"./game":5}],7:[function(require,module,exports){
+},{"./game":9}],11:[function(require,module,exports){
 'use strict';
 
 // lodash
@@ -15871,8 +16888,8 @@ BaseManager.prototype.init = function() {
 };
 
 // オブジェクト生成
-BaseManager.prototype.create = function() {
-	var obj = this.factory.get();
+BaseManager.prototype.create = function(params) {
+	var obj = this.factory.get(params);
 
 	this.objects[obj.id] = obj;
 };
@@ -15906,7 +16923,70 @@ BaseManager.prototype.updateDisplay = function(){
 module.exports = BaseManager;
 
 
-},{"lodash":1}],8:[function(require,module,exports){
+},{"lodash":1}],12:[function(require,module,exports){
+'use strict';
+
+/* 敵の弾を管理するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// 弾を生成するクラス
+var BulletFactory = require('../factory/bullet');
+// 弾のデータ
+var bullets_params = require('../data/bullets_params');
+
+// 基底クラス
+var BaseManager = require('./base');
+
+// constructor
+var BulletManager = function(scene) {
+	// 継承元new呼び出し
+	BaseManager.apply(this, arguments);
+
+	// 弾生成クラス
+	this.factory = new BulletFactory(this);
+
+	this.bullets_params = bullets_params;
+};
+
+// 基底クラスを継承
+_.extend(BulletManager.prototype, BaseManager.prototype);
+_.extend(BulletManager, BaseManager);
+
+// 初期化
+BulletManager.prototype.init = function() {
+	BaseManager.prototype.init.apply(this, arguments);
+};
+
+// 弾生成
+BulletManager.prototype.create = function(enemy) {
+	for( var i = 0; i < this.bullets_params[ enemy.shots.bullet ].length; i++ ) {
+		// 敵弾生成
+		var bullet = this.factory.get(this.bullets_params[ enemy.shots.bullet ][i], enemy);
+
+		this.objects[bullet.id] = bullet;
+	}
+};
+
+// 弾削除
+BulletManager.prototype.remove = function(id) {
+	BaseManager.prototype.remove.apply(this, arguments);
+};
+
+// フレーム処理
+BulletManager.prototype.run = function(){
+	BaseManager.prototype.run.apply(this, arguments);
+};
+
+// 画面更新
+BulletManager.prototype.updateDisplay = function(){
+	BaseManager.prototype.updateDisplay.apply(this, arguments);
+};
+
+module.exports = BulletManager;
+
+},{"../data/bullets_params":2,"../factory/bullet":6,"./base":11,"lodash":1}],13:[function(require,module,exports){
 'use strict';
 
 /* 敵を管理するクラス */
@@ -15980,7 +17060,7 @@ EnemyManager.prototype.updateDisplay = function(){
 
 module.exports = EnemyManager;
 
-},{"../data/enemies_params":2,"../factory/enemy":3,"./base":7,"lodash":1}],9:[function(require,module,exports){
+},{"../data/enemies_params":4,"../factory/enemy":7,"./base":11,"lodash":1}],14:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を管理するクラス */
@@ -16033,7 +17113,7 @@ ShotManager.prototype.updateDisplay = function(){
 
 module.exports = ShotManager;
 
-},{"../factory/shot":4,"./base":7,"lodash":1}],10:[function(require,module,exports){
+},{"../factory/shot":8,"./base":11,"lodash":1}],15:[function(require,module,exports){
 'use strict';
 
 /* オブジェクトの基底クラス */
@@ -16103,7 +17183,56 @@ ObjectBase.prototype.updateDisplay = function(){
 
 module.exports = ObjectBase;
 
-},{"lodash":1}],11:[function(require,module,exports){
+},{"lodash":1}],16:[function(require,module,exports){
+'use strict';
+
+/* 敵弾オブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var VectorBaseObject = require('./vector_base');
+
+// constructor
+var Bullet = function(id, scene) {
+	// 継承元new呼び出し
+	VectorBaseObject.apply(this, arguments);
+
+	// 弾のスプライト上の位置
+	this.indexX = 3; this.indexY = 3; //TODO:
+};
+
+// 基底クラスを継承
+_.extend(Bullet.prototype, VectorBaseObject.prototype);
+_.extend(Bullet, VectorBaseObject);
+
+// 敵弾のスプライトサイズ
+Bullet.prototype.WIDTH  = 16;
+Bullet.prototype.HEIGHT = 16;
+
+// 敵弾画像
+Bullet.prototype.IMAGE_KEY = 'bullet';
+
+// 初期化
+Bullet.prototype.init = function(params, enemy) {
+	// ベクトルの初期化
+	VectorBaseObject.prototype.init.apply(this, arguments);
+
+	// 弾の初期位置は敵の位置
+	this.x = enemy.x;
+	this.y = enemy.y;
+};
+
+// フレーム処理
+Bullet.prototype.run = function(){
+	// ベクトルに従って移動
+	VectorBaseObject.prototype.run.apply(this, arguments);
+};
+
+module.exports = Bullet;
+
+},{"./vector_base":20,"lodash":1}],17:[function(require,module,exports){
 'use strict';
 
 /* 自機オブジェクト */
@@ -16223,7 +17352,7 @@ Character.prototype.run = function(){
 
 module.exports = Character;
 
-},{"./base":10,"lodash":1}],12:[function(require,module,exports){
+},{"./base":15,"lodash":1}],18:[function(require,module,exports){
 'use strict';
 
 /* 敵オブジェクト */
@@ -16232,20 +17361,20 @@ module.exports = Character;
 var _ = require('lodash');
 
 // 基底クラス
-var BaseObject = require('./base');
+var VectorBaseObject = require('./vector_base');
 
 // constructor
 var Enemy = function(id, scene) {
 	// 継承元new呼び出し
-	BaseObject.apply(this, arguments);
+	VectorBaseObject.apply(this, arguments);
 
 	// 敵のスプライト上の位置
 	this.indexX = 0; this.indexY = 0; //TODO:
 };
 
 // 基底クラスを継承
-_.extend(Enemy.prototype, BaseObject.prototype);
-_.extend(Enemy, BaseObject);
+_.extend(Enemy.prototype, VectorBaseObject.prototype);
+_.extend(Enemy, VectorBaseObject);
 
 // 敵のスプライトサイズ
 Enemy.prototype.WIDTH = 32 ;
@@ -16258,7 +17387,8 @@ Enemy.prototype.ANIMATION_SPAN = 5;
 
 // 初期化
 Enemy.prototype.init = function(params) {
-	BaseObject.prototype.init.apply(this, arguments);
+	// ベクトルを設定
+	VectorBaseObject.prototype.init.apply(this, arguments);
 
 	// 敵の初期位置
 	this.x = params.x || 0;
@@ -16267,133 +17397,19 @@ Enemy.prototype.init = function(params) {
 	// 敵の体力
 	this.vital = params.vital;
 
-	// 敵の動き(ベクトル)
-	this.vectors = [];
-
-	// どの動きを適用してるか
-	this.vector_index = 0;
-
-	// 敵設定に動きが複数設定されている場合
-	if(params.v && params.v instanceof Array) {
-		for( var i = 0; i < params.v.length; i++ ) {
-			var vector = {};
-
-			// どのフレームからこの動きを適用するか
-			vector.count = params.v[i].count;
-
-			// ベクトルの大きさ(速度)
-			vector.r = params.v[i].v.r;
-
-			// ベクトルの角度(方向)
-			vector.theta = params.v[i].v.theta || 90;
-
-			// 加速度
-			vector.w = params.v[i].v.w || 0;
-
-			// 角度の加速度
-			vector.ra = params.v[i].v.ra || 0;
-
-			// 加速度の加速度
-			vector.wa = params.v[i].v.wa || 0;
-
-			// 角度の加速度の加速度
-			vector.raa = params.v[i].v.raa || 0;
-
-			// 加速度の加速度の加速度
-			vector.waa = params.v[i].v.waa || 0;
-
-			// 速度の最大値
-			vector.trange = params.v[i].v.trange || null;
-
-			// 角度の最大値
-			vector.rrange = params.v[i].v.rrange || null;
-
-			// 速度の加速度の最大値
-			vector.wrange = params.v[i].v.wrange || null;
-
-			// 角度の加速度の最大値
-			vector.rarange = params.v[i].v.rarange || null;
-
-			// 速度の加速度の加速度の最大値
-			vector.warange = params.v[i].v.warange || null;
-
-			this.vectors.push(vector);
-		}
-	}
-	// 敵設定に動きが一つ設定されている場合
-	else if (params.v) {
-		var vector = {};
-
-		// どのフレームからこの動きを適用するか
-		vector.count = 0;
-
-		// ベクトルの大きさ(速度)
-		vector.r = params.v.r;
-
-		// ベクトルの角度(方向)
-		vector.theta = params.v.theta || 90;
-
-		// 加速度
-		vector.w = params.v.w || 0;
-
-		// 角度の加速度
-		vector.ra = params.v.ra || 0;
-
-		// 加速度の加速度
-		vector.wa = params.v.wa || 0;
-
-		// 角度の加速度の加速度
-		vector.raa = params.v.raa || 0;
-
-		// 加速度の加速度の加速度
-		vector.waa = params.v.waa || 0;
-
-		// 速度の最大値
-		vector.trange = params.v.trange || null;
-
-		// 角度の最大値
-		vector.rrange = params.v.rrange || null;
-
-		// 速度の加速度の最大値
-		vector.wrange = params.v.wrange || null;
-
-		// 角度の加速度の最大値
-		vector.rarange = params.v.rarange || null;
-
-		// 速度の加速度の加速度の最大値
-		vector.warange = params.v.warange || null;
-
-		this.vectors.push(vector) ;
-	}
+	// 敵の撃つ弾の設定
+	this.shots = params.s;
+	// どの弾を撃つ設定を適用するか
+	this.shotCountIndex = 0;
 };
 
 // フレーム処理
 Enemy.prototype.run = function(){
-	BaseObject.prototype.run.apply(this, arguments);
+	// ベクトルに従って移動
+	VectorBaseObject.prototype.run.apply(this, arguments);
 
-	// 次の動き変更するか
-	if(this.vectors[this.vector_index + 1] &&
-	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
-		this.vector_index++;
-	}
-
-	// 敵を動かす
-	this.x += this.calc_moveX();
-	this.y += this.calc_moveY();
-
-	// 加速度を追加
-	this.vectors[this.vector_index].theta += this.vectors[this.vector_index].w;
-	this.vectors[this.vector_index].r     += this.vectors[this.vector_index].ra;
-	this.vectors[this.vector_index].w     += this.vectors[this.vector_index].wa;
-	this.vectors[this.vector_index].ra    += this.vectors[this.vector_index].raa;
-	this.vectors[this.vector_index].wa    += this.vectors[this.vector_index].waa;
-
-	// 最大値を超えないようにする
-	this.vectors[this.vector_index].theta = this._beInRange( this.vectors[this.vector_index].theta, this.vectors[this.vector_index].trange);
-	this.vectors[this.vector_index].r     = this._beInRange( this.vectors[this.vector_index].r,     this.vectors[this.vector_index].rrange);
-	this.vectors[this.vector_index].w     = this._beInRange( this.vectors[this.vector_index].w,     this.vectors[this.vector_index].wrange);
-	this.vectors[this.vector_index].ra    = this._beInRange( this.vectors[this.vector_index].ra,    this.vectors[this.vector_index].rarange);
-	this.vectors[this.vector_index].wa    = this._beInRange( this.vectors[this.vector_index].wa,    this.vectors[this.vector_index].warange);
+	// 弾を撃つ
+	this.shot();
 
 	// Nフレーム毎に敵をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
@@ -16405,42 +17421,25 @@ Enemy.prototype.run = function(){
 
 };
 
-Enemy.prototype._beInRange = function(value, range) {
-	if(range === null) {
-		return value;
+// 弾を撃つ
+Enemy.prototype.shot = function(){
+	if(!this.shots) {
+		return;
 	}
 
-	if(range.max !== void 0 && value > range.max) {
-		value = range.max;
+	if(this.shots.shotCount[ this.shotCountIndex ] &&
+	   this.shots.shotCount[ this.shotCountIndex ] <= this.frame_count) {
+		this.shotCountIndex++;
+
+		this.stage.bulletmanager.create(this);
+		this.game.playSound('shot');
 	}
-
-	if(range.min !== void 0 && value < range.min) {
-		value = range.min;
-	}
-	return value;
 };
 
-
-Enemy.prototype._getRadian = function(){
-	var radian = this.vectors[this.vector_index].theta / 180 * Math.PI;
-	return radian;
-};
-
-
-Enemy.prototype.calc_moveX = function() {
-	var move_x = this.vectors[this.vector_index].r * Math.cos(this._getRadian());
-	return move_x;
-};
-
-
-Enemy.prototype.calc_moveY = function() {
-	var move_y = this.vectors[this.vector_index].r * Math.sin(this._getRadian());
-	return move_y;
-} ;
 
 module.exports = Enemy;
 
-},{"./base":10,"lodash":1}],13:[function(require,module,exports){
+},{"./vector_base":20,"lodash":1}],19:[function(require,module,exports){
 'use strict';
 
 /* 自機弾オブジェクト */
@@ -16495,7 +17494,199 @@ Shot.prototype.run = function(){
 
 module.exports = Shot;
 
-},{"./base":10,"lodash":1}],14:[function(require,module,exports){
+},{"./base":15,"lodash":1}],20:[function(require,module,exports){
+'use strict';
+
+/* ベクトルを使って動くオブジェクトの基底クラス */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseObject = require('./base');
+
+// constructor
+var VectorBase = function(id, scene) {
+	// 継承元new呼び出し
+	BaseObject.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(VectorBase.prototype, BaseObject.prototype);
+_.extend(VectorBase, BaseObject);
+
+// 初期化
+VectorBase.prototype.init = function(params) {
+	BaseObject.prototype.init.apply(this, arguments);
+
+	// 敵の動き(ベクトル)
+	this.vectors = [];
+
+	// どの動きを適用してるか
+	this.vector_index = 0;
+
+	var vector;
+	// 敵設定に動きが複数設定されている場合
+	if(params.v && params.v instanceof Array) {
+		for( var i = 0; i < params.v.length; i++ ) {
+			vector = {};
+
+			// どのフレームからこの動きを適用するか
+			vector.count = params.v[i].count;
+
+			// ベクトルの大きさ(速度)
+			vector.r = params.v[i].v.r;
+
+			// ベクトルの角度(方向)
+			vector.theta = params.v[i].v.theta || 90;
+
+			// 加速度
+			vector.w = params.v[i].v.w || 0;
+
+			// 角度の加速度
+			vector.ra = params.v[i].v.ra || 0;
+
+			// 加速度の加速度
+			vector.wa = params.v[i].v.wa || 0;
+
+			// 角度の加速度の加速度
+			vector.raa = params.v[i].v.raa || 0;
+
+			// 加速度の加速度の加速度
+			vector.waa = params.v[i].v.waa || 0;
+
+			// 速度の最大値
+			vector.trange = params.v[i].v.trange || null;
+
+			// 角度の最大値
+			vector.rrange = params.v[i].v.rrange || null;
+
+			// 速度の加速度の最大値
+			vector.wrange = params.v[i].v.wrange || null;
+
+			// 角度の加速度の最大値
+			vector.rarange = params.v[i].v.rarange || null;
+
+			// 速度の加速度の加速度の最大値
+			vector.warange = params.v[i].v.warange || null;
+
+			this.vectors.push(vector);
+		}
+	}
+	// 敵設定に動きが一つ設定されている場合
+	else if (params.v) {
+		vector = {};
+
+		// どのフレームからこの動きを適用するか
+		vector.count = 0;
+
+		// ベクトルの大きさ(速度)
+		vector.r = params.v.r;
+
+		// ベクトルの角度(方向)
+		vector.theta = params.v.theta || 90;
+
+		// 加速度
+		vector.w = params.v.w || 0;
+
+		// 角度の加速度
+		vector.ra = params.v.ra || 0;
+
+		// 加速度の加速度
+		vector.wa = params.v.wa || 0;
+
+		// 角度の加速度の加速度
+		vector.raa = params.v.raa || 0;
+
+		// 加速度の加速度の加速度
+		vector.waa = params.v.waa || 0;
+
+		// 速度の最大値
+		vector.trange = params.v.trange || null;
+
+		// 角度の最大値
+		vector.rrange = params.v.rrange || null;
+
+		// 速度の加速度の最大値
+		vector.wrange = params.v.wrange || null;
+
+		// 角度の加速度の最大値
+		vector.rarange = params.v.rarange || null;
+
+		// 速度の加速度の加速度の最大値
+		vector.warange = params.v.warange || null;
+
+		this.vectors.push(vector) ;
+	}
+};
+
+// フレーム処理
+VectorBase.prototype.run = function(){
+	BaseObject.prototype.run.apply(this, arguments);
+
+	// 次の動きに変更するか
+	if(this.vectors[this.vector_index + 1] &&
+	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
+		this.vector_index++;
+	}
+
+	// 敵を動かす
+	this.x += this.calc_moveX();
+	this.y += this.calc_moveY();
+
+	// 加速度を追加
+	this.vectors[this.vector_index].theta += this.vectors[this.vector_index].w;
+	this.vectors[this.vector_index].r     += this.vectors[this.vector_index].ra;
+	this.vectors[this.vector_index].w     += this.vectors[this.vector_index].wa;
+	this.vectors[this.vector_index].ra    += this.vectors[this.vector_index].raa;
+	this.vectors[this.vector_index].wa    += this.vectors[this.vector_index].waa;
+
+	// 最大値を超えないようにする
+	this.vectors[this.vector_index].theta = this._beInRange( this.vectors[this.vector_index].theta, this.vectors[this.vector_index].trange);
+	this.vectors[this.vector_index].r     = this._beInRange( this.vectors[this.vector_index].r,     this.vectors[this.vector_index].rrange);
+	this.vectors[this.vector_index].w     = this._beInRange( this.vectors[this.vector_index].w,     this.vectors[this.vector_index].wrange);
+	this.vectors[this.vector_index].ra    = this._beInRange( this.vectors[this.vector_index].ra,    this.vectors[this.vector_index].rarange);
+	this.vectors[this.vector_index].wa    = this._beInRange( this.vectors[this.vector_index].wa,    this.vectors[this.vector_index].warange);
+
+};
+
+VectorBase.prototype._beInRange = function(value, range) {
+	if(range === null) {
+		return value;
+	}
+
+	if(range.max !== void 0 && value > range.max) {
+		value = range.max;
+	}
+
+	if(range.min !== void 0 && value < range.min) {
+		value = range.min;
+	}
+	return value;
+};
+
+
+VectorBase.prototype._getRadian = function(){
+	var radian = this.vectors[this.vector_index].theta / 180 * Math.PI;
+	return radian;
+};
+
+
+// X軸の移動を計算
+VectorBase.prototype.calc_moveX = function() {
+	var move_x = this.vectors[this.vector_index].r * Math.cos(this._getRadian());
+	return move_x;
+};
+
+// Y軸の移動を計算
+VectorBase.prototype.calc_moveY = function() {
+	var move_y = this.vectors[this.vector_index].r * Math.sin(this._getRadian());
+	return move_y;
+} ;
+
+module.exports = VectorBase;
+
+},{"./base":15,"lodash":1}],21:[function(require,module,exports){
 'use strict';
 
 /* シーンの基底クラス */
@@ -16529,7 +17720,7 @@ BaseScene.prototype.updateDisplay = function(){
 
 module.exports = BaseScene;
 
-},{}],15:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 /* ローディング画面 */
@@ -16649,7 +17840,7 @@ LoadingScene.prototype._loadBGMs = function() {
 
 module.exports = LoadingScene;
 
-},{"./base":14,"lodash":1}],16:[function(require,module,exports){
+},{"./base":21,"lodash":1}],23:[function(require,module,exports){
 'use strict';
 
 /* オープニング画面 */
@@ -16737,7 +17928,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 module.exports = OpeningScene;
 
-},{"./base":14,"lodash":1}],17:[function(require,module,exports){
+},{"./base":21,"lodash":1}],24:[function(require,module,exports){
 'use strict';
 
 /* ゲームステージ画面 */
@@ -16751,6 +17942,7 @@ var BaseScene = require('./base');
 var Character = require('../object/character');
 var ShotManager = require('../manager/shot');
 var EnemyManager = require('../manager/enemy');
+var BulletManager = require('../manager/bullet');
 
 // constructor
 var StageScene = function(game) {
@@ -16767,6 +17959,9 @@ var StageScene = function(game) {
 
 	// 敵
 	this.enemymanager = new EnemyManager(this);
+
+	// 敵の弾
+	this.bulletmanager = new BulletManager(this);
 
 	// キー押下フラグ
 	this.keyflag = 0x0;
@@ -16811,6 +18006,9 @@ StageScene.prototype.init = function() {
 
 	// 敵を初期化
 	this.enemymanager.init();
+
+	// 敵弾を初期化
+	this.bulletmanager.init();
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -16874,8 +18072,11 @@ StageScene.prototype.run = function(){
 	// 自機弾
 	this.shotmanager.run();
 
-	// 自機弾
+	// 敵
 	this.enemymanager.run();
+
+	// 敵弾
+	this.bulletmanager.run();
 };
 
 // 画面更新
@@ -16894,6 +18095,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 敵
 	this.enemymanager.updateDisplay();
+
+	// 敵弾
+	this.bulletmanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
@@ -17001,4 +18205,4 @@ StageScene.prototype._showStageTitle = function() {
 
 module.exports = StageScene;
 
-},{"../manager/enemy":8,"../manager/shot":9,"../object/character":11,"./base":14,"lodash":1}]},{},[6]);
+},{"../manager/bullet":12,"../manager/enemy":13,"../manager/shot":14,"../object/character":17,"./base":21,"lodash":1}]},{},[10]);
