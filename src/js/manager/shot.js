@@ -48,4 +48,21 @@ ShotManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 敵との衝突判定
+ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
+	// 衝突判定
+	for(var shot_id in this.objects) {
+		for(var enemy_id in enemy_manager.objects) {
+			if(this.objects[shot_id].checkCollision(enemy_manager.objects[enemy_id])) {
+				// 弾に衝突を通知
+				this.objects[shot_id].notifyCollision(enemy_manager.objects[enemy_id]);
+				// 敵に衝突を通知
+				enemy_manager.objects[enemy_id].notifyCollision(this.objects[shot_id]);
+
+				break;
+			}
+		}
+	}
+};
+
 module.exports = ShotManager;

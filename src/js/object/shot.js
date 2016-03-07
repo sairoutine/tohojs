@@ -50,4 +50,10 @@ Shot.prototype.run = function(){
 	this.y -= this.SPEED;
 };
 
+// 衝突した時
+Shot.prototype.notifyCollision = function(obj) {
+	// 自分を消す
+	this.stage.shotmanager.remove(this.id);
+};
+
 module.exports = Shot;

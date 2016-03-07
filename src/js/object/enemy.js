@@ -81,5 +81,30 @@ Enemy.prototype.shot = function(){
 	}
 };
 
+// 衝突した時
+Enemy.prototype.notifyCollision = function(obj) {
+	// 自分を消す
+	this.stage.enemymanager.remove(this.id);
+
+	// SEの再生
+	this.game.playSound('enemy_vanish');
+
+	// スコアの加算
+	this.stage.score += 100;
+
+	// TODO: 死亡エフェクト再生
+	/*
+	this.effectManager.createExplosion(enemy);
+	this.effectManager.create(enemy, 'shockwave', null) ;
+	*/
+
+	// TODO: ポイントアイテムの生成
+/*
+  if( enemy.powerItem )
+    this.itemManager.createPowerItem(enemy);
+  else if( enemy.scoreItem )
+    this.itemManager.createScoreItem(enemy);
+*/
+};
 
 module.exports = Enemy;
