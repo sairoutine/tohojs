@@ -16729,6 +16729,11 @@ Game.prototype.SOUNDS = {
 		path: 'sound/shot.wav',
 		volume: 0.1
 	},
+
+	enemy_vanish: {
+		path: 'sound/enemy_vanish.wav',
+		volume: 0.03
+	}
 };
 
 // ゲームに必要なBGM一覧
@@ -17111,6 +17116,23 @@ ShotManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 敵との衝突判定
+ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
+	// 衝突判定
+	for(var shot_id in this.objects) {
+		for(var enemy_id in enemy_manager.objects) {
+			if(this.objects[shot_id].checkCollision(enemy_manager.objects[enemy_id])) {
+				// 弾に衝突を通知
+				this.objects[shot_id].notifyCollision(enemy_manager.objects[enemy_id]);
+				// 敵に衝突を通知
+				enemy_manager.objects[enemy_id].notifyCollision(this.objects[shot_id]);
+
+				break;
+			}
+		}
+	}
+};
+
 module.exports = ShotManager;
 
 },{"../factory/shot":8,"./base":11,"lodash":1}],15:[function(require,module,exports){
@@ -17179,6 +17201,52 @@ ObjectBase.prototype.updateDisplay = function(){
 	);
 	this.game.surface.restore();
 };
+
+// オブジェクトとオブジェクトの衝突判定を行う
+ObjectBase.prototype.checkCollision = function(obj) {
+	if( this.inCollisionArea(obj.getCollisionLeftX(),  obj.getCollisionUpY()) ||
+		this.inCollisionArea(obj.getCollisionLeftX(),  obj.getCollisionBottomY()) ||
+		this.inCollisionArea(obj.getCollisionRightX(), obj.getCollisionUpY()) ||
+		this.inCollisionArea(obj.getCollisionRightX(), obj.getCollisionBottomY()) ||
+		this.inCollisionArea(obj.x,                    obj.y)
+	  ) {
+		return true ;
+	}
+
+	return false ;
+};
+
+ObjectBase.prototype.getCollisionLeftX = function() {
+	return this.x - this.WIDTH / 2;
+};
+
+
+ObjectBase.prototype.getCollisionRightX = function() {
+	return this.x + this.WIDTH / 2;
+};
+
+ObjectBase.prototype.getCollisionUpY = function() {
+	return this.y - this.HEIGHT / 2;
+};
+
+ObjectBase.prototype.getCollisionBottomY = function() {
+	return this.y + this.HEIGHT / 2;
+};
+
+ObjectBase.prototype.inCollisionArea = function(x, y) {
+	if(x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
+		y >= this.getCollisionUpY()  && y <= this.getCollisionBottomY()) {
+		return true;
+	}
+
+	return false ;
+};
+
+// 衝突した時
+ObjectBase.prototype.notifyCollision = function(obj) {
+
+};
+
 
 
 module.exports = ObjectBase;
@@ -17436,6 +17504,31 @@ Enemy.prototype.shot = function(){
 	}
 };
 
+// 衝突した時
+Enemy.prototype.notifyCollision = function(obj) {
+	// 自分を消す
+	this.stage.enemymanager.remove(this.id);
+
+	// SEの再生
+	this.game.playSound('enemy_vanish');
+
+	// スコアの加算
+	this.stage.score += 100;
+
+	// TODO: 死亡エフェクト再生
+	/*
+	this.effectManager.createExplosion(enemy);
+	this.effectManager.create(enemy, 'shockwave', null) ;
+	*/
+
+	// TODO: ポイントアイテムの生成
+/*
+  if( enemy.powerItem )
+    this.itemManager.createPowerItem(enemy);
+  else if( enemy.scoreItem )
+    this.itemManager.createScoreItem(enemy);
+*/
+};
 
 module.exports = Enemy;
 
@@ -17490,6 +17583,12 @@ Shot.prototype.run = function(){
 
 	// 弾を直進させる
 	this.y -= this.SPEED;
+};
+
+// 衝突した時
+Shot.prototype.notifyCollision = function(obj) {
+	// 自分を消す
+	this.stage.shotmanager.remove(this.id);
 };
 
 module.exports = Shot;
@@ -18077,6 +18176,9 @@ StageScene.prototype.run = function(){
 
 	// 敵弾
 	this.bulletmanager.run();
+
+	// 自機弾と敵の衝突判定
+	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
 };
 
 // 画面更新
