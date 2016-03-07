@@ -70,6 +70,11 @@ Game.prototype.SOUNDS = {
 		path: 'sound/shot.wav',
 		volume: 0.1
 	},
+
+	enemy_vanish: {
+		path: 'sound/enemy_vanish.wav',
+		volume: 0.03
+	}
 };
 
 // ゲームに必要なBGM一覧
