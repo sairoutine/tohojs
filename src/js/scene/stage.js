@@ -146,6 +146,9 @@ StageScene.prototype.run = function(){
 
 	// 敵弾
 	this.bulletmanager.run();
+
+	// 自機弾と敵の衝突判定
+	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
 };
 
 // 画面更新
