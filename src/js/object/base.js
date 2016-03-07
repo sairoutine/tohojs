@@ -64,5 +64,51 @@ ObjectBase.prototype.updateDisplay = function(){
 	this.game.surface.restore();
 };
 
+// オブジェクトとオブジェクトの衝突判定を行う
+ObjectBase.prototype.checkCollision = function(obj) {
+	if( this.inCollisionArea(obj.getCollisionLeftX(),  obj.getCollisionUpY()) ||
+		this.inCollisionArea(obj.getCollisionLeftX(),  obj.getCollisionBottomY()) ||
+		this.inCollisionArea(obj.getCollisionRightX(), obj.getCollisionUpY()) ||
+		this.inCollisionArea(obj.getCollisionRightX(), obj.getCollisionBottomY()) ||
+		this.inCollisionArea(obj.x,                    obj.y)
+	  ) {
+		return true ;
+	}
+
+	return false ;
+};
+
+ObjectBase.prototype.getCollisionLeftX = function() {
+	return this.x - this.WIDTH / 2;
+};
+
+
+ObjectBase.prototype.getCollisionRightX = function() {
+	return this.x + this.WIDTH / 2;
+};
+
+ObjectBase.prototype.getCollisionUpY = function() {
+	return this.y - this.HEIGHT / 2;
+};
+
+ObjectBase.prototype.getCollisionBottomY = function() {
+	return this.y + this.HEIGHT / 2;
+};
+
+ObjectBase.prototype.inCollisionArea = function(x, y) {
+	if(x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
+		y >= this.getCollisionUpY()  && y <= this.getCollisionBottomY()) {
+		return true;
+	}
+
+	return false ;
+};
+
+// 衝突した時
+ObjectBase.prototype.notifyCollision = function(obj) {
+
+};
+
+
 
 module.exports = ObjectBase;
