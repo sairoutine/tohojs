@@ -58,6 +58,7 @@ Game.prototype.IMAGES = {
 	shot:      'image/shot.png',
 	enemy:     'image/enemy.png',
 	bullet:    'image/bullet.png',
+	item:      'image/item.png',
 };
 
 // ゲームに必要なSE一覧
