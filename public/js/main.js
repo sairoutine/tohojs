@@ -16572,7 +16572,7 @@ BulletFactory.prototype.free = function(id) {
 
 module.exports = BulletFactory;
 
-},{"../object/bullet":16,"./base":5,"lodash":1}],7:[function(require,module,exports){
+},{"../object/bullet":18,"./base":5,"lodash":1}],7:[function(require,module,exports){
 'use strict';
 
 /* 敵を生成するクラス */
@@ -16614,7 +16614,49 @@ EnemyFactory.prototype.free = function(id) {
 
 module.exports = EnemyFactory;
 
-},{"../object/enemy":18,"./base":5,"lodash":1}],8:[function(require,module,exports){
+},{"../object/enemy":20,"./base":5,"lodash":1}],8:[function(require,module,exports){
+'use strict';
+
+/* アイテムを生成するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// アイテムクラス
+var Item = require('../object/item');
+
+// 基底クラス
+var BaseFactory = require('./base');
+
+// constructor
+var ItemFactory = function(manager) {
+	// 継承元new呼び出し
+	BaseFactory.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(ItemFactory.prototype, BaseFactory.prototype);
+_.extend(ItemFactory, BaseFactory);
+
+// アイテムを生成
+ItemFactory.prototype.get = function(enemy) {
+	this.incremental_id++;
+
+	var item = new Item(this.incremental_id, this.stage);
+	// 初期化
+	item.init(enemy);
+
+	return item;
+};
+
+// アイテムを削除
+ItemFactory.prototype.free = function(id) {
+
+};
+
+module.exports = ItemFactory;
+
+},{"../object/item":21,"./base":5,"lodash":1}],9:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を生成するクラス */
@@ -16656,7 +16698,7 @@ ShotFactory.prototype.free = function(id) {
 
 module.exports = ShotFactory;
 
-},{"../object/shot":19,"./base":5,"lodash":1}],9:[function(require,module,exports){
+},{"../object/shot":22,"./base":5,"lodash":1}],10:[function(require,module,exports){
 'use strict';
 
 var LoadingScene = require('./scene/loading');
@@ -16717,6 +16759,7 @@ Game.prototype.IMAGES = {
 	shot:      'image/shot.png',
 	enemy:     'image/enemy.png',
 	bullet:    'image/bullet.png',
+	item:      'image/item.png',
 };
 
 // ゲームに必要なSE一覧
@@ -16841,7 +16884,7 @@ Game.prototype.notifyOpeningDone = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":22,"./scene/opening":23,"./scene/stage":24}],10:[function(require,module,exports){
+},{"./scene/loading":25,"./scene/opening":26,"./scene/stage":27}],11:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -16860,7 +16903,7 @@ window.onload = function() {
 };
 
 
-},{"./game":9}],11:[function(require,module,exports){
+},{"./game":10}],12:[function(require,module,exports){
 'use strict';
 
 // lodash
@@ -16897,6 +16940,8 @@ BaseManager.prototype.create = function(params) {
 	var obj = this.factory.get(params);
 
 	this.objects[obj.id] = obj;
+
+	return obj;
 };
 
 // オブジェクト削除
@@ -16928,7 +16973,7 @@ BaseManager.prototype.updateDisplay = function(){
 module.exports = BaseManager;
 
 
-},{"lodash":1}],12:[function(require,module,exports){
+},{"lodash":1}],13:[function(require,module,exports){
 'use strict';
 
 /* 敵の弾を管理するクラス */
@@ -16991,7 +17036,7 @@ BulletManager.prototype.updateDisplay = function(){
 
 module.exports = BulletManager;
 
-},{"../data/bullets_params":2,"../factory/bullet":6,"./base":11,"lodash":1}],13:[function(require,module,exports){
+},{"../data/bullets_params":2,"../factory/bullet":6,"./base":12,"lodash":1}],14:[function(require,module,exports){
 'use strict';
 
 /* 敵を管理するクラス */
@@ -17065,7 +17110,69 @@ EnemyManager.prototype.updateDisplay = function(){
 
 module.exports = EnemyManager;
 
-},{"../data/enemies_params":4,"../factory/enemy":7,"./base":11,"lodash":1}],14:[function(require,module,exports){
+},{"../data/enemies_params":4,"../factory/enemy":7,"./base":12,"lodash":1}],15:[function(require,module,exports){
+'use strict';
+
+/* アイテムを管理するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// アイテムを生成するクラス
+var ItemFactory = require('../factory/item');
+// 基底クラス
+var BaseManager = require('./base');
+
+// constructor
+var ItemManager = function(scene) {
+	// 継承元new呼び出し
+	BaseManager.apply(this, arguments);
+
+	// 弾生成クラス
+	this.factory = new ItemFactory(this);
+};
+
+// 基底クラスを継承
+_.extend(ItemManager.prototype, BaseManager.prototype);
+_.extend(ItemManager, BaseManager);
+
+// 初期化
+ItemManager.prototype.init = function() {
+	BaseManager.prototype.init.apply(this, arguments);
+};
+
+// アイテム生成
+ItemManager.prototype.create = function(enemy) {
+	BaseManager.prototype.create.apply(this, arguments);
+};
+
+// アイテムを全て自機に吸引
+ItemManager.prototype.homingAll = function(character) {
+	// アイテムを全て
+	for(var id in this.objects) {
+		// ターゲットを自分に
+		this.objects[id].setTarget(character);
+	}
+} ;
+
+// 弾削除
+ItemManager.prototype.remove = function(id) {
+	BaseManager.prototype.remove.apply(this, arguments);
+};
+
+// フレーム処理
+ItemManager.prototype.run = function(){
+	BaseManager.prototype.run.apply(this, arguments);
+};
+
+// 画面更新
+ItemManager.prototype.updateDisplay = function(){
+	BaseManager.prototype.updateDisplay.apply(this, arguments);
+};
+
+module.exports = ItemManager;
+
+},{"../factory/item":8,"./base":12,"lodash":1}],16:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を管理するクラス */
@@ -17135,7 +17242,7 @@ ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
 
 module.exports = ShotManager;
 
-},{"../factory/shot":8,"./base":11,"lodash":1}],15:[function(require,module,exports){
+},{"../factory/shot":9,"./base":12,"lodash":1}],17:[function(require,module,exports){
 'use strict';
 
 /* オブジェクトの基底クラス */
@@ -17251,7 +17358,7 @@ ObjectBase.prototype.notifyCollision = function(obj) {
 
 module.exports = ObjectBase;
 
-},{"lodash":1}],16:[function(require,module,exports){
+},{"lodash":1}],18:[function(require,module,exports){
 'use strict';
 
 /* 敵弾オブジェクト */
@@ -17300,7 +17407,7 @@ Bullet.prototype.run = function(){
 
 module.exports = Bullet;
 
-},{"./vector_base":20,"lodash":1}],17:[function(require,module,exports){
+},{"./vector_base":23,"lodash":1}],19:[function(require,module,exports){
 'use strict';
 
 /* 自機オブジェクト */
@@ -17420,7 +17527,7 @@ Character.prototype.run = function(){
 
 module.exports = Character;
 
-},{"./base":15,"lodash":1}],18:[function(require,module,exports){
+},{"./base":17,"lodash":1}],20:[function(require,module,exports){
 'use strict';
 
 /* 敵オブジェクト */
@@ -17464,6 +17571,12 @@ Enemy.prototype.init = function(params) {
 
 	// 敵の体力
 	this.vital = params.vital;
+
+	// 撃破された時にパワーアップアイテムを生成するかどうか
+	this.powerItem = params.powerItem;
+
+	// 撃破された時にスコア獲得アイテムを生成するかどうか
+	this.scoreItem = params.scoreItem;
 
 	// 敵の撃つ弾の設定
 	this.shots = params.s;
@@ -17521,18 +17634,83 @@ Enemy.prototype.notifyCollision = function(obj) {
 	this.effectManager.create(enemy, 'shockwave', null) ;
 	*/
 
-	// TODO: ポイントアイテムの生成
-/*
-  if( enemy.powerItem )
-    this.itemManager.createPowerItem(enemy);
-  else if( enemy.scoreItem )
-    this.itemManager.createScoreItem(enemy);
-*/
+	// ポイントアイテムの生成
+	if(this.powerItem || this.scoreItem) {
+		this.stage.itemmanager.create(this);
+	}
 };
 
 module.exports = Enemy;
 
-},{"./vector_base":20,"lodash":1}],19:[function(require,module,exports){
+},{"./vector_base":23,"lodash":1}],21:[function(require,module,exports){
+'use strict';
+
+/* アイテムオブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var VectorBase = require('./vector_base');
+
+// constructor
+var Item = function(id, scene) {
+	// 継承元new呼び出し
+	VectorBase.apply(this, arguments);
+
+};
+
+// 基底クラスを継承
+_.extend(Item.prototype, VectorBase.prototype);
+_.extend(Item, VectorBase);
+
+// アイテムのスプライトサイズ
+Item.prototype.WIDTH  = 12;
+Item.prototype.HEIGHT = 12;
+
+// アイテム画像
+Item.prototype.IMAGE_KEY = 'item';
+
+// 初期化
+Item.prototype.init = function(enemy) {
+	// ベクトルを設定
+	VectorBase.prototype.init.apply(this, [
+		{
+			'v': { 'r': 4, 'theta': 270, 'w': 0, 'ra':-0.1, 'wa': 0 }
+		}
+	]);
+
+	// アイテムの初期位置は敵の位置
+	this.x = enemy.x;
+	this.y = enemy.y;
+
+	if(enemy.powerItem) {
+		this.powerItem = true;
+
+		// 弾のスプライト上の位置
+		this.indexX = 0; this.indexY = 0;
+	}
+	else if(enemy.scoreItem) {
+		this.scoreItem = true;
+
+		// 弾のスプライト上の位置
+		this.indexX = 1; this.indexY = 0;
+	}
+
+};
+
+// フレーム処理
+Item.prototype.run = function(){
+	VectorBase.prototype.run.apply(this, arguments);
+};
+
+// 衝突した時
+Item.prototype.notifyCollision = function(obj) {
+};
+
+module.exports = Item;
+
+},{"./vector_base":23,"lodash":1}],22:[function(require,module,exports){
 'use strict';
 
 /* 自機弾オブジェクト */
@@ -17593,7 +17771,7 @@ Shot.prototype.notifyCollision = function(obj) {
 
 module.exports = Shot;
 
-},{"./base":15,"lodash":1}],20:[function(require,module,exports){
+},{"./base":17,"lodash":1}],23:[function(require,module,exports){
 'use strict';
 
 /* ベクトルを使って動くオブジェクトの基底クラス */
@@ -17785,7 +17963,7 @@ VectorBase.prototype.calc_moveY = function() {
 
 module.exports = VectorBase;
 
-},{"./base":15,"lodash":1}],21:[function(require,module,exports){
+},{"./base":17,"lodash":1}],24:[function(require,module,exports){
 'use strict';
 
 /* シーンの基底クラス */
@@ -17819,7 +17997,7 @@ BaseScene.prototype.updateDisplay = function(){
 
 module.exports = BaseScene;
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 /* ローディング画面 */
@@ -17939,7 +18117,7 @@ LoadingScene.prototype._loadBGMs = function() {
 
 module.exports = LoadingScene;
 
-},{"./base":21,"lodash":1}],23:[function(require,module,exports){
+},{"./base":24,"lodash":1}],26:[function(require,module,exports){
 'use strict';
 
 /* オープニング画面 */
@@ -18027,7 +18205,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 module.exports = OpeningScene;
 
-},{"./base":21,"lodash":1}],24:[function(require,module,exports){
+},{"./base":24,"lodash":1}],27:[function(require,module,exports){
 'use strict';
 
 /* ゲームステージ画面 */
@@ -18042,6 +18220,7 @@ var Character = require('../object/character');
 var ShotManager = require('../manager/shot');
 var EnemyManager = require('../manager/enemy');
 var BulletManager = require('../manager/bullet');
+var ItemManager = require('../manager/item');
 
 // constructor
 var StageScene = function(game) {
@@ -18061,6 +18240,9 @@ var StageScene = function(game) {
 
 	// 敵の弾
 	this.bulletmanager = new BulletManager(this);
+
+	// アイテム
+	this.itemmanager = new ItemManager(this);
 
 	// キー押下フラグ
 	this.keyflag = 0x0;
@@ -18108,6 +18290,10 @@ StageScene.prototype.init = function() {
 
 	// 敵弾を初期化
 	this.bulletmanager.init();
+
+	// アイテムを初期化
+	this.itemmanager.init();
+
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -18177,6 +18363,9 @@ StageScene.prototype.run = function(){
 	// 敵弾
 	this.bulletmanager.run();
 
+	// アイテム
+	this.itemmanager.run();
+
 	// 自機弾と敵の衝突判定
 	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
 };
@@ -18200,6 +18389,11 @@ StageScene.prototype.updateDisplay = function(){
 
 	// 敵弾
 	this.bulletmanager.updateDisplay();
+
+	// アイテム
+	this.itemmanager.updateDisplay();
+
+
 
 	// サイドバー表示
 	this._showSidebar();
@@ -18307,4 +18501,4 @@ StageScene.prototype._showStageTitle = function() {
 
 module.exports = StageScene;
 
-},{"../manager/bullet":12,"../manager/enemy":13,"../manager/shot":14,"../object/character":17,"./base":21,"lodash":1}]},{},[10]);
+},{"../manager/bullet":13,"../manager/enemy":14,"../manager/item":15,"../manager/shot":16,"../object/character":19,"./base":24,"lodash":1}]},{},[11]);
