@@ -34,6 +34,8 @@ BaseManager.prototype.create = function(params) {
 	var obj = this.factory.get(params);
 
 	this.objects[obj.id] = obj;
+
+	return obj;
 };
 
 // オブジェクト削除
