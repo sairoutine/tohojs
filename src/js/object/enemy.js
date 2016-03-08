@@ -42,6 +42,12 @@ Enemy.prototype.init = function(params) {
 	// 敵の体力
 	this.vital = params.vital;
 
+	// 撃破された時にパワーアップアイテムを生成するかどうか
+	this.powerItem = params.powerItem;
+
+	// 撃破された時にスコア獲得アイテムを生成するかどうか
+	this.scoreItem = params.scoreItem;
+
 	// 敵の撃つ弾の設定
 	this.shots = params.s;
 	// どの弾を撃つ設定を適用するか
@@ -98,13 +104,10 @@ Enemy.prototype.notifyCollision = function(obj) {
 	this.effectManager.create(enemy, 'shockwave', null) ;
 	*/
 
-	// TODO: ポイントアイテムの生成
-/*
-  if( enemy.powerItem )
-    this.itemManager.createPowerItem(enemy);
-  else if( enemy.scoreItem )
-    this.itemManager.createScoreItem(enemy);
-*/
+	// ポイントアイテムの生成
+	if(this.powerItem || this.scoreItem) {
+		this.stage.itemmanager.create(this);
+	}
 };
 
 module.exports = Enemy;
