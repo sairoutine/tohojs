@@ -19,6 +19,9 @@ var StageScene = function(game) {
 	// 継承元new呼び出し
 	BaseScene.apply(this, arguments);
 
+	// 現在のステージの状態
+	this.state = null;
+
 	// スコア
 	this.score = 0;
 	// 自機
@@ -42,11 +45,19 @@ var StageScene = function(game) {
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
 	this.height= this.game.height;
+
+	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
+	this.continue_select_index = 0;
 };
 
 // 基底クラスを継承
 _.extend(StageScene.prototype, BaseScene.prototype);
 _.extend(StageScene, BaseScene);
+
+// ステージの状態
+StageScene.prototype.STATE_SHOOTING  = 1;
+StageScene.prototype.STATE_GAMEOVER  = 2;
+StageScene.prototype.STATE_CLEAR     = 3;
 
 // キー押下フラグ
 StageScene.prototype.BUTTON_LEFT  = 0x01;
@@ -70,6 +81,9 @@ StageScene.prototype.SHOW_TITLE_COUNT = 300;
 // 初期化
 StageScene.prototype.init = function() {
 	BaseScene.prototype.init.apply(this, arguments);
+
+	// ステージの状態
+	this.state = this.STATE_SHOOTING;
 
 	// 自機を初期化
 	this.character.init();
@@ -141,6 +155,12 @@ StageScene.prototype._keyCodeToBitCode = function(keyCode) {
 
 // フレーム処理
 StageScene.prototype.run = function(){
+	// ゲームオーバー画面ならば
+	if(this.state === this.STATE_GAMEOVER) {
+		this._runContinue();
+		return;
+	}
+
 	BaseScene.prototype.run.apply(this, arguments);
 
 	// 自機
@@ -163,6 +183,31 @@ StageScene.prototype.run = function(){
 
 	// 敵弾と自機の衝突判定
 	this.bulletmanager.checkCollisionWithCharacter(this.character);
+};
+
+
+// コンティニュー時のフレーム処理
+StageScene.prototype._runContinue = function(){
+	// カーソルを上に移動
+	if(this.isKeyDown(this.BUTTON_UP)) {
+		//TODO: サウンド
+		this.continue_select_index = 0;
+	}
+	else if(this.isKeyDown(this.BUTTON_DOWN)) {
+		//TODO: サウンド
+		this.continue_select_index = 1;
+	}
+	else if(this.isKeyDown(this.BUTTON_Z)) {
+		//TODO: サウンド
+		if(this.continue_select_index === 0) {
+			// TODO:
+			console.log('continue');
+		}
+		else if(this.continue_select_index === 1) {
+			// TODO:
+			console.log('back to title');
+		}
+	}
 };
 
 // 画面更新
@@ -195,6 +240,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// ステージタイトル表示
 	this._showStageTitle();
+
+	// コンティニュー表示
+	this._showContinue();
 };
 
 // サイドバー表示
@@ -217,7 +265,7 @@ StageScene.prototype._showSidebar = function(){
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
-	this.game.surface.fillText('0', x + 140, y + 180); // TODO:
+	this.game.surface.fillText('0', x + 140, y + 180);
 	*/
 
 	this.game.surface.restore();
@@ -295,5 +343,49 @@ StageScene.prototype._showStageTitle = function() {
 	this.game.surface.fillRect( 100, 225, 280, 1 ) ;
 	this.game.surface.restore();
 } ;
+
+// コンティニュー表示
+StageScene.prototype._showContinue = function() {
+	// ゲームオーバー時のみ表示
+	if(this.state !== this.STATE_GAMEOVER) {
+		return;
+	}
+
+	this.game.surface.save( ) ;
+
+	// コンティニュー背景
+	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
+	this.game.surface.globalAlpha = 0.5 ;
+	this.game.surface.fillRect( 0, 170, 480, 100 ) ;
+
+	this.game.surface.fillStyle = 'rgb( 255, 255, 255 )' ;
+	this.game.surface.textAlign = 'center' ;
+	this.game.surface.textBaseAlign = 'middle' ;
+	this.game.surface.font = '16px Arial' ;
+
+	this.game.surface.globalAlpha = this.continue_select_index === 0 ? 1.0 : 0.2;
+
+	this.game.surface.fillText( 'Continue', 240, 200 ) ;
+
+	this.game.surface.globalAlpha = this.continue_select_index === 1 ? 1.0 : 0.2;
+
+	this.game.surface.fillText( 'Quit',     240, 240 ) ;
+	this.game.surface.restore( ) ;
+} ;
+
+
+
+
+// ステージの状態の切り替え
+StageScene.prototype.changeState = function(state) {
+	this.state = state;
+}
+
+// キャラクターが死んだ時
+StageScene.prototype.notifyCharacterDead = function() {
+	// ゲームオーバー画面に変更
+	this.changeState(this.STATE_GAMEOVER);
+}
+
 
 module.exports = StageScene;

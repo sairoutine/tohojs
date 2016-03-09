@@ -53,6 +53,7 @@ Character.prototype.init = function() {
 	this.unhittable_count = 0;
 };
 
+// TODO: init に混ぜたい
 // 自機を死亡
 Character.prototype.die = function() {
 	// 自機の初期位置に戻す
@@ -179,10 +180,15 @@ Character.prototype.notifyCollision = function(obj) {
 	// 死亡音再生
 	this.game.playSound('dead');
 
+	//TODO: 自機死亡エフェクト生成
+
 	// 自機を死亡
 	this.die();
 
-	// 残機がなくなればコンティニュー画面表示
+	// 残機がなくなればゲームオーバー画面表示
+	if(this.life === 0) {
+		this.stage.notifyCharacterDead();
+	}
 };
 
 module.exports = Character;
