@@ -75,6 +75,10 @@ Game.prototype.SOUNDS = {
 	enemy_vanish: {
 		path: 'sound/enemy_vanish.wav',
 		volume: 0.03
+	},
+	dead: {
+		path: 'sound/dead.wav',
+		volume: 0.05
 	}
 };
 
@@ -156,6 +160,7 @@ Game.prototype.playBGM = function(bgm) {
 
 // SEを再生
 Game.prototype.playSound = function(key) {
+
 	this.sounds[key].pause();
 	this.sounds[key].currentTime = 0;
 	this.sounds[key].play();

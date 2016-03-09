@@ -176,10 +176,8 @@ Character.prototype.checkCollision = function(obj) {
 
 // 衝突した時
 Character.prototype.notifyCollision = function(obj) {
-	// 無敵ならば自機を透過
-	// 無敵を解除
-
 	// 死亡音再生
+	this.game.playSound('dead');
 
 	// 自機を死亡
 	this.die();
