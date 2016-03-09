@@ -85,6 +85,9 @@ StageScene.prototype.init = function() {
 	// ステージの状態
 	this.state = this.STATE_SHOOTING;
 
+	// スコア初期化
+	this.score = 0;
+
 	// 自機を初期化
 	this.character.init();
 
@@ -204,8 +207,8 @@ StageScene.prototype._runContinue = function(){
 			console.log('continue');
 		}
 		else if(this.continue_select_index === 1) {
-			// TODO:
-			console.log('back to title');
+			// オープニングに戻る
+			this.game.notifySelectQuit();
 		}
 	}
 };

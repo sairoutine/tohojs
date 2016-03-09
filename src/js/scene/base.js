@@ -16,6 +16,14 @@ BaseScene.prototype.init = function(){
 	this.frame_count = 0;
 };
 
+// キー押下
+BaseScene.prototype.handleKeyDown = function(e){
+};
+
+// キーを離す
+BaseScene.prototype.handleKeyUp = function(e){
+};
+
 
 // フレーム処理
 BaseScene.prototype.run = function(){

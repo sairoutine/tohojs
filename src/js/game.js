@@ -184,6 +184,10 @@ Game.prototype.notifyOpeningDone = function( ) {
 	this.changeScene(this.STAGE_SCENE);
 };
 
-
+// コンティニューで終了を選択したら
+Game.prototype.notifySelectQuit = function( ) {
+	// オープニング画面に切り替え
+	this.changeScene(this.OPENING_SCENE);
+};
 
 module.exports = Game;
