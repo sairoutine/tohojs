@@ -69,4 +69,20 @@ EnemyManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 自機との衝突判定
+EnemyManager.prototype.checkCollisionWithCharacter = function(character) {
+	// 衝突判定
+	for(var id in this.objects) {
+		if(character.checkCollision(this.objects[id])) {
+			// TODO: キャラとショットで衝突した時の処理を分ける
+			// 敵に衝突を通知
+			//this.objects[id].notifyCollision(character);
+			// 自機に衝突を通知
+			character.notifyCollision(this.objects[id]);
+
+			break;
+		}
+	}
+};
+
 module.exports = EnemyManager;

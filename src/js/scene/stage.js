@@ -184,6 +184,9 @@ StageScene.prototype.run = function(){
 	// 自機弾と敵の衝突判定
 	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
 
+	// 敵と自機の衝突判定
+	this.enemymanager.checkCollisionWithCharacter(this.character);
+
 	// 敵弾と自機の衝突判定
 	this.bulletmanager.checkCollisionWithCharacter(this.character);
 };
@@ -192,6 +195,7 @@ StageScene.prototype.run = function(){
 // コンティニュー時のフレーム処理
 StageScene.prototype._runContinue = function(){
 	// TODO: ボタンおしっぱなしの時にコンティニューしないようにしたい
+	// TODO: 死んだ時に初期位置に戻ってコンティニュ画面になるの治したい
 
 	// カーソルを上に移動
 	if(this.isKeyDown(this.BUTTON_UP)) {
@@ -386,13 +390,13 @@ StageScene.prototype._showContinue = function() {
 // ステージの状態の切り替え
 StageScene.prototype.changeState = function(state) {
 	this.state = state;
-}
+};
 
 // キャラクターが死んだ時
 StageScene.prototype.notifyCharacterDead = function() {
 	// ゲームオーバー画面に変更
 	this.changeState(this.STATE_GAMEOVER);
-}
+};
 
 
 module.exports = StageScene;
