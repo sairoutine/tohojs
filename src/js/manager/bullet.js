@@ -62,7 +62,7 @@ BulletManager.prototype.updateDisplay = function(){
 BulletManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var bullet_id in this.objects) {
-		if(this.objects[bullet_id].checkCollision(character)) {
+		if(character.checkCollision(this.objects[bullet_id])) {
 			// 敵弾に衝突を通知
 			this.objects[bullet_id].notifyCollision(character);
 			// 自機に衝突を通知

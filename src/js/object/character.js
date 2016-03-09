@@ -140,6 +140,16 @@ Character.prototype.run = function(){
 	}
 };
 
+// 衝突判定
+Character.prototype.checkCollision = function(obj) {
+	// 無敵中なら衝突しない
+	if(this.is_unhittable) {
+		return false;
+	}
+
+	return BaseObject.prototype.checkCollision.apply(this, arguments);
+};
+
 // 衝突した時
 Character.prototype.notifyCollision = function(obj) {
 	// 無敵ならば自機を透過
