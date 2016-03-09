@@ -191,6 +191,8 @@ StageScene.prototype.run = function(){
 
 // コンティニュー時のフレーム処理
 StageScene.prototype._runContinue = function(){
+	// TODO: ボタンおしっぱなしの時にコンティニューしないようにしたい
+
 	// カーソルを上に移動
 	if(this.isKeyDown(this.BUTTON_UP)) {
 		//TODO: サウンド
@@ -203,8 +205,10 @@ StageScene.prototype._runContinue = function(){
 	else if(this.isKeyDown(this.BUTTON_Z)) {
 		//TODO: サウンド
 		if(this.continue_select_index === 0) {
-			// TODO:
-			console.log('continue');
+			// コンティニュー
+			this.character.init();
+			// ゲームを継続
+			this.changeState(this.STATE_SHOOTING);
 		}
 		else if(this.continue_select_index === 1) {
 			// オープニングに戻る
