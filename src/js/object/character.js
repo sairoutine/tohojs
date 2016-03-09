@@ -31,6 +31,9 @@ Character.prototype.SPEED = 4;
 // Nフレーム毎に自機をアニメーション
 Character.prototype.ANIMATION_SPAN = 2;
 
+// 死亡時の無敵時間
+Character.prototype.UNHITTABLE_COUNT = 100;
+
 
 // 初期化
 Character.prototype.init = function() {
@@ -122,6 +125,11 @@ Character.prototype.run = function(){
 		this.indexY = 0;
 	}
 
+	// 自機が無敵状態なら無敵切れか判定
+	if(this.is_unhittable && this.unhittable_count + this.UNHITTABLE_COUNT < this.frame_count) {
+		this.is_unhittable = false;
+	}
+
 	// Nフレーム毎に自機をアニメーション
 	if(this.frame_count % this.ANIMATION_SPAN === 0) {
 		// 次のスプライトに
@@ -139,6 +147,22 @@ Character.prototype.run = function(){
 		}
 	}
 };
+
+// 自機を描画
+Character.prototype.updateDisplay = function(){
+	// 無敵状態ならば半透明に
+	if (this.is_unhittable) {
+		this.game.surface.globalAlpha = 0.7;
+	}
+
+	// 描画
+	BaseObject.prototype.updateDisplay.apply(this, arguments);
+
+	if (this.is_unhittable) {
+		this.game.surface.globalAlpha = 1.0;
+	}
+};
+
 
 // 衝突判定
 Character.prototype.checkCollision = function(obj) {
