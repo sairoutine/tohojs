@@ -44,4 +44,9 @@ Bullet.prototype.run = function(){
 	VectorBaseObject.prototype.run.apply(this, arguments);
 };
 
+// 衝突した時
+Bullet.prototype.notifyCollision = function(obj) {
+	// 何もしない
+};
+
 module.exports = Bullet;

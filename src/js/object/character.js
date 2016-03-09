@@ -39,6 +39,31 @@ Character.prototype.init = function() {
 	// 自機の初期位置
 	this.x = (this.stage.width / 2);
 	this.y = ( this.stage.height - 100);
+
+	// 初期ライフ3
+	this.life = 3;
+
+	// ステージ開始直後は無敵状態にする
+	this.is_unhittable = true;
+
+	// 無敵状態になったフレームを保存
+	this.unhittable_count = 0;
+};
+
+// 自機を死亡
+Character.prototype.die = function() {
+	// 自機の初期位置に戻す
+	this.x = (this.stage.width / 2);
+	this.y = ( this.stage.height - 100);
+
+	// 自機を減らす
+	this.life -= 1;
+
+	// 無敵状態にする
+	this.is_unhittable = true;
+
+	// 無敵状態になったフレームを保存
+	this.unhittable_count = this.frame_count;
 };
 
 // フレーム処理
@@ -48,7 +73,7 @@ Character.prototype.run = function(){
 	// Zが押下されていればショット生成
 	if(this.stage.isKeyDown(this.stage.BUTTON_Z)) {
 		// 5フレーム置きにショットを生成 TODO:
-		if(this.frame_count % 5 == 0) {
+		if(this.frame_count % 5 === 0) {
 			this.stage.shotmanager.create();
 			this.game.playSound('shot');
 		}
@@ -113,6 +138,19 @@ Character.prototype.run = function(){
 			this.indexX = 4 ;
 		}
 	}
+};
+
+// 衝突した時
+Character.prototype.notifyCollision = function(obj) {
+	// 無敵ならば自機を透過
+	// 無敵を解除
+
+	// 死亡音再生
+
+	// 自機を死亡
+	this.die();
+
+	// 残機がなくなればコンティニュー画面表示
 };
 
 module.exports = Character;

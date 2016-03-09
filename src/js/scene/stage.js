@@ -160,6 +160,9 @@ StageScene.prototype.run = function(){
 
 	// 自機弾と敵の衝突判定
 	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
+
+	// 敵弾と自機の衝突判定
+	this.bulletmanager.checkCollisionWithCharacter(this.character);
 };
 
 // 画面更新
@@ -210,10 +213,12 @@ StageScene.prototype._showSidebar = function(){
 	this.game.surface.fillText(this.score, x + 140, y + 100);
 
 	this.game.surface.fillText('Player:', x + 70, y + 140);
-	this.game.surface.fillText('0', x + 140, y + 140); // TODO:
+	this.game.surface.fillText(this.character.life, x + 140, y + 140);
 
+	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
 	this.game.surface.fillText('0', x + 140, y + 180); // TODO:
+	*/
 
 	this.game.surface.restore();
 };

@@ -58,4 +58,19 @@ BulletManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 自機との衝突判定
+BulletManager.prototype.checkCollisionWithCharacter = function(character) {
+	// 衝突判定
+	for(var bullet_id in this.objects) {
+		if(this.objects[bullet_id].checkCollision(character)) {
+			// 敵弾に衝突を通知
+			this.objects[bullet_id].notifyCollision(character);
+			// 自機に衝突を通知
+			character.notifyCollision(this.objects[bullet_id]);
+
+			break;
+		}
+	}
+};
+
 module.exports = BulletManager;
