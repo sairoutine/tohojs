@@ -218,15 +218,16 @@ StageScene.prototype._runContinue = function(){
 
 	// カーソルを上に移動
 	if(this.isKeyDown(this.BUTTON_UP)) {
-		//TODO: サウンド
+		this.game.playSound('select') ;
 		this.continue_select_index = 0;
 	}
 	else if(this.isKeyDown(this.BUTTON_DOWN)) {
-		//TODO: サウンド
+		this.game.playSound('select') ;
 		this.continue_select_index = 1;
 	}
 	else if(this.isKeyDown(this.BUTTON_Z)) {
-		//TODO: サウンド
+		this.game.playSound('select') ;
+
 		if(this.continue_select_index === 0) {
 			// コンティニュー
 			this.character.init();
