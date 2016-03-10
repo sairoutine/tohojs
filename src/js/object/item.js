@@ -61,7 +61,6 @@ Item.prototype.run = function(){
 
 // 衝突した時
 Item.prototype.notifyCollision = function(obj) {
-	console.log('ok');
 	// 獲得したアイテムを消す
 	this.stage.itemmanager.remove(this.id);
 
