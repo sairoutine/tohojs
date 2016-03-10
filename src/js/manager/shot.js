@@ -54,10 +54,13 @@ ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
 	for(var shot_id in this.objects) {
 		for(var enemy_id in enemy_manager.objects) {
 			if(this.objects[shot_id].checkCollision(enemy_manager.objects[enemy_id])) {
+				var shot = this.objects[shot_id];
+				var enemy = enemy_manager.objects[enemy_id];
+
 				// 弾に衝突を通知
-				this.objects[shot_id].notifyCollision(enemy_manager.objects[enemy_id]);
+				shot.notifyCollision(enemy);
 				// 敵に衝突を通知
-				enemy_manager.objects[enemy_id].notifyCollision(this.objects[shot_id]);
+				enemy.notifyCollision(shot);
 
 				break;
 			}

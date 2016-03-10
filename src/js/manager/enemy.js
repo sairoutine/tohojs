@@ -74,11 +74,12 @@ EnemyManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var id in this.objects) {
 		if(character.checkCollision(this.objects[id])) {
-			// TODO: キャラとショットで衝突した時の処理を分ける
+			var enemy = this.objects[id];
+
 			// 敵に衝突を通知
-			//this.objects[id].notifyCollision(character);
+			enemy.notifyCollision(character);
 			// 自機に衝突を通知
-			character.notifyCollision(this.objects[id]);
+			character.notifyCollision(enemy);
 
 			break;
 		}

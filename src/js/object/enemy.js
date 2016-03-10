@@ -7,6 +7,7 @@ var _ = require('lodash');
 
 // 基底クラス
 var VectorBaseObject = require('./vector_base');
+var Shot = require('./shot');
 
 // constructor
 var Enemy = function(id, scene) {
@@ -89,24 +90,27 @@ Enemy.prototype.shot = function(){
 
 // 衝突した時
 Enemy.prototype.notifyCollision = function(obj) {
-	// 自分を消す
-	this.stage.enemymanager.remove(this.id);
+	// 自機弾と衝突
+	if(obj instanceof Shot) {
+		// 自分を消す
+		this.stage.enemymanager.remove(this.id);
 
-	// SEの再生
-	this.game.playSound('enemy_vanish');
+		// SEの再生
+		this.game.playSound('enemy_vanish');
 
-	// スコアの加算
-	this.stage.score += 100;
+		// スコアの加算
+		this.stage.score += 100;
 
-	// TODO: 死亡エフェクト再生
-	/*
-	this.effectManager.createExplosion(enemy);
-	this.effectManager.create(enemy, 'shockwave', null) ;
-	*/
+		// TODO: 死亡エフェクト再生
+		/*
+		this.effectManager.createExplosion(enemy);
+		this.effectManager.create(enemy, 'shockwave', null) ;
+		*/
 
-	// ポイントアイテムの生成
-	if(this.powerItem || this.scoreItem) {
-		this.stage.itemmanager.create(this);
+		// ポイントアイテムの生成
+		if(this.powerItem || this.scoreItem) {
+			this.stage.itemmanager.create(this);
+		}
 	}
 };
 

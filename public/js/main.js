@@ -17048,10 +17048,12 @@ BulletManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var bullet_id in this.objects) {
 		if(character.checkCollision(this.objects[bullet_id])) {
+			var bullet = this.objects[bullet_id];
+
 			// 敵弾に衝突を通知
-			this.objects[bullet_id].notifyCollision(character);
+			bullet.notifyCollision(character);
 			// 自機に衝突を通知
-			character.notifyCollision(this.objects[bullet_id]);
+			character.notifyCollision(bullet);
 
 			break;
 		}
@@ -17137,11 +17139,12 @@ EnemyManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var id in this.objects) {
 		if(character.checkCollision(this.objects[id])) {
-			// TODO: キャラとショットで衝突した時の処理を分ける
+			var enemy = this.objects[id];
+
 			// 敵に衝突を通知
-			//this.objects[id].notifyCollision(character);
+			enemy.notifyCollision(character);
 			// 自機に衝突を通知
-			character.notifyCollision(this.objects[id]);
+			character.notifyCollision(enemy);
 
 			break;
 		}
@@ -17269,10 +17272,13 @@ ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
 	for(var shot_id in this.objects) {
 		for(var enemy_id in enemy_manager.objects) {
 			if(this.objects[shot_id].checkCollision(enemy_manager.objects[enemy_id])) {
+				var shot = this.objects[shot_id];
+				var enemy = enemy_manager.objects[enemy_id];
+
 				// 弾に衝突を通知
-				this.objects[shot_id].notifyCollision(enemy_manager.objects[enemy_id]);
+				shot.notifyCollision(enemy);
 				// 敵に衝突を通知
-				enemy_manager.objects[enemy_id].notifyCollision(this.objects[shot_id]);
+				enemy.notifyCollision(shot);
 
 				break;
 			}
@@ -17658,6 +17664,7 @@ var _ = require('lodash');
 
 // 基底クラス
 var VectorBaseObject = require('./vector_base');
+var Shot = require('./shot');
 
 // constructor
 var Enemy = function(id, scene) {
@@ -17740,30 +17747,33 @@ Enemy.prototype.shot = function(){
 
 // 衝突した時
 Enemy.prototype.notifyCollision = function(obj) {
-	// 自分を消す
-	this.stage.enemymanager.remove(this.id);
+	// 自機弾と衝突
+	if(obj instanceof Shot) {
+		// 自分を消す
+		this.stage.enemymanager.remove(this.id);
 
-	// SEの再生
-	this.game.playSound('enemy_vanish');
+		// SEの再生
+		this.game.playSound('enemy_vanish');
 
-	// スコアの加算
-	this.stage.score += 100;
+		// スコアの加算
+		this.stage.score += 100;
 
-	// TODO: 死亡エフェクト再生
-	/*
-	this.effectManager.createExplosion(enemy);
-	this.effectManager.create(enemy, 'shockwave', null) ;
-	*/
+		// TODO: 死亡エフェクト再生
+		/*
+		this.effectManager.createExplosion(enemy);
+		this.effectManager.create(enemy, 'shockwave', null) ;
+		*/
 
-	// ポイントアイテムの生成
-	if(this.powerItem || this.scoreItem) {
-		this.stage.itemmanager.create(this);
+		// ポイントアイテムの生成
+		if(this.powerItem || this.scoreItem) {
+			this.stage.itemmanager.create(this);
+		}
 	}
 };
 
 module.exports = Enemy;
 
-},{"./vector_base":23,"lodash":1}],21:[function(require,module,exports){
+},{"./shot":22,"./vector_base":23,"lodash":1}],21:[function(require,module,exports){
 'use strict';
 
 /* アイテムオブジェクト */
