@@ -245,6 +245,8 @@ StageScene.prototype._runContinue = function(){
 StageScene.prototype._runClear = function(){
 	// Zが押下されたら
 	if(this.isKeyDown(this.BUTTON_Z)) {
+		this.game.playSound('select') ;
+
 		// オープニングに戻る
 		this.game.notifySelectQuit();
 	}
