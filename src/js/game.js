@@ -31,6 +31,9 @@ var Game = function(mainCanvas) {
 	// SE一覧
 	this.sounds = {};
 
+	// どのSEを再生するかのフラグ
+	this.soundflag = 0x00;
+
 	// BGM一覧
 	this.bgms = {};
 
@@ -64,19 +67,22 @@ Game.prototype.IMAGES = {
 // ゲームに必要なSE一覧
 Game.prototype.SOUNDS = {
 	select: {
+		id: 0x01,
 		path:   'sound/select.wav',
 		volume: 1.00
 	},
 	shot: {
+		id: 0x02,
 		path: 'sound/shot.wav',
 		volume: 0.1
 	},
-
 	enemy_vanish: {
+		id: 0x04,
 		path: 'sound/enemy_vanish.wav',
 		volume: 0.03
 	},
 	dead: {
+		id: 0x08,
 		path: 'sound/dead.wav',
 		volume: 0.05
 	}
@@ -86,11 +92,11 @@ Game.prototype.SOUNDS = {
 Game.prototype.BGMS = {
 	title: {
 		path:   'bgm/title.mp3',
-		volume: 1.00
+		volume: 0.50
 	},
 	stage1: {
 		path:   'bgm/stage1.mp3',
-		volume: 1.00
+		volume: 0.50
 	},
 };
 
@@ -123,6 +129,9 @@ Game.prototype.run = function(){
 	// シーン更新
 	this.scenes[ this.state ].run();
 	this.scenes[ this.state ].updateDisplay();
+
+	// SEを再生
+	this.runPlaySound();
 
 	// 経過フレーム数更新
 	this.frame_count++;
@@ -158,12 +167,28 @@ Game.prototype.playBGM = function(bgm) {
 	this.bgms[bgm].play();
 } ;
 
-// SEを再生
+// 再生するSEをセット
 Game.prototype.playSound = function(key) {
+	this.soundflag |= this.SOUNDS[key].id;
+};
 
-	this.sounds[key].pause();
-	this.sounds[key].currentTime = 0;
-	this.sounds[key].play();
+// セットされたフラグにもとづいてSEを再生
+Game.prototype.runPlaySound = function() {
+	for(var key in this.SOUNDS) {
+		// フラグが立ってたら
+		if(this.soundflag & this.SOUNDS[key].id) {
+			// 再生
+			this.sounds[key].pause();
+			this.sounds[key].currentTime = 0;
+			this.sounds[key].play();
+
+			// フラグを削除
+			this.soundflag &= ~this.SOUNDS[key].id;
+
+			// 1フレームに1つしか再生しない
+			break;
+		}
+	}
 };
 
 /*
