@@ -16732,6 +16732,9 @@ var Game = function(mainCanvas) {
 	// SE一覧
 	this.sounds = {};
 
+	// どのSEを再生するかのフラグ
+	this.soundflag = 0x00;
+
 	// BGM一覧
 	this.bgms = {};
 
@@ -16765,20 +16768,28 @@ Game.prototype.IMAGES = {
 // ゲームに必要なSE一覧
 Game.prototype.SOUNDS = {
 	select: {
+		id: 0x01,
 		path:   'sound/select.wav',
 		volume: 1.00
 	},
 	shot: {
+		id: 0x02,
 		path: 'sound/shot.wav',
 		volume: 0.1
 	},
-
 	enemy_vanish: {
+		id: 0x04,
 		path: 'sound/enemy_vanish.wav',
 		volume: 0.03
 	},
 	dead: {
+		id: 0x08,
 		path: 'sound/dead.wav',
+		volume: 0.05
+	},
+	graze: {
+		id: 0x10,
+		path: 'sound/graze.wav',
 		volume: 0.05
 	}
 };
@@ -16787,11 +16798,11 @@ Game.prototype.SOUNDS = {
 Game.prototype.BGMS = {
 	title: {
 		path:   'bgm/title.mp3',
-		volume: 1.00
+		volume: 0.50
 	},
 	stage1: {
 		path:   'bgm/stage1.mp3',
-		volume: 1.00
+		volume: 0.50
 	},
 };
 
@@ -16824,6 +16835,9 @@ Game.prototype.run = function(){
 	// シーン更新
 	this.scenes[ this.state ].run();
 	this.scenes[ this.state ].updateDisplay();
+
+	// SEを再生
+	this.runPlaySound();
 
 	// 経過フレーム数更新
 	this.frame_count++;
@@ -16859,12 +16873,28 @@ Game.prototype.playBGM = function(bgm) {
 	this.bgms[bgm].play();
 } ;
 
-// SEを再生
+// 再生するSEをセット
 Game.prototype.playSound = function(key) {
+	this.soundflag |= this.SOUNDS[key].id;
+};
 
-	this.sounds[key].pause();
-	this.sounds[key].currentTime = 0;
-	this.sounds[key].play();
+// セットされたフラグにもとづいてSEを再生
+Game.prototype.runPlaySound = function() {
+	for(var key in this.SOUNDS) {
+		// フラグが立ってたら
+		if(this.soundflag & this.SOUNDS[key].id) {
+			// 再生
+			this.sounds[key].pause();
+			this.sounds[key].currentTime = 0;
+			this.sounds[key].play();
+
+			// フラグを削除
+			this.soundflag &= ~this.SOUNDS[key].id;
+
+			// 1フレームに1つしか再生しない
+			break;
+		}
+	}
 };
 
 /*
@@ -17865,7 +17895,8 @@ Item.prototype.notifyCollision = function(obj) {
 	// 獲得したアイテムを消す
 	this.stage.itemmanager.remove(this.id);
 
-	// TODO: グレイズSEの再生
+	// グレイズSEの再生
+	this.game.playSound('graze');
 
 	// TODO: スコアアイテムとパワーアップアイテムで処理を分ける
 	this.stage.score += 1000;
@@ -18454,8 +18485,14 @@ StageScene.prototype.SIDE_WIDTH = 160;
 // 背景画像のスクロールスピード
 StageScene.prototype.BACKGROUND_SCROLL_SPEED = 3;
 
-// ステージタイトルの表示秒数
+// ステージタイトルの表示フレーム数
 StageScene.prototype.SHOW_TITLE_COUNT = 300;
+
+// リザルトの表示フレーム数
+StageScene.prototype.SHOW_RESULT_COUNT = 300;
+
+// ステージ終了カウント
+StageScene.prototype.STAGE_END_COUNT = 3500;
 
 // 初期化
 StageScene.prototype.init = function() {
@@ -18482,6 +18519,8 @@ StageScene.prototype.init = function() {
 	// アイテムを初期化
 	this.itemmanager.init();
 
+	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
+	this.continue_select_index = 0;
 
 	// BGM再生
 	this.game.playBGM('stage1');
@@ -18542,7 +18581,12 @@ StageScene.prototype.run = function(){
 		this._runContinue();
 		return;
 	}
+	// ゲームクリア画面ならば
+	if(this.state === this.STATE_CLEAR) {
+		this._runClear();
+	}
 
+	// ゲーム中
 	BaseScene.prototype.run.apply(this, arguments);
 
 	// 自機
@@ -18571,6 +18615,9 @@ StageScene.prototype.run = function(){
 
 	// 敵弾と自機の衝突判定
 	this.bulletmanager.checkCollisionWithCharacter(this.character);
+
+	// ステージ終了かどうか判定
+	this._checkStageEnd();
 };
 
 
@@ -18600,6 +18647,27 @@ StageScene.prototype._runContinue = function(){
 			// オープニングに戻る
 			this.game.notifySelectQuit();
 		}
+	}
+};
+
+// ゲームクリア時のフレーム処理
+StageScene.prototype._runClear = function(){
+	// Zが押下されたら
+	if(this.isKeyDown(this.BUTTON_Z)) {
+		// オープニングに戻る
+		this.game.notifySelectQuit();
+	}
+};
+
+
+
+
+
+// ステージが終了かどうか判定
+StageScene.prototype._checkStageEnd = function(){
+	// 一定フレーム超えたらステージ終了
+	if(this.frame_count > this.STAGE_END_COUNT) {
+		this.changeState(this.STATE_CLEAR);
 	}
 };
 
@@ -18636,6 +18704,9 @@ StageScene.prototype.updateDisplay = function(){
 
 	// コンティニュー表示
 	this._showContinue();
+
+	// リザルト表示
+	this._showResult();
 };
 
 // サイドバー表示
@@ -18655,6 +18726,10 @@ StageScene.prototype._showSidebar = function(){
 
 	this.game.surface.fillText('Player:', x + 70, y + 140);
 	this.game.surface.fillText(this.character.life, x + 140, y + 140);
+
+	// DEGUG
+	this.game.surface.fillText('Frame:', x + 70, y + 180);
+	this.game.surface.fillText(this.frame_count, x + 140, y + 180);
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
@@ -18765,6 +18840,47 @@ StageScene.prototype._showContinue = function() {
 	this.game.surface.fillText( 'Quit',     240, 240 ) ;
 	this.game.surface.restore( ) ;
 } ;
+
+// スコア結果画面表示
+StageScene.prototype._showResult = function() {
+	// クリア時のみ表示
+	if(this.state !== this.STATE_CLEAR) {
+		return;
+	}
+
+	// ステージ終了から経過した時間
+	var frame_count_after_stage_end = this.frame_count - this.STAGE_END_COUNT;
+
+	this.game.surface.save( ) ;
+
+	var alpha = 1.0 ;
+	if( frame_count_after_stage_end < (this.SHOW_RESULT_COUNT / 2)) {
+		// 最初の1/2はフェードイン
+		alpha = (frame_count_after_stage_end * 2) / this.SHOW_RESULT_COUNT;
+	}
+	else if(this.SHOW_RESULT_COUNT / 2 < frame_count_after_stage_end) {
+		// 最後の1/3はフェードアウト
+		alpha = 1.0;
+	}
+
+	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
+	this.game.surface.globalAlpha = alpha * 0.5; // タイトル背景黒は半透明
+	this.game.surface.fillRect( 0, 170, 480, 100 ) ;
+
+	this.game.surface.globalAlpha = alpha ;
+	this.game.surface.fillStyle = 'rgb( 255, 255, 255 )' ;
+	this.game.surface.textAlign = 'left' ;
+	this.game.surface.font = '16px Arial' ;
+	this.game.surface.fillText( 'Result', 100, 210 ) ;
+	this.game.surface.textAlign = 'right' ;
+	this.game.surface.fillText('Score: ' + this.score, 380, 210 ) ;
+	// ステージ名とタイトルの間の白い棒線
+	this.game.surface.fillRect( 100, 225, 280, 1 ) ;
+	this.game.surface.fillText('Press Z to Quit', 300, 250 ) ;
+	this.game.surface.restore();
+} ;
+
+
 
 
 
