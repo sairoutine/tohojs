@@ -18434,6 +18434,7 @@ var StageScene = function(game) {
 
 	// スコア
 	this.score = 0;
+
 	// 自機
 	this.character = new Character(1, this); //TODO:
 
@@ -18451,6 +18452,9 @@ var StageScene = function(game) {
 
 	// キー押下フラグ
 	this.keyflag = 0x0;
+
+	// 一つ前のフレームで押下されたキー
+	this.before_keyflag = 0x0;
 
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
@@ -18504,6 +18508,12 @@ StageScene.prototype.init = function() {
 	// スコア初期化
 	this.score = 0;
 
+	// キー押下フラグ
+	this.keyflag = 0x0;
+
+	// 一つ前のフレームで押下されたキー
+	this.before_keyflag = 0x0;
+
 	// 自機を初期化
 	this.character.init();
 
@@ -18542,6 +18552,12 @@ StageScene.prototype.isKeyDown = function(flag) {
 	return this.keyflag & flag;
 };
 
+// 指定のキーが押下されたか確認する
+StageScene.prototype.isKeyPush = function(flag) {
+	// 1フレーム前に押下されておらず、現フレームで押下されてるなら true
+	return !(this.before_keyflag & flag) && this.keyflag & flag;
+};
+
 // キーコードをBitに変換
 StageScene.prototype._keyCodeToBitCode = function(keyCode) {
 	var flag;
@@ -18576,9 +18592,11 @@ StageScene.prototype._keyCodeToBitCode = function(keyCode) {
 
 // フレーム処理
 StageScene.prototype.run = function(){
+	// TODO: リファクタ
 	// ゲームオーバー画面ならば
 	if(this.state === this.STATE_GAMEOVER) {
 		this._runContinue();
+		this.before_keyflag = this.keyflag;
 		return;
 	}
 	// ゲームクリア画面ならば
@@ -18618,6 +18636,8 @@ StageScene.prototype.run = function(){
 
 	// ステージ終了かどうか判定
 	this._checkStageEnd();
+
+	this.before_keyflag = this.keyflag;
 };
 
 
@@ -18627,16 +18647,16 @@ StageScene.prototype._runContinue = function(){
 	// TODO: 死んだ時に初期位置に戻ってコンティニュ画面になるの治したい
 
 	// カーソルを上に移動
-	if(this.isKeyDown(this.BUTTON_UP)) {
-		this.game.playSound('select') ;
+	if(this.isKeyPush(this.BUTTON_UP)) {
+		this.game.playSound('select');
 		this.continue_select_index = 0;
 	}
-	else if(this.isKeyDown(this.BUTTON_DOWN)) {
-		this.game.playSound('select') ;
+	else if(this.isKeyPush(this.BUTTON_DOWN)) {
+		this.game.playSound('select');
 		this.continue_select_index = 1;
 	}
-	else if(this.isKeyDown(this.BUTTON_Z)) {
-		this.game.playSound('select') ;
+	else if(this.isKeyPush(this.BUTTON_Z)) {
+		this.game.playSound('select');
 
 		if(this.continue_select_index === 0) {
 			// コンティニュー
@@ -18654,7 +18674,7 @@ StageScene.prototype._runContinue = function(){
 // ゲームクリア時のフレーム処理
 StageScene.prototype._runClear = function(){
 	// Zが押下されたら
-	if(this.isKeyDown(this.BUTTON_Z)) {
+	if(this.isKeyPush(this.BUTTON_Z)) {
 		this.game.playSound('select') ;
 
 		// オープニングに戻る
