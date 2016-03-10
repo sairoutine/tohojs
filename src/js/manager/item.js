@@ -57,4 +57,23 @@ ItemManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 自機との衝突判定
+ItemManager.prototype.checkCollisionWithCharacter = function(character) {
+	// 衝突判定
+	for(var id in this.objects) {
+		if(character.checkCollision(this.objects[id])) {
+			var item = this.objects[id];
+
+			// アイテムに衝突を通知
+			item.notifyCollision(character);
+			// 自機に衝突を通知
+			character.notifyCollision(item);
+
+			break;
+		}
+	}
+};
+
+
+
 module.exports = ItemManager;

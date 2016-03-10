@@ -17213,6 +17213,25 @@ ItemManager.prototype.updateDisplay = function(){
 	BaseManager.prototype.updateDisplay.apply(this, arguments);
 };
 
+// 自機との衝突判定
+ItemManager.prototype.checkCollisionWithCharacter = function(character) {
+	// 衝突判定
+	for(var id in this.objects) {
+		if(character.checkCollision(this.objects[id])) {
+			var item = this.objects[id];
+
+			// アイテムに衝突を通知
+			item.notifyCollision(character);
+			// 自機に衝突を通知
+			character.notifyCollision(item);
+
+			break;
+		}
+	}
+};
+
+
+
 module.exports = ItemManager;
 
 },{"../factory/item":8,"./base":12,"lodash":1}],16:[function(require,module,exports){
@@ -17469,6 +17488,9 @@ var _ = require('lodash');
 // 基底クラス
 var BaseObject = require('./base');
 
+var Enemy = require('./enemy');
+var Bullet = require('./bullet');
+
 // constructor
 var Character = function(id, scene) {
 	// 継承元new呼び出し
@@ -17638,23 +17660,26 @@ Character.prototype.checkCollision = function(obj) {
 
 // 衝突した時
 Character.prototype.notifyCollision = function(obj) {
-	// 死亡音再生
-	this.game.playSound('dead');
+	// 敵もしくは敵弾にぶつかったら
+	if(obj instanceof Bullet || obj instanceof Enemy) {
+		// 死亡音再生
+		this.game.playSound('dead');
 
-	//TODO: 自機死亡エフェクト生成
+		//TODO: 自機死亡エフェクト生成
 
-	// 自機を死亡
-	this.die();
+		// 自機を死亡
+		this.die();
 
-	// 残機がなくなればゲームオーバー画面表示
-	if(this.life === 0) {
-		this.stage.notifyCharacterDead();
+		// 残機がなくなればゲームオーバー画面表示
+		if(this.life === 0) {
+			this.stage.notifyCharacterDead();
+		}
 	}
 };
 
 module.exports = Character;
 
-},{"./base":17,"lodash":1}],20:[function(require,module,exports){
+},{"./base":17,"./bullet":18,"./enemy":20,"lodash":1}],20:[function(require,module,exports){
 'use strict';
 
 /* 敵オブジェクト */
@@ -17837,6 +17862,14 @@ Item.prototype.run = function(){
 
 // 衝突した時
 Item.prototype.notifyCollision = function(obj) {
+	console.log('ok');
+	// 獲得したアイテムを消す
+	this.stage.itemmanager.remove(this.id);
+
+	// TODO: グレイズSEの再生
+
+	// TODO: スコアアイテムとパワーアップアイテムで処理を分ける
+	this.stage.score += 1000;
 };
 
 module.exports = Item;
@@ -18527,6 +18560,9 @@ StageScene.prototype.run = function(){
 
 	// アイテム
 	this.itemmanager.run();
+
+	// アイテムと自機の衝突判定
+	this.itemmanager.checkCollisionWithCharacter(this.character);
 
 	// 自機弾と敵の衝突判定
 	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);

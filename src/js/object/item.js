@@ -61,6 +61,14 @@ Item.prototype.run = function(){
 
 // 衝突した時
 Item.prototype.notifyCollision = function(obj) {
+	console.log('ok');
+	// 獲得したアイテムを消す
+	this.stage.itemmanager.remove(this.id);
+
+	// TODO: グレイズSEの再生
+
+	// TODO: スコアアイテムとパワーアップアイテムで処理を分ける
+	this.stage.score += 1000;
 };
 
 module.exports = Item;

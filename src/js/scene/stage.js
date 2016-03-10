@@ -181,6 +181,9 @@ StageScene.prototype.run = function(){
 	// アイテム
 	this.itemmanager.run();
 
+	// アイテムと自機の衝突判定
+	this.itemmanager.checkCollisionWithCharacter(this.character);
+
 	// 自機弾と敵の衝突判定
 	this.shotmanager.checkCollisionWithEnemies(this.enemymanager);
 

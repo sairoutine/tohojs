@@ -8,6 +8,9 @@ var _ = require('lodash');
 // 基底クラス
 var BaseObject = require('./base');
 
+var Enemy = require('./enemy');
+var Bullet = require('./bullet');
+
 // constructor
 var Character = function(id, scene) {
 	// 継承元new呼び出し
@@ -177,17 +180,20 @@ Character.prototype.checkCollision = function(obj) {
 
 // 衝突した時
 Character.prototype.notifyCollision = function(obj) {
-	// 死亡音再生
-	this.game.playSound('dead');
+	// 敵もしくは敵弾にぶつかったら
+	if(obj instanceof Bullet || obj instanceof Enemy) {
+		// 死亡音再生
+		this.game.playSound('dead');
 
-	//TODO: 自機死亡エフェクト生成
+		//TODO: 自機死亡エフェクト生成
 
-	// 自機を死亡
-	this.die();
+		// 自機を死亡
+		this.die();
 
-	// 残機がなくなればゲームオーバー画面表示
-	if(this.life === 0) {
-		this.stage.notifyCharacterDead();
+		// 残機がなくなればゲームオーバー画面表示
+		if(this.life === 0) {
+			this.stage.notifyCharacterDead();
+		}
 	}
 };
 
