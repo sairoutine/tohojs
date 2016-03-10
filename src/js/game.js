@@ -85,6 +85,11 @@ Game.prototype.SOUNDS = {
 		id: 0x08,
 		path: 'sound/dead.wav',
 		volume: 0.05
+	},
+	graze: {
+		id: 0x10,
+		path: 'sound/graze.wav',
+		volume: 0.05
 	}
 };
 
