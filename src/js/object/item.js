@@ -64,7 +64,8 @@ Item.prototype.notifyCollision = function(obj) {
 	// 獲得したアイテムを消す
 	this.stage.itemmanager.remove(this.id);
 
-	// TODO: グレイズSEの再生
+	// グレイズSEの再生
+	this.game.playSound('graze');
 
 	// TODO: スコアアイテムとパワーアップアイテムで処理を分ける
 	this.stage.score += 1000;
