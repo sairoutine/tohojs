@@ -41,7 +41,7 @@ VectorBase.prototype.init = function(params) {
 			vector.r = params.v[i].v.r;
 
 			// ベクトルの角度(方向)
-			vector.theta = params.v[i].v.theta || 90;
+			vector.theta = params.v[i].v.theta || 0;
 
 			// 加速度
 			vector.w = params.v[i].v.w || 0;
@@ -90,7 +90,7 @@ VectorBase.prototype.init = function(params) {
 		vector.r = params.v.r;
 
 		// ベクトルの角度(方向)
-		vector.theta = params.v.theta || 90;
+		vector.theta = params.v.theta || 0;
 
 		// 加速度
 		vector.w = params.v.w || 0;
@@ -139,7 +139,16 @@ VectorBase.prototype.run = function(){
 	// 次の動きに変更するか
 	if(this.vectors[this.vector_index + 1] &&
 	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
+
+		var pre_theta = this.vectors[this.vector_index].theta;
+
+		// 次の動きに変更
 		this.vector_index++;
+
+		// 次の動きの角度が空なら前回の角度を引き継ぐ
+		if(pre_theta && ! this.vectors[this.vector_index].theta) {
+			this.vectors[this.vector_index].theta = pre_theta;
+		}
 	}
 
 	// 敵を動かす
