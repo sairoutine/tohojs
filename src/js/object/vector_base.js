@@ -73,6 +73,9 @@ VectorBase.prototype.init = function(params) {
 			// 速度の加速度の加速度の最大値
 			vector.warange = params.v[i].v.warange || null;
 
+			// 自機狙いかどうか
+			vector.aimed = params.v.aimed;
+
 			this.vectors.push(vector);
 		}
 	}
@@ -119,8 +122,14 @@ VectorBase.prototype.init = function(params) {
 		// 速度の加速度の加速度の最大値
 		vector.warange = params.v.warange || null;
 
+		// 自機狙いかどうか
+		vector.aimed = params.v.aimed;
+
 		this.vectors.push(vector) ;
 	}
+
+	this._calculateAimedVector();
+
 };
 
 // フレーム処理
@@ -169,22 +178,50 @@ VectorBase.prototype._beInRange = function(value, range) {
 };
 
 
-VectorBase.prototype._getRadian = function(){
+// θ -> ラジアンに変換
+VectorBase.prototype._theta_to_radian = function(theta){
 	var radian = this.vectors[this.vector_index].theta / 180 * Math.PI;
 	return radian;
+};
+
+// ラジアン -> θ に変換
+VectorBase.prototype._radian_to_theta = function(radian) {
+	return (radian * 180 / Math.PI) | 0;
 };
 
 
 // X軸の移動を計算
 VectorBase.prototype.calc_moveX = function() {
-	var move_x = this.vectors[this.vector_index].r * Math.cos(this._getRadian());
+	var vector = this.vectors[this.vector_index];
+
+	var move_x = vector.r * Math.cos(this._theta_to_radian(vector.theta));
 	return move_x;
 };
 
 // Y軸の移動を計算
 VectorBase.prototype.calc_moveY = function() {
-	var move_y = this.vectors[this.vector_index].r * Math.sin(this._getRadian());
+	var vector = this.vectors[this.vector_index];
+
+	var move_y = vector.r * Math.sin(this._theta_to_radian(vector.theta));
 	return move_y;
 } ;
+
+// TODO: count: 0 移行のベクトルも自機狙いするようにする
+// 自機狙いにする
+VectorBase.prototype._calculateAimedVector = function() {
+	// 自機狙い設定がされているか確認
+	if( ! this.vectors[this.vector_index].aimed){ return; }
+
+	// 自機
+	var character = this.stage.character;
+
+	var ax = character.x - this.x;
+	var ay = character.y - this.y;
+
+	this.vectors[this.vector_index].theta = this._radian_to_theta(Math.atan2(ay, ax));
+};
+
+
+
 
 module.exports = VectorBase;

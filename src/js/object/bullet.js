@@ -35,12 +35,12 @@ Bullet.prototype.spriteHeight = function() { return 16; };
 
 // 初期化
 Bullet.prototype.init = function(params, enemy) {
-	// ベクトルの初期化
-	VectorBaseObject.prototype.init.apply(this, arguments);
-
 	// 弾の初期位置は敵の位置
 	this.x = enemy.x;
 	this.y = enemy.y;
+
+	// ベクトルの初期化
+	VectorBaseObject.prototype.init.apply(this, arguments);
 };
 
 // フレーム処理
