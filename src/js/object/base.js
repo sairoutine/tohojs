@@ -138,4 +138,13 @@ ObjectBase.prototype.inCollisionArea = function(x, y) {
 	return false ;
 };
 
+// 画面外に出たかどうかの判定
+ObjectBase.prototype.isOutOfStage = function( ) {
+	if(this.x < 0 || this.x > this.stage.width || this.y < 0 || this.y > this.stage.height) {
+		return true;
+	}
+
+	return false;
+};
+
 module.exports = ObjectBase;
