@@ -33,8 +33,6 @@ OpeningScene.prototype.init = function() {
 OpeningScene.prototype.handleKeyDown = function(e){
 	switch( e.keyCode ) {
 		case 90: // z
-			this.game.playSound('select') ;
-			this.game.notifyOpeningDone( ) ;
 			break;
 	}
 };
@@ -42,6 +40,11 @@ OpeningScene.prototype.handleKeyDown = function(e){
 // フレーム処理
 OpeningScene.prototype.run = function(){
 	BaseScene.prototype.run.apply(this, arguments);
+
+	if(this.game.isKeyPush(this.game.BUTTON_Z)) {
+			this.game.playSound('select');
+			this.game.notifyOpeningDone();
+	}
 };
 
 // 画面更新

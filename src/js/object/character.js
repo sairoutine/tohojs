@@ -78,7 +78,7 @@ Character.prototype.run = function(){
 	BaseObject.prototype.run.apply(this, arguments);
 
 	// Zが押下されていればショット生成
-	if(this.stage.isKeyDown(this.stage.BUTTON_Z)) {
+	if(this.game.isKeyDown(this.game.BUTTON_Z)) {
 		// 5フレーム置きにショットを生成 TODO:
 		if(this.frame_count % 5 === 0) {
 			this.stage.shotmanager.create();
@@ -87,16 +87,16 @@ Character.prototype.run = function(){
 	}
 
 	// 自機移動
-	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
+	if(this.game.isKeyDown(this.game.BUTTON_LEFT)) {
 		this.x -= this.SPEED;
 	}
-	if(this.stage.isKeyDown(this.stage.BUTTON_RIGHT)) {
+	if(this.game.isKeyDown(this.game.BUTTON_RIGHT)) {
 		this.x += this.SPEED;
 	}
-	if(this.stage.isKeyDown(this.stage.BUTTON_DOWN)) {
+	if(this.game.isKeyDown(this.game.BUTTON_DOWN)) {
 		this.y += this.SPEED;
 	}
-	if(this.stage.isKeyDown(this.stage.BUTTON_UP)) {
+	if(this.game.isKeyDown(this.game.BUTTON_UP)) {
 		this.y -= this.SPEED;
 	}
 
@@ -116,11 +116,11 @@ Character.prototype.run = function(){
 
 
 	// 左右の移動に合わせて自機のアニメーションを変更
-	if(this.stage.isKeyDown(this.stage.BUTTON_LEFT) && !this.stage.isKeyDown(this.stage.BUTTON_RIGHT)) {
+	if(this.game.isKeyDown(this.game.BUTTON_LEFT) && !this.game.isKeyDown(this.game.BUTTON_RIGHT)) {
 		// 左移動中
 		this.indexY = 1;
 	}
-	else if(this.stage.isKeyDown(this.stage.BUTTON_RIGHT) && !this.stage.isKeyDown(this.stage.BUTTON_LEFT)) {
+	else if(this.game.isKeyDown(this.game.BUTTON_RIGHT) && !this.game.isKeyDown(this.game.BUTTON_LEFT)) {
 		// 右移動中
 		this.indexY = 2;
 	}

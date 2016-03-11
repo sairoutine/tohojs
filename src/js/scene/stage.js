@@ -40,12 +40,6 @@ var StageScene = function(game) {
 	// アイテム
 	this.itemmanager = new ItemManager(this);
 
-	// キー押下フラグ
-	this.keyflag = 0x0;
-
-	// 一つ前のフレームで押下されたキー
-	this.before_keyflag = 0x0;
-
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
 	this.height= this.game.height;
@@ -62,16 +56,6 @@ _.extend(StageScene, BaseScene);
 StageScene.prototype.STATE_SHOOTING  = 1;
 StageScene.prototype.STATE_GAMEOVER  = 2;
 StageScene.prototype.STATE_CLEAR     = 3;
-
-// キー押下フラグ
-StageScene.prototype.BUTTON_LEFT  = 0x01;
-StageScene.prototype.BUTTON_UP    = 0x02;
-StageScene.prototype.BUTTON_RIGHT = 0x04;
-StageScene.prototype.BUTTON_DOWN  = 0x08;
-StageScene.prototype.BUTTON_Z     = 0x10;
-StageScene.prototype.BUTTON_X     = 0x20;
-StageScene.prototype.BUTTON_SHIFT = 0x40;
-StageScene.prototype.BUTTON_SPACE = 0x80;
 
 // サイドバーの横の長さ
 StageScene.prototype.SIDE_WIDTH = 160;
@@ -98,12 +82,6 @@ StageScene.prototype.init = function() {
 	// スコア初期化
 	this.score = 0;
 
-	// キー押下フラグ
-	this.keyflag = 0x0;
-
-	// 一つ前のフレームで押下されたキー
-	this.before_keyflag = 0x0;
-
 	// 自機を初期化
 	this.character.init();
 
@@ -127,66 +105,12 @@ StageScene.prototype.init = function() {
 
 };
 
-// キー押下
-StageScene.prototype.handleKeyDown = function(e){
-	this.keyflag |= this._keyCodeToBitCode(e.keyCode);
-};
-
-// キー押下解除
-StageScene.prototype.handleKeyUp   = function(e){
-	this.keyflag &= ~this._keyCodeToBitCode(e.keyCode);
-};
-
-// 指定のキーが押下状態か確認する
-StageScene.prototype.isKeyDown = function(flag) {
-	return this.keyflag & flag;
-};
-
-// 指定のキーが押下されたか確認する
-StageScene.prototype.isKeyPush = function(flag) {
-	// 1フレーム前に押下されておらず、現フレームで押下されてるなら true
-	return !(this.before_keyflag & flag) && this.keyflag & flag;
-};
-
-// キーコードをBitに変換
-StageScene.prototype._keyCodeToBitCode = function(keyCode) {
-	var flag;
-	switch(keyCode) {
-		case 16: // shift
-			flag = this.BUTTON_SHIFT;
-			break;
-		case 32: // space
-			flag = this.BUTTON_SPACE;
-			break;
-		case 37: // left
-			flag = this.BUTTON_LEFT;
-			break;
-		case 38: // up
-			flag = this.BUTTON_UP;
-			break;
-		case 39: // right
-			flag = this.BUTTON_RIGHT;
-			break;
-		case 40: // down
-			flag = this.BUTTON_DOWN;
-			break;
-		case 88: // x
-			flag = this.BUTTON_X;
-			break;
-		case 90: // z
-			flag = this.BUTTON_Z;
-			break;
-	}
-	return flag;
-};
-
 // フレーム処理
 StageScene.prototype.run = function(){
 	// TODO: リファクタ
 	// ゲームオーバー画面ならば
 	if(this.state === this.STATE_GAMEOVER) {
 		this._runContinue();
-		this.before_keyflag = this.keyflag;
 		return;
 	}
 	// ゲームクリア画面ならば
@@ -226,8 +150,6 @@ StageScene.prototype.run = function(){
 
 	// ステージ終了かどうか判定
 	this._checkStageEnd();
-
-	this.before_keyflag = this.keyflag;
 };
 
 
@@ -237,15 +159,15 @@ StageScene.prototype._runContinue = function(){
 	// TODO: 死んだ時に初期位置に戻ってコンティニュ画面になるの治したい
 
 	// カーソルを上に移動
-	if(this.isKeyPush(this.BUTTON_UP)) {
+	if(this.game.isKeyPush(this.game.BUTTON_UP)) {
 		this.game.playSound('select');
 		this.continue_select_index = 0;
 	}
-	else if(this.isKeyPush(this.BUTTON_DOWN)) {
+	else if(this.game.isKeyPush(this.game.BUTTON_DOWN)) {
 		this.game.playSound('select');
 		this.continue_select_index = 1;
 	}
-	else if(this.isKeyPush(this.BUTTON_Z)) {
+	else if(this.game.isKeyPush(this.game.BUTTON_Z)) {
 		this.game.playSound('select');
 
 		if(this.continue_select_index === 0) {
@@ -264,7 +186,7 @@ StageScene.prototype._runContinue = function(){
 // ゲームクリア時のフレーム処理
 StageScene.prototype._runClear = function(){
 	// Zが押下されたら
-	if(this.isKeyPush(this.BUTTON_Z)) {
+	if(this.game.isKeyPush(this.game.BUTTON_Z)) {
 		this.game.playSound('select') ;
 
 		// オープニングに戻る
