@@ -12,21 +12,26 @@ var VectorBaseObject = require('./vector_base');
 var Bullet = function(id, scene) {
 	// 継承元new呼び出し
 	VectorBaseObject.apply(this, arguments);
-
-	// 弾のスプライト上の位置
-	this.indexX = 3; this.indexY = 3; //TODO:
 };
 
 // 基底クラスを継承
 _.extend(Bullet.prototype, VectorBaseObject.prototype);
 _.extend(Bullet, VectorBaseObject);
 
-// 敵弾のスプライトサイズ
-Bullet.prototype.WIDTH  = 16;
-Bullet.prototype.HEIGHT = 16;
+// 当たり判定サイズ
+Bullet.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Bullet.prototype.collisionHeight = function() { return this.spriteHeight(); };
 
-// 敵弾画像
-Bullet.prototype.IMAGE_KEY = 'bullet';
+// スプライトの開始位置
+Bullet.prototype.spriteX = function() { return 3; };
+Bullet.prototype.spriteY = function() { return 3; };
+
+// スプライト画像
+Bullet.prototype.spriteImage = function() { return 'bullet'; };
+
+// スプライトのサイズ
+Bullet.prototype.spriteWidth  = function() { return 16; };
+Bullet.prototype.spriteHeight = function() { return 16; };
 
 // 初期化
 Bullet.prototype.init = function(params, enemy) {

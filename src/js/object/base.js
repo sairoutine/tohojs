@@ -21,11 +21,6 @@ var ObjectBase = function(id, scene) {
 	this.x = 0;
 	// y座標(中心)
 	this.y = 0;
-	// スプライトの開始位置
-	this.indexX = 0;
-	// スプライトの開始位置
-	this.indexY = 0;
-
 };
 
 // 初期化
@@ -34,32 +29,71 @@ ObjectBase.prototype.init = function() {
 	this.frame_count = 0;
 };
 
+// 衝突した時
+ObjectBase.prototype.notifyCollision = function(obj) {
+	console.error('notifyCollision method must be overridden.');
+};
+
+// 当たり判定サイズ
+ObjectBase.prototype.collisionHeight = function() {
+	console.error('collisionHeight method must be overridden.');
+};
+
+// 当たり判定サイズ
+ObjectBase.prototype.collisionWidth = function() {
+	console.error('collisionWidth method must be overridden.');
+};
+
+// スプライトの開始位置
+ObjectBase.prototype.spriteX = function() {
+	console.error('spriteX method must be overridden.');
+};
+
+// スプライトの開始位置
+ObjectBase.prototype.spriteY = function() {
+	console.error('spriteY method must be overridden.');
+};
+
+// スプライト画像
+ObjectBase.prototype.spriteImage = function() {
+	console.error('spriteImage method must be overridden.');
+};
+
+// スプライトのサイズ
+ObjectBase.prototype.spriteWidth = function() {
+	console.error('spriteWidth method must be overridden.');
+};
+
+// スプライトのサイズ
+ObjectBase.prototype.spriteHeight = function() {
+	console.error('spriteHeight method must be overridden.');
+};
+
 // フレーム処理
 ObjectBase.prototype.run = function(){
 	// 経過フレーム数更新
 	this.frame_count++;
 };
 
-//TODO: this.WIDTH, this.HEIGHT, this.IMAGE_KEY を関数化してオーバーライドしないとエラーにしたい
 // 画面更新
 ObjectBase.prototype.updateDisplay = function(){
 	// スプライトの描画開始座標
-	var sprite_x = Math.round(this.x - this.WIDTH / 2);
-	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
+	var sprite_x = Math.round(this.x - this.spriteWidth() / 2);
+	var sprite_y = Math.round(this.y - this.spriteHeight() / 2);
 
-	var image = this.game.getImage(this.IMAGE_KEY);
+	var image = this.game.getImage(this.spriteImage());
 	this.game.surface.save();
 	// オブジェクト描画
 
 	this.game.surface.drawImage(image,
 		// スプライトの取得位置
-		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
+		this.spriteWidth()  * this.spriteX(), this.spriteHeight() * this.spriteY(),
 		// スプライトのサイズ
-		this.WIDTH,                this.HEIGHT,
+		this.spriteWidth(),                   this.spriteHeight(),
 		// オブジェクトのゲーム上の位置
-		sprite_x,                  sprite_y,
+		sprite_x,                             sprite_y,
 		// オブジェクトのゲーム上のサイズ
-		this.WIDTH,                this.HEIGHT
+		this.spriteWidth(),                this.spriteHeight()
 	);
 	this.game.surface.restore();
 };
@@ -79,20 +113,20 @@ ObjectBase.prototype.checkCollision = function(obj) {
 };
 
 ObjectBase.prototype.getCollisionLeftX = function() {
-	return this.x - this.WIDTH / 2;
+	return this.x - this.collisionWidth() / 2;
 };
 
 
 ObjectBase.prototype.getCollisionRightX = function() {
-	return this.x + this.WIDTH / 2;
+	return this.x + this.collisionWidth() / 2;
 };
 
 ObjectBase.prototype.getCollisionUpY = function() {
-	return this.y - this.HEIGHT / 2;
+	return this.y - this.collisionHeight() / 2;
 };
 
 ObjectBase.prototype.getCollisionBottomY = function() {
-	return this.y + this.HEIGHT / 2;
+	return this.y + this.collisionHeight() / 2;
 };
 
 ObjectBase.prototype.inCollisionArea = function(x, y) {
@@ -103,12 +137,5 @@ ObjectBase.prototype.inCollisionArea = function(x, y) {
 
 	return false ;
 };
-
-// 衝突した時
-ObjectBase.prototype.notifyCollision = function(obj) {
-
-};
-
-
 
 module.exports = ObjectBase;

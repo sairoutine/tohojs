@@ -17430,11 +17430,6 @@ var ObjectBase = function(id, scene) {
 	this.x = 0;
 	// y座標(中心)
 	this.y = 0;
-	// スプライトの開始位置
-	this.indexX = 0;
-	// スプライトの開始位置
-	this.indexY = 0;
-
 };
 
 // 初期化
@@ -17443,32 +17438,71 @@ ObjectBase.prototype.init = function() {
 	this.frame_count = 0;
 };
 
+// 衝突した時
+ObjectBase.prototype.notifyCollision = function(obj) {
+	console.error('notifyCollision method must be overridden.');
+};
+
+// 当たり判定サイズ
+ObjectBase.prototype.collisionHeight = function() {
+	console.error('collisionHeight method must be overridden.');
+};
+
+// 当たり判定サイズ
+ObjectBase.prototype.collisionWidth = function() {
+	console.error('collisionWidth method must be overridden.');
+};
+
+// スプライトの開始位置
+ObjectBase.prototype.spriteX = function() {
+	console.error('spriteX method must be overridden.');
+};
+
+// スプライトの開始位置
+ObjectBase.prototype.spriteY = function() {
+	console.error('spriteY method must be overridden.');
+};
+
+// スプライト画像
+ObjectBase.prototype.spriteImage = function() {
+	console.error('spriteImage method must be overridden.');
+};
+
+// スプライトのサイズ
+ObjectBase.prototype.spriteWidth = function() {
+	console.error('spriteWidth method must be overridden.');
+};
+
+// スプライトのサイズ
+ObjectBase.prototype.spriteHeight = function() {
+	console.error('spriteHeight method must be overridden.');
+};
+
 // フレーム処理
 ObjectBase.prototype.run = function(){
 	// 経過フレーム数更新
 	this.frame_count++;
 };
 
-//TODO: this.WIDTH, this.HEIGHT, this.IMAGE_KEY を関数化してオーバーライドしないとエラーにしたい
 // 画面更新
 ObjectBase.prototype.updateDisplay = function(){
 	// スプライトの描画開始座標
-	var sprite_x = Math.round(this.x - this.WIDTH / 2);
-	var sprite_y = Math.round(this.y - this.HEIGHT / 2);
+	var sprite_x = Math.round(this.x - this.spriteWidth() / 2);
+	var sprite_y = Math.round(this.y - this.spriteHeight() / 2);
 
-	var image = this.game.getImage(this.IMAGE_KEY);
+	var image = this.game.getImage(this.spriteImage());
 	this.game.surface.save();
 	// オブジェクト描画
 
 	this.game.surface.drawImage(image,
 		// スプライトの取得位置
-		this.WIDTH  * this.indexX, this.HEIGHT * this.indexY,
+		this.spriteWidth()  * this.spriteX(), this.spriteHeight() * this.spriteY(),
 		// スプライトのサイズ
-		this.WIDTH,                this.HEIGHT,
+		this.spriteWidth(),                   this.spriteHeight(),
 		// オブジェクトのゲーム上の位置
-		sprite_x,                  sprite_y,
+		sprite_x,                             sprite_y,
 		// オブジェクトのゲーム上のサイズ
-		this.WIDTH,                this.HEIGHT
+		this.spriteWidth(),                this.spriteHeight()
 	);
 	this.game.surface.restore();
 };
@@ -17488,20 +17522,20 @@ ObjectBase.prototype.checkCollision = function(obj) {
 };
 
 ObjectBase.prototype.getCollisionLeftX = function() {
-	return this.x - this.WIDTH / 2;
+	return this.x - this.collisionWidth() / 2;
 };
 
 
 ObjectBase.prototype.getCollisionRightX = function() {
-	return this.x + this.WIDTH / 2;
+	return this.x + this.collisionWidth() / 2;
 };
 
 ObjectBase.prototype.getCollisionUpY = function() {
-	return this.y - this.HEIGHT / 2;
+	return this.y - this.collisionHeight() / 2;
 };
 
 ObjectBase.prototype.getCollisionBottomY = function() {
-	return this.y + this.HEIGHT / 2;
+	return this.y + this.collisionHeight() / 2;
 };
 
 ObjectBase.prototype.inCollisionArea = function(x, y) {
@@ -17512,13 +17546,6 @@ ObjectBase.prototype.inCollisionArea = function(x, y) {
 
 	return false ;
 };
-
-// 衝突した時
-ObjectBase.prototype.notifyCollision = function(obj) {
-
-};
-
-
 
 module.exports = ObjectBase;
 
@@ -17537,21 +17564,26 @@ var VectorBaseObject = require('./vector_base');
 var Bullet = function(id, scene) {
 	// 継承元new呼び出し
 	VectorBaseObject.apply(this, arguments);
-
-	// 弾のスプライト上の位置
-	this.indexX = 3; this.indexY = 3; //TODO:
 };
 
 // 基底クラスを継承
 _.extend(Bullet.prototype, VectorBaseObject.prototype);
 _.extend(Bullet, VectorBaseObject);
 
-// 敵弾のスプライトサイズ
-Bullet.prototype.WIDTH  = 16;
-Bullet.prototype.HEIGHT = 16;
+// 当たり判定サイズ
+Bullet.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Bullet.prototype.collisionHeight = function() { return this.spriteHeight(); };
 
-// 敵弾画像
-Bullet.prototype.IMAGE_KEY = 'bullet';
+// スプライトの開始位置
+Bullet.prototype.spriteX = function() { return 3; };
+Bullet.prototype.spriteY = function() { return 3; };
+
+// スプライト画像
+Bullet.prototype.spriteImage = function() { return 'bullet'; };
+
+// スプライトのサイズ
+Bullet.prototype.spriteWidth  = function() { return 16; };
+Bullet.prototype.spriteHeight = function() { return 16; };
 
 // 初期化
 Bullet.prototype.init = function(params, enemy) {
@@ -17594,18 +17626,14 @@ var Bullet = require('./bullet');
 var Character = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
+
+	// 自機のスプライトの位置
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
 _.extend(Character.prototype, BaseObject.prototype);
 _.extend(Character, BaseObject);
-
-// 自機のスプライトサイズ
-Character.prototype.WIDTH  = 32;
-Character.prototype.HEIGHT = 48;
-
-// 霊夢画像
-Character.prototype.IMAGE_KEY = 'reimu';
 
 // 自機の移動速度
 Character.prototype.SPEED = 4;
@@ -17616,6 +17644,20 @@ Character.prototype.ANIMATION_SPAN = 2;
 // 死亡時の無敵時間
 Character.prototype.UNHITTABLE_COUNT = 100;
 
+// 当たり判定サイズ
+Character.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Character.prototype.collisionHeight = function() { return this.spriteHeight(); };
+
+// スプライトの開始位置
+Character.prototype.spriteX = function() { return this.indexX; };
+Character.prototype.spriteY = function() { return this.indexY; };
+
+// スプライト画像
+Character.prototype.spriteImage = function() { return 'reimu'; };
+
+// スプライトのサイズ
+Character.prototype.spriteWidth  = function() { return 32; };
+Character.prototype.spriteHeight = function() { return 48; };
 
 // 初期化
 Character.prototype.init = function() {
@@ -17796,21 +17838,30 @@ var Enemy = function(id, scene) {
 	VectorBaseObject.apply(this, arguments);
 
 	// 敵のスプライト上の位置
-	this.indexX = 0; this.indexY = 0; //TODO:
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
 _.extend(Enemy.prototype, VectorBaseObject.prototype);
 _.extend(Enemy, VectorBaseObject);
 
-// 敵のスプライトサイズ
-Enemy.prototype.WIDTH = 32 ;
-Enemy.prototype.HEIGHT = 32 ;
-
-// 敵画像
-Enemy.prototype.IMAGE_KEY = 'enemy';
-
+// Nフレーム毎に自機をアニメーション
 Enemy.prototype.ANIMATION_SPAN = 5;
+
+// 当たり判定サイズ
+Enemy.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Enemy.prototype.collisionHeight = function() { return this.spriteHeight(); };
+
+// スプライトの開始位置
+Enemy.prototype.spriteX = function() { return this.indexX; };
+Enemy.prototype.spriteY = function() { return this.indexY; };
+
+// スプライト画像
+Enemy.prototype.spriteImage = function() { return 'enemy'; };
+
+// スプライトのサイズ
+Enemy.prototype.spriteWidth  = function() { return 32; };
+Enemy.prototype.spriteHeight = function() { return 32; };
 
 // 初期化
 Enemy.prototype.init = function(params) {
@@ -17919,12 +17970,26 @@ var Item = function(id, scene) {
 _.extend(Item.prototype, VectorBase.prototype);
 _.extend(Item, VectorBase);
 
-// アイテムのスプライトサイズ
-Item.prototype.WIDTH  = 12;
-Item.prototype.HEIGHT = 12;
+// 当たり判定サイズ
+Item.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Item.prototype.collisionHeight = function() { return this.spriteHeight(); };
 
-// アイテム画像
-Item.prototype.IMAGE_KEY = 'item';
+// スプライトの開始位置
+Item.prototype.spriteX = function() { return 0; };
+Item.prototype.spriteY = function() { return 0; };
+
+// スプライト画像
+Item.prototype.spriteImage = function() { return 'item'; };
+
+// スプライトのサイズ
+Item.prototype.spriteWidth  = function() { return 12; };
+Item.prototype.spriteHeight = function() { return 12; };
+
+
+
+
+
+
 
 // 初期化
 Item.prototype.init = function(enemy) {
@@ -17988,26 +18053,29 @@ var BaseObject = require('./base');
 var Shot = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
-
-	// 弾を一意に特定するID
-
-	// 弾のスプライト上の位置
-	this.indexX = 3; this.indexY = 3; //TODO:
 };
 
 // 基底クラスを継承
 _.extend(Shot.prototype, BaseObject.prototype);
 _.extend(Shot, BaseObject);
 
-// 自機弾のスプライトサイズ
-Shot.prototype.WIDTH  = 16;
-Shot.prototype.HEIGHT = 48;
-
-// 自機弾画像
-Shot.prototype.IMAGE_KEY = 'shot';
-
 // 自機弾の移動速度
 Shot.prototype.SPEED = 8;
+
+// 当たり判定サイズ
+Shot.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Shot.prototype.collisionHeight = function() { return this.spriteHeight(); };
+
+// スプライトの開始位置
+Shot.prototype.spriteX = function() { return 3; };
+Shot.prototype.spriteY = function() { return 3; };
+
+// スプライト画像
+Shot.prototype.spriteImage = function() { return 'shot'; };
+
+// スプライトのサイズ
+Shot.prototype.spriteWidth  = function() { return 16; };
+Shot.prototype.spriteHeight = function() { return 48; };
 
 // 初期化
 Shot.prototype.init = function() {

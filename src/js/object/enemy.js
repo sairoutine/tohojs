@@ -15,21 +15,30 @@ var Enemy = function(id, scene) {
 	VectorBaseObject.apply(this, arguments);
 
 	// 敵のスプライト上の位置
-	this.indexX = 0; this.indexY = 0; //TODO:
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
 _.extend(Enemy.prototype, VectorBaseObject.prototype);
 _.extend(Enemy, VectorBaseObject);
 
-// 敵のスプライトサイズ
-Enemy.prototype.WIDTH = 32 ;
-Enemy.prototype.HEIGHT = 32 ;
-
-// 敵画像
-Enemy.prototype.IMAGE_KEY = 'enemy';
-
+// Nフレーム毎に自機をアニメーション
 Enemy.prototype.ANIMATION_SPAN = 5;
+
+// 当たり判定サイズ
+Enemy.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Enemy.prototype.collisionHeight = function() { return this.spriteHeight(); };
+
+// スプライトの開始位置
+Enemy.prototype.spriteX = function() { return this.indexX; };
+Enemy.prototype.spriteY = function() { return this.indexY; };
+
+// スプライト画像
+Enemy.prototype.spriteImage = function() { return 'enemy'; };
+
+// スプライトのサイズ
+Enemy.prototype.spriteWidth  = function() { return 32; };
+Enemy.prototype.spriteHeight = function() { return 32; };
 
 // 初期化
 Enemy.prototype.init = function(params) {

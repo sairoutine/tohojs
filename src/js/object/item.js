@@ -19,12 +19,26 @@ var Item = function(id, scene) {
 _.extend(Item.prototype, VectorBase.prototype);
 _.extend(Item, VectorBase);
 
-// アイテムのスプライトサイズ
-Item.prototype.WIDTH  = 12;
-Item.prototype.HEIGHT = 12;
+// 当たり判定サイズ
+Item.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Item.prototype.collisionHeight = function() { return this.spriteHeight(); };
 
-// アイテム画像
-Item.prototype.IMAGE_KEY = 'item';
+// スプライトの開始位置
+Item.prototype.spriteX = function() { return 0; };
+Item.prototype.spriteY = function() { return 0; };
+
+// スプライト画像
+Item.prototype.spriteImage = function() { return 'item'; };
+
+// スプライトのサイズ
+Item.prototype.spriteWidth  = function() { return 12; };
+Item.prototype.spriteHeight = function() { return 12; };
+
+
+
+
+
+
 
 // 初期化
 Item.prototype.init = function(enemy) {

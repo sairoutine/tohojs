@@ -15,18 +15,14 @@ var Bullet = require('./bullet');
 var Character = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
+
+	// 自機のスプライトの位置
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
 _.extend(Character.prototype, BaseObject.prototype);
 _.extend(Character, BaseObject);
-
-// 自機のスプライトサイズ
-Character.prototype.WIDTH  = 32;
-Character.prototype.HEIGHT = 48;
-
-// 霊夢画像
-Character.prototype.IMAGE_KEY = 'reimu';
 
 // 自機の移動速度
 Character.prototype.SPEED = 4;
@@ -37,6 +33,20 @@ Character.prototype.ANIMATION_SPAN = 2;
 // 死亡時の無敵時間
 Character.prototype.UNHITTABLE_COUNT = 100;
 
+// 当たり判定サイズ
+Character.prototype.collisionWidth  = function() { return this.spriteWidth();  };
+Character.prototype.collisionHeight = function() { return this.spriteHeight(); };
+
+// スプライトの開始位置
+Character.prototype.spriteX = function() { return this.indexX; };
+Character.prototype.spriteY = function() { return this.indexY; };
+
+// スプライト画像
+Character.prototype.spriteImage = function() { return 'reimu'; };
+
+// スプライトのサイズ
+Character.prototype.spriteWidth  = function() { return 32; };
+Character.prototype.spriteHeight = function() { return 48; };
 
 // 初期化
 Character.prototype.init = function() {
