@@ -29,6 +29,9 @@ ObjectBase.prototype.init = function() {
 	this.frame_count = 0;
 };
 
+// ステージ外かどうかの判定の余白
+ObjectBase.prototype.EXTRA_OUT_OF_SIZE = 100;
+
 // 衝突した時
 ObjectBase.prototype.notifyCollision = function(obj) {
 	console.error('notifyCollision method must be overridden.');
@@ -140,7 +143,11 @@ ObjectBase.prototype.inCollisionArea = function(x, y) {
 
 // 画面外に出たかどうかの判定
 ObjectBase.prototype.isOutOfStage = function( ) {
-	if(this.x < 0 || this.x > this.stage.width || this.y < 0 || this.y > this.stage.height) {
+	if(this.x + this.EXTRA_OUT_OF_SIZE < 0 ||
+	   this.y + this.EXTRA_OUT_OF_SIZE < 0 ||
+	   this.x > this.stage.width  + this.EXTRA_OUT_OF_SIZE ||
+	   this.y > this.stage.height + this.EXTRA_OUT_OF_SIZE
+	  ) {
 		return true;
 	}
 
