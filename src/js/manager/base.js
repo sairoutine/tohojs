@@ -63,7 +63,6 @@ BaseManager.prototype.removeOutOfStageObjects = function() {
 	// オブジェクトが画面外に出たかどうか判定
 	for(var id in this.objects) {
 		if(this.objects[id].isOutOfStage()) {
-			console.log(id);
 			this.remove(id);
 		}
 	}
