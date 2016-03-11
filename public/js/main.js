@@ -17067,7 +17067,21 @@ BaseManager.prototype.run = function(){
 	for(var id in this.objects) {
 		this.objects[id].run();
 	}
+
+	// 画面外に出たオブジェクトを削除
+	this.removeOutOfStageObjects();
 };
+
+// 画面外に出たオブジェクトを消去する
+BaseManager.prototype.removeOutOfStageObjects = function() {
+	// オブジェクトが画面外に出たかどうか判定
+	for(var id in this.objects) {
+		if(this.objects[id].isOutOfStage()) {
+			this.remove(id);
+		}
+	}
+};
+
 
 // 画面更新
 BaseManager.prototype.updateDisplay = function(){
@@ -17316,7 +17330,7 @@ ItemManager.prototype.updateDisplay = function(){
 ItemManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var id in this.objects) {
-		if(character.checkCollision(this.objects[id])) {
+		if(this.objects[id].checkCollision(character)) {
 			var item = this.objects[id];
 
 			// アイテムに衝突を通知
@@ -17438,6 +17452,9 @@ ObjectBase.prototype.init = function() {
 	this.frame_count = 0;
 };
 
+// ステージ外かどうかの判定の余白
+ObjectBase.prototype.EXTRA_OUT_OF_SIZE = 100;
+
 // 衝突した時
 ObjectBase.prototype.notifyCollision = function(obj) {
 	console.error('notifyCollision method must be overridden.');
@@ -17502,7 +17519,7 @@ ObjectBase.prototype.updateDisplay = function(){
 		// オブジェクトのゲーム上の位置
 		sprite_x,                             sprite_y,
 		// オブジェクトのゲーム上のサイズ
-		this.spriteWidth(),                this.spriteHeight()
+		this.spriteWidth(),                   this.spriteHeight()
 	);
 	this.game.surface.restore();
 };
@@ -17539,12 +17556,25 @@ ObjectBase.prototype.getCollisionBottomY = function() {
 };
 
 ObjectBase.prototype.inCollisionArea = function(x, y) {
-	if(x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
+	if( x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
 		y >= this.getCollisionUpY()  && y <= this.getCollisionBottomY()) {
 		return true;
 	}
 
 	return false ;
+};
+
+// 画面外に出たかどうかの判定
+ObjectBase.prototype.isOutOfStage = function( ) {
+	if(this.x + this.EXTRA_OUT_OF_SIZE < 0 ||
+	   this.y + this.EXTRA_OUT_OF_SIZE < 0 ||
+	   this.x > this.stage.width  + this.EXTRA_OUT_OF_SIZE ||
+	   this.y > this.stage.height + this.EXTRA_OUT_OF_SIZE
+	  ) {
+		return true;
+	}
+
+	return false;
 };
 
 module.exports = ObjectBase;
@@ -17587,12 +17617,12 @@ Bullet.prototype.spriteHeight = function() { return 16; };
 
 // 初期化
 Bullet.prototype.init = function(params, enemy) {
-	// ベクトルの初期化
-	VectorBaseObject.prototype.init.apply(this, arguments);
-
 	// 弾の初期位置は敵の位置
 	this.x = enemy.x;
 	this.y = enemy.y;
+
+	// ベクトルの初期化
+	VectorBaseObject.prototype.init.apply(this, arguments);
 };
 
 // フレーム処理
@@ -17635,8 +17665,11 @@ var Character = function(id, scene) {
 _.extend(Character.prototype, BaseObject.prototype);
 _.extend(Character, BaseObject);
 
-// 自機の移動速度
-Character.prototype.SPEED = 4;
+// 自機の移動速度(通常時)
+Character.prototype.FAST_SPEED = 4;
+
+// 自機の移動速度(Z押下時)
+Character.prototype.SLOW_SPEED = 3;
 
 // Nフレーム毎に自機をアニメーション
 Character.prototype.ANIMATION_SPAN = 2;
@@ -17645,8 +17678,8 @@ Character.prototype.ANIMATION_SPAN = 2;
 Character.prototype.UNHITTABLE_COUNT = 100;
 
 // 当たり判定サイズ
-Character.prototype.collisionWidth  = function() { return this.spriteWidth();  };
-Character.prototype.collisionHeight = function() { return this.spriteHeight(); };
+Character.prototype.collisionWidth  = function() { return 4; };
+Character.prototype.collisionHeight = function() { return 4; };
 
 // スプライトの開始位置
 Character.prototype.spriteX = function() { return this.indexX; };
@@ -17707,18 +17740,21 @@ Character.prototype.run = function(){
 		}
 	}
 
+	// 移動速度
+	var speed = this.game.isKeyDown(this.game.BUTTON_Z) ? this.SLOW_SPEED : this.FAST_SPEED;
+
 	// 自機移動
 	if(this.game.isKeyDown(this.game.BUTTON_LEFT)) {
-		this.x -= this.SPEED;
+		this.x -= speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_RIGHT)) {
-		this.x += this.SPEED;
+		this.x += speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_DOWN)) {
-		this.y += this.SPEED;
+		this.y += speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_UP)) {
-		this.y -= this.SPEED;
+		this.y -= speed;
 	}
 
 	// 画面外に出させない
@@ -17964,6 +18000,8 @@ var Item = function(id, scene) {
 	// 継承元new呼び出し
 	VectorBase.apply(this, arguments);
 
+	// スプライトの開始位置
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
@@ -17971,12 +18009,12 @@ _.extend(Item.prototype, VectorBase.prototype);
 _.extend(Item, VectorBase);
 
 // 当たり判定サイズ
-Item.prototype.collisionWidth  = function() { return this.spriteWidth();  };
-Item.prototype.collisionHeight = function() { return this.spriteHeight(); };
+Item.prototype.collisionWidth  = function() { return 50; };
+Item.prototype.collisionHeight = function() { return 50; };
 
 // スプライトの開始位置
-Item.prototype.spriteX = function() { return 0; };
-Item.prototype.spriteY = function() { return 0; };
+Item.prototype.spriteX = function() { return this.indexX; };
+Item.prototype.spriteY = function() { return this.indexY; };
 
 // スプライト画像
 Item.prototype.spriteImage = function() { return 'item'; };
@@ -17984,12 +18022,6 @@ Item.prototype.spriteImage = function() { return 'item'; };
 // スプライトのサイズ
 Item.prototype.spriteWidth  = function() { return 12; };
 Item.prototype.spriteHeight = function() { return 12; };
-
-
-
-
-
-
 
 // 初期化
 Item.prototype.init = function(enemy) {
@@ -18146,7 +18178,7 @@ VectorBase.prototype.init = function(params) {
 			vector.r = params.v[i].v.r;
 
 			// ベクトルの角度(方向)
-			vector.theta = params.v[i].v.theta || 90;
+			vector.theta = params.v[i].v.theta || 0;
 
 			// 加速度
 			vector.w = params.v[i].v.w || 0;
@@ -18178,6 +18210,9 @@ VectorBase.prototype.init = function(params) {
 			// 速度の加速度の加速度の最大値
 			vector.warange = params.v[i].v.warange || null;
 
+			// 自機狙いかどうか
+			vector.aimed = params.v.aimed;
+
 			this.vectors.push(vector);
 		}
 	}
@@ -18192,7 +18227,7 @@ VectorBase.prototype.init = function(params) {
 		vector.r = params.v.r;
 
 		// ベクトルの角度(方向)
-		vector.theta = params.v.theta || 90;
+		vector.theta = params.v.theta || 0;
 
 		// 加速度
 		vector.w = params.v.w || 0;
@@ -18224,8 +18259,14 @@ VectorBase.prototype.init = function(params) {
 		// 速度の加速度の加速度の最大値
 		vector.warange = params.v.warange || null;
 
+		// 自機狙いかどうか
+		vector.aimed = params.v.aimed;
+
 		this.vectors.push(vector) ;
 	}
+
+	this._calculateAimedVector();
+
 };
 
 // フレーム処理
@@ -18235,7 +18276,16 @@ VectorBase.prototype.run = function(){
 	// 次の動きに変更するか
 	if(this.vectors[this.vector_index + 1] &&
 	   this.vectors[this.vector_index + 1].count <= this.frame_count) {
+
+		var pre_theta = this.vectors[this.vector_index].theta;
+
+		// 次の動きに変更
 		this.vector_index++;
+
+		// 次の動きの角度が空なら前回の角度を引き継ぐ
+		if(pre_theta && ! this.vectors[this.vector_index].theta) {
+			this.vectors[this.vector_index].theta = pre_theta;
+		}
 	}
 
 	// 敵を動かす
@@ -18274,23 +18324,51 @@ VectorBase.prototype._beInRange = function(value, range) {
 };
 
 
-VectorBase.prototype._getRadian = function(){
+// θ -> ラジアンに変換
+VectorBase.prototype._theta_to_radian = function(theta){
 	var radian = this.vectors[this.vector_index].theta / 180 * Math.PI;
 	return radian;
+};
+
+// ラジアン -> θ に変換
+VectorBase.prototype._radian_to_theta = function(radian) {
+	return (radian * 180 / Math.PI) | 0;
 };
 
 
 // X軸の移動を計算
 VectorBase.prototype.calc_moveX = function() {
-	var move_x = this.vectors[this.vector_index].r * Math.cos(this._getRadian());
+	var vector = this.vectors[this.vector_index];
+
+	var move_x = vector.r * Math.cos(this._theta_to_radian(vector.theta));
 	return move_x;
 };
 
 // Y軸の移動を計算
 VectorBase.prototype.calc_moveY = function() {
-	var move_y = this.vectors[this.vector_index].r * Math.sin(this._getRadian());
+	var vector = this.vectors[this.vector_index];
+
+	var move_y = vector.r * Math.sin(this._theta_to_radian(vector.theta));
 	return move_y;
 } ;
+
+// TODO: count: 0 移行のベクトルも自機狙いするようにする
+// 自機狙いにする
+VectorBase.prototype._calculateAimedVector = function() {
+	// 自機狙い設定がされているか確認
+	if( ! this.vectors[this.vector_index].aimed){ return; }
+
+	// 自機
+	var character = this.stage.character;
+
+	var ax = character.x - this.x;
+	var ay = character.y - this.y;
+
+	this.vectors[this.vector_index].theta = this._radian_to_theta(Math.atan2(ay, ax));
+};
+
+
+
 
 module.exports = VectorBase;
 
