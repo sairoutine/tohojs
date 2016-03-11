@@ -13,6 +13,8 @@ var Item = function(id, scene) {
 	// 継承元new呼び出し
 	VectorBase.apply(this, arguments);
 
+	// スプライトの開始位置
+	this.indexX = 0; this.indexY = 0;
 };
 
 // 基底クラスを継承
@@ -20,12 +22,12 @@ _.extend(Item.prototype, VectorBase.prototype);
 _.extend(Item, VectorBase);
 
 // 当たり判定サイズ
-Item.prototype.collisionWidth  = function() { return this.spriteWidth();  };
-Item.prototype.collisionHeight = function() { return this.spriteHeight(); };
+Item.prototype.collisionWidth  = function() { return 50; };
+Item.prototype.collisionHeight = function() { return 50; };
 
 // スプライトの開始位置
-Item.prototype.spriteX = function() { return 0; };
-Item.prototype.spriteY = function() { return 0; };
+Item.prototype.spriteX = function() { return this.indexX; };
+Item.prototype.spriteY = function() { return this.indexY; };
 
 // スプライト画像
 Item.prototype.spriteImage = function() { return 'item'; };
@@ -33,12 +35,6 @@ Item.prototype.spriteImage = function() { return 'item'; };
 // スプライトのサイズ
 Item.prototype.spriteWidth  = function() { return 12; };
 Item.prototype.spriteHeight = function() { return 12; };
-
-
-
-
-
-
 
 // 初期化
 Item.prototype.init = function(enemy) {

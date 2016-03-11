@@ -93,7 +93,7 @@ ObjectBase.prototype.updateDisplay = function(){
 		// オブジェクトのゲーム上の位置
 		sprite_x,                             sprite_y,
 		// オブジェクトのゲーム上のサイズ
-		this.spriteWidth(),                this.spriteHeight()
+		this.spriteWidth(),                   this.spriteHeight()
 	);
 	this.game.surface.restore();
 };
@@ -130,7 +130,7 @@ ObjectBase.prototype.getCollisionBottomY = function() {
 };
 
 ObjectBase.prototype.inCollisionArea = function(x, y) {
-	if(x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
+	if( x >= this.getCollisionLeftX() && x <= this.getCollisionRightX() &&
 		y >= this.getCollisionUpY()  && y <= this.getCollisionBottomY()) {
 		return true;
 	}

@@ -37,7 +37,7 @@ Character.prototype.ANIMATION_SPAN = 2;
 Character.prototype.UNHITTABLE_COUNT = 100;
 
 // 当たり判定サイズ
-Character.prototype.collisionWidth  = function() { return 4;  };
+Character.prototype.collisionWidth  = function() { return 4; };
 Character.prototype.collisionHeight = function() { return 4; };
 
 // スプライトの開始位置
