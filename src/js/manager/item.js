@@ -61,7 +61,7 @@ ItemManager.prototype.updateDisplay = function(){
 ItemManager.prototype.checkCollisionWithCharacter = function(character) {
 	// 衝突判定
 	for(var id in this.objects) {
-		if(character.checkCollision(this.objects[id])) {
+		if(this.objects[id].checkCollision(character)) {
 			var item = this.objects[id];
 
 			// アイテムに衝突を通知
