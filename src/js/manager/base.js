@@ -53,7 +53,22 @@ BaseManager.prototype.run = function(){
 	for(var id in this.objects) {
 		this.objects[id].run();
 	}
+
+	// 画面外に出たオブジェクトを削除
+	this.removeOutOfStageObjects();
 };
+
+// 画面外に出たオブジェクトを消去する
+BaseManager.prototype.removeOutOfStageObjects = function() {
+	// オブジェクトが画面外に出たかどうか判定
+	for(var id in this.objects) {
+		if(this.objects[id].isOutOfStage()) {
+			console.log(id);
+			this.remove(id);
+		}
+	}
+};
+
 
 // 画面更新
 BaseManager.prototype.updateDisplay = function(){
