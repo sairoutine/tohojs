@@ -24,8 +24,11 @@ var Character = function(id, scene) {
 _.extend(Character.prototype, BaseObject.prototype);
 _.extend(Character, BaseObject);
 
-// 自機の移動速度
-Character.prototype.SPEED = 4;
+// 自機の移動速度(通常時)
+Character.prototype.FAST_SPEED = 4;
+
+// 自機の移動速度(Z押下時)
+Character.prototype.SLOW_SPEED = 3;
 
 // Nフレーム毎に自機をアニメーション
 Character.prototype.ANIMATION_SPAN = 2;
@@ -34,8 +37,8 @@ Character.prototype.ANIMATION_SPAN = 2;
 Character.prototype.UNHITTABLE_COUNT = 100;
 
 // 当たり判定サイズ
-Character.prototype.collisionWidth  = function() { return this.spriteWidth();  };
-Character.prototype.collisionHeight = function() { return this.spriteHeight(); };
+Character.prototype.collisionWidth  = function() { return 4;  };
+Character.prototype.collisionHeight = function() { return 4; };
 
 // スプライトの開始位置
 Character.prototype.spriteX = function() { return this.indexX; };
@@ -96,18 +99,21 @@ Character.prototype.run = function(){
 		}
 	}
 
+	// 移動速度
+	var speed = this.game.isKeyDown(this.game.BUTTON_Z) ? this.SLOW_SPEED : this.FAST_SPEED;
+
 	// 自機移動
 	if(this.game.isKeyDown(this.game.BUTTON_LEFT)) {
-		this.x -= this.SPEED;
+		this.x -= speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_RIGHT)) {
-		this.x += this.SPEED;
+		this.x += speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_DOWN)) {
-		this.y += this.SPEED;
+		this.y += speed;
 	}
 	if(this.game.isKeyDown(this.game.BUTTON_UP)) {
-		this.y -= this.SPEED;
+		this.y -= speed;
 	}
 
 	// 画面外に出させない
