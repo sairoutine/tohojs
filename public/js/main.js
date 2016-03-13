@@ -15016,7 +15016,6 @@ var __enemyBulletsParams = [
       'v': { 'r': 5, 'theta': 338, 'w': 0, 'ra': 0.1, 'wa': 0, 'raa': -0.01, 'rrange': { 'min': 2 } },
     },
   ],
-  // TODO: simplify
   [
     {
       'v': [
