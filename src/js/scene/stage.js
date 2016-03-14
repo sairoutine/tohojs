@@ -51,7 +51,7 @@ var StageScene = function(game) {
 	this.before_time = 0;
 
 	// FPS
-	this.fps = 0;
+	this.fps = this.FPS_SPAN;
 };
 
 // 基底クラスを継承
@@ -190,6 +190,9 @@ StageScene.prototype._runContinue = function(){
 			this.character.init();
 			// ゲームを継続
 			this.changeState(this.STATE_SHOOTING);
+
+			// FPS計算用の時刻をリセット
+			this.before_time = 0;
 		}
 		else if(this.continue_select_index === 1) {
 			// オープニングに戻る
@@ -445,7 +448,6 @@ StageScene.prototype._calculateFps = function() {
 	if(this.before_time) {
 		this.fps = parseInt(1000 * this.FPS_SPAN / ( newTime - this.before_time ));
 	}
-
 	this.before_time = newTime;
 } ;
 
