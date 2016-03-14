@@ -318,8 +318,8 @@ StageScene.prototype._showSidebar = function(){
 		this.game.surface.fillText(this.fps, x + 140, y + 180);
 	}
 	// DEGUG
-	this.game.surface.fillText('Frame:', x + 70, y + 220);
-	this.game.surface.fillText(this.frame_count, x + 140, y + 220);
+	//this.game.surface.fillText('Frame:', x + 70, y + 220);
+	//this.game.surface.fillText(this.frame_count, x + 140, y + 220);
 
 
 	/* TODO: imply BOMB
