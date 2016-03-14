@@ -13,6 +13,8 @@ var ShotManager = require('../manager/shot');
 var EnemyManager = require('../manager/enemy');
 var BulletManager = require('../manager/bullet');
 var ItemManager = require('../manager/item');
+var EffectManager = require('../manager/effect');
+var BombManager = require('../manager/bomb');
 
 // constructor
 var StageScene = function(game) {
@@ -24,6 +26,9 @@ var StageScene = function(game) {
 
 	// スコア
 	this.score = 0;
+
+	// プレイヤーのボム所持数
+	this.bomb = null;
 
 	// 自機
 	this.character = new Character(1, this); //TODO:
@@ -40,12 +45,25 @@ var StageScene = function(game) {
 	// アイテム
 	this.itemmanager = new ItemManager(this);
 
+	// エフェクト
+	this.effectmanager = new EffectManager(this);
+
+	// ボム
+	this.bombmanager = new BombManager(this);
+
+
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
 	this.height= this.game.height;
 
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
+
+	// 前回FPSを計算した時刻(ミリ秒)
+	this.before_time = 0;
+
+	// FPS
+	this.fps = 0;
 };
 
 // 基底クラスを継承
@@ -72,6 +90,12 @@ StageScene.prototype.SHOW_RESULT_COUNT = 300;
 // ステージ終了カウント
 StageScene.prototype.STAGE_END_COUNT = 3500;
 
+// FPSの更新タイミング(フレーム)
+StageScene.prototype.FPS_SPAN = 30;
+
+
+
+
 // 初期化
 StageScene.prototype.init = function() {
 	BaseScene.prototype.init.apply(this, arguments);
@@ -81,6 +105,9 @@ StageScene.prototype.init = function() {
 
 	// スコア初期化
 	this.score = 0;
+
+	// ボム所持数初期化
+	this.bomb = 2;
 
 	// 自機を初期化
 	this.character.init();
@@ -96,6 +123,12 @@ StageScene.prototype.init = function() {
 
 	// アイテムを初期化
 	this.itemmanager.init();
+
+	// エフェクトを初期化
+	this.effectmanager.init();
+
+	// ボムを初期化
+	this.bombmanager.init();
 
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
@@ -121,6 +154,9 @@ StageScene.prototype.run = function(){
 	// ゲーム中
 	BaseScene.prototype.run.apply(this, arguments);
 
+	// FPS計算
+	this._calculateFps();
+
 	// 自機
 	this.character.run();
 
@@ -135,6 +171,13 @@ StageScene.prototype.run = function(){
 
 	// アイテム
 	this.itemmanager.run();
+
+	// エフェクト
+	this.effectmanager.run();
+
+	// ボム
+	this.bombmanager.run();
+
 
 	// アイテムと自機の衝突判定
 	this.itemmanager.checkCollisionWithCharacter(this.character);
@@ -175,6 +218,9 @@ StageScene.prototype._runContinue = function(){
 			this.character.init();
 			// ゲームを継続
 			this.changeState(this.STATE_SHOOTING);
+
+			// FPS計算用の時刻をリセット
+			this.before_time = 0;
 		}
 		else if(this.continue_select_index === 1) {
 			// オープニングに戻る
@@ -229,7 +275,11 @@ StageScene.prototype.updateDisplay = function(){
 	// アイテム
 	this.itemmanager.updateDisplay();
 
+	// エフェクト
+	this.effectmanager.updateDisplay();
 
+	// ボム
+	this.bombmanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
@@ -262,9 +312,15 @@ StageScene.prototype._showSidebar = function(){
 	this.game.surface.fillText('Player:', x + 70, y + 140);
 	this.game.surface.fillText(this.character.life, x + 140, y + 140);
 
+	// FPS
+	this.game.surface.fillText('FPS:', x + 70, y + 180);
+	if(this.fps) {
+		this.game.surface.fillText(this.fps, x + 140, y + 180);
+	}
 	// DEGUG
-	this.game.surface.fillText('Frame:', x + 70, y + 180);
-	this.game.surface.fillText(this.frame_count, x + 140, y + 180);
+	//this.game.surface.fillText('Frame:', x + 70, y + 220);
+	//this.game.surface.fillText(this.frame_count, x + 140, y + 220);
+
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
@@ -415,10 +471,19 @@ StageScene.prototype._showResult = function() {
 	this.game.surface.restore();
 } ;
 
+// FPSを計算
+StageScene.prototype._calculateFps = function() {
+	if((this.frame_count % this.FPS_SPAN) !== 0) {
+		return;
+	}
 
-
-
-
+	// 現在時刻(ミリ秒)を取得
+	var newTime = Date.now();
+	if(this.before_time) {
+		this.fps = parseInt(1000 * this.FPS_SPAN / ( newTime - this.before_time ));
+	}
+	this.before_time = newTime;
+} ;
 
 // ステージの状態の切り替え
 StageScene.prototype.changeState = function(state) {
@@ -431,5 +496,40 @@ StageScene.prototype.notifyCharacterDead = function() {
 	this.changeState(this.STATE_GAMEOVER);
 };
 
+// プレイヤーがボムを使用した時
+StageScene.prototype.notifyUseBomb = function() {
+	if( this.bomb <= 0) {
+		return ;
+	}
+
+	// ボム使用中でないか確かめる
+	if( this.is_bomb_using === true) {
+		return;
+	}
+
+	console.log('use bomb!');
+	// ボムの数を減らす
+	//this.bomb--;
+
+	//this.is_bomb_using = true;
+
+	// 敵を全滅させる
+	//this.enemymanager.remove_all();
+
+	// 敵弾を全滅させる
+	//this.bulletmanager.remove_all();
+
+	// 全てのアイテムを自機に吸引
+	//this.itemmanager.homing_all(this.character);
+
+	// 自機のスペルカードの使用を表示
+	//this.spellCardManager.create(this.character);
+
+	// ボム生成
+	//this.bombmanager.create(this.character);
+
+	// スペルカード使用音再生
+	//this.game.playSound('spellcard');
+};
 
 module.exports = StageScene;
