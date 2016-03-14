@@ -13,6 +13,7 @@ var ShotManager = require('../manager/shot');
 var EnemyManager = require('../manager/enemy');
 var BulletManager = require('../manager/bullet');
 var ItemManager = require('../manager/item');
+var EffectManager = require('../manager/effect');
 
 // constructor
 var StageScene = function(game) {
@@ -39,6 +40,9 @@ var StageScene = function(game) {
 
 	// アイテム
 	this.itemmanager = new ItemManager(this);
+
+	// エフェクト
+	this.effectmanager = new EffectManager(this);
 
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
@@ -109,6 +113,9 @@ StageScene.prototype.init = function() {
 	// アイテムを初期化
 	this.itemmanager.init();
 
+	// エフェクトを初期化
+	this.effectmanager.init();
+
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
 
@@ -150,6 +157,9 @@ StageScene.prototype.run = function(){
 
 	// アイテム
 	this.itemmanager.run();
+
+	// エフェクト
+	this.effectmanager.run();
 
 	// アイテムと自機の衝突判定
 	this.itemmanager.checkCollisionWithCharacter(this.character);
