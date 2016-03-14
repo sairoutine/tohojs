@@ -16853,7 +16853,7 @@ Game.prototype.SOUNDS = {
 Game.prototype.BGMS = {
 	title: {
 		path:   'bgm/title.mp3',
-		volume: 0.50
+		volume: 0.40
 	},
 	stage1: {
 		path:   'bgm/stage1.mp3',
