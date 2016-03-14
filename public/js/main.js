@@ -16571,7 +16571,46 @@ BulletFactory.prototype.free = function(id) {
 
 module.exports = BulletFactory;
 
-},{"../object/bullet":18,"./base":5,"lodash":1}],7:[function(require,module,exports){
+},{"../object/bullet":21,"./base":5,"lodash":1}],7:[function(require,module,exports){
+'use strict';
+
+/* エフェクトを生成するクラス */
+
+// lodash
+var _ = require('lodash');
+
+var Effect = require('../object/effect');
+
+// 基底クラス
+var BaseFactory = require('./base');
+
+// constructor
+var EffectFactory = function(manager) {
+	// 継承元new呼び出し
+	BaseFactory.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(EffectFactory.prototype, BaseFactory.prototype);
+_.extend(EffectFactory, BaseFactory);
+
+EffectFactory.prototype.get = function(obj) {
+	this.incremental_id++;
+
+	var effect = new Effect(this.incremental_id, this.stage);
+	// 初期化
+	effect.init(obj);
+
+	return effect;
+};
+
+EffectFactory.prototype.free = function(id) {
+
+};
+
+module.exports = EffectFactory;
+
+},{"../object/effect":23,"./base":5,"lodash":1}],8:[function(require,module,exports){
 'use strict';
 
 /* 敵を生成するクラス */
@@ -16613,7 +16652,7 @@ EnemyFactory.prototype.free = function(id) {
 
 module.exports = EnemyFactory;
 
-},{"../object/enemy":20,"./base":5,"lodash":1}],8:[function(require,module,exports){
+},{"../object/enemy":24,"./base":5,"lodash":1}],9:[function(require,module,exports){
 'use strict';
 
 /* アイテムを生成するクラス */
@@ -16655,7 +16694,7 @@ ItemFactory.prototype.free = function(id) {
 
 module.exports = ItemFactory;
 
-},{"../object/item":21,"./base":5,"lodash":1}],9:[function(require,module,exports){
+},{"../object/item":25,"./base":5,"lodash":1}],10:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を生成するクラス */
@@ -16697,7 +16736,7 @@ ShotFactory.prototype.free = function(id) {
 
 module.exports = ShotFactory;
 
-},{"../object/shot":22,"./base":5,"lodash":1}],10:[function(require,module,exports){
+},{"../object/shot":26,"./base":5,"lodash":1}],11:[function(require,module,exports){
 'use strict';
 
 var LoadingScene = require('./scene/loading');
@@ -16991,7 +17030,7 @@ Game.prototype.notifySelectQuit = function( ) {
 
 module.exports = Game;
 
-},{"./scene/loading":25,"./scene/opening":26,"./scene/stage":27}],11:[function(require,module,exports){
+},{"./scene/loading":29,"./scene/opening":30,"./scene/stage":31}],12:[function(require,module,exports){
 'use strict';
 var Game = require('./game');
 
@@ -17010,7 +17049,7 @@ window.onload = function() {
 };
 
 
-},{"./game":10}],12:[function(require,module,exports){
+},{"./game":11}],13:[function(require,module,exports){
 'use strict';
 
 // lodash
@@ -17094,7 +17133,62 @@ BaseManager.prototype.updateDisplay = function(){
 module.exports = BaseManager;
 
 
-},{"lodash":1}],13:[function(require,module,exports){
+},{"lodash":1}],14:[function(require,module,exports){
+'use strict';
+
+/* ボムを管理するクラス */
+
+// lodash
+var _ = require('lodash');
+
+// ボムを生成するクラス
+var BombFactory = require('../factory/item');
+// 基底クラス
+var BaseManager = require('./base');
+
+// constructor
+var BombManager = function(scene) {
+	// 継承元new呼び出し
+	BaseManager.apply(this, arguments);
+
+	this.factory = new BombFactory(this);
+};
+
+// 基底クラスを継承
+_.extend(BombManager.prototype, BaseManager.prototype);
+_.extend(BombManager, BaseManager);
+
+// 初期化
+BombManager.prototype.init = function() {
+	BaseManager.prototype.init.apply(this, arguments);
+};
+
+BombManager.prototype.create = function(enemy) {
+	BaseManager.prototype.create.apply(this, arguments);
+};
+
+BombManager.prototype.remove = function(id) {
+	BaseManager.prototype.remove.apply(this, arguments);
+};
+
+// フレーム処理
+BombManager.prototype.run = function(){
+	BaseManager.prototype.run.apply(this, arguments);
+
+	// プレイヤーがXを押下したらボム使用
+	if(this.game.isKeyPush(this.game.BUTTON_X)) {
+		this.stage.notifyUseBomb();
+	}
+};
+
+// 画面更新
+BombManager.prototype.updateDisplay = function(){
+	BaseManager.prototype.updateDisplay.apply(this, arguments);
+};
+
+module.exports = BombManager;
+
+},{"../factory/item":9,"./base":13,"lodash":1}],15:[function(require,module,exports){
 'use strict';
 
 /* 敵の弾を管理するクラス */
@@ -17174,7 +17268,57 @@ BulletManager.prototype.checkCollisionWithCharacter = function(character) {
 
 module.exports = BulletManager;
 
-},{"../data/bullets_params":2,"../factory/bullet":6,"./base":12,"lodash":1}],14:[function(require,module,exports){
+},{"../data/bullets_params":2,"../factory/bullet":6,"./base":13,"lodash":1}],16:[function(require,module,exports){
+'use strict';
+
+/* エフェクト(被弾時など)を管理するクラス */
+
+// lodash
+var _ = require('lodash');
+
+var EffectFactory = require('../factory/effect');
+// 基底クラス
+var BaseManager = require('./base');
+
+// constructor
+var EffectManager = function(scene) {
+	// 継承元new呼び出し
+	BaseManager.apply(this, arguments);
+
+	// 弾生成クラス
+	this.factory = new EffectFactory(this);
+};
+
+// 基底クラスを継承
+_.extend(EffectManager.prototype, BaseManager.prototype);
+_.extend(EffectManager, BaseManager);
+
+// 初期化
+EffectManager.prototype.init = function() {
+	BaseManager.prototype.init.apply(this, arguments);
+};
+
+EffectManager.prototype.create = function(obj) {
+	BaseManager.prototype.create.apply(this, arguments);
+};
+
+EffectManager.prototype.remove = function(id) {
+	BaseManager.prototype.remove.apply(this, arguments);
+};
+
+// フレーム処理
+EffectManager.prototype.run = function(){
+	BaseManager.prototype.run.apply(this, arguments);
+};
+
+// 画面更新
+EffectManager.prototype.updateDisplay = function(){
+	BaseManager.prototype.updateDisplay.apply(this, arguments);
+};
+
+module.exports = EffectManager;
+
+},{"../factory/effect":7,"./base":13,"lodash":1}],17:[function(require,module,exports){
 'use strict';
 
 /* 敵を管理するクラス */
@@ -17265,7 +17409,7 @@ EnemyManager.prototype.checkCollisionWithCharacter = function(character) {
 
 module.exports = EnemyManager;
 
-},{"../data/enemies_params":4,"../factory/enemy":7,"./base":12,"lodash":1}],15:[function(require,module,exports){
+},{"../data/enemies_params":4,"../factory/enemy":8,"./base":13,"lodash":1}],18:[function(require,module,exports){
 'use strict';
 
 /* アイテムを管理するクラス */
@@ -17346,7 +17490,7 @@ ItemManager.prototype.checkCollisionWithCharacter = function(character) {
 
 module.exports = ItemManager;
 
-},{"../factory/item":8,"./base":12,"lodash":1}],16:[function(require,module,exports){
+},{"../factory/item":9,"./base":13,"lodash":1}],19:[function(require,module,exports){
 'use strict';
 
 /* 自機の弾を管理するクラス */
@@ -17419,7 +17563,7 @@ ShotManager.prototype.checkCollisionWithEnemies = function(enemy_manager) {
 
 module.exports = ShotManager;
 
-},{"../factory/shot":9,"./base":12,"lodash":1}],17:[function(require,module,exports){
+},{"../factory/shot":10,"./base":13,"lodash":1}],20:[function(require,module,exports){
 'use strict';
 
 /* オブジェクトの基底クラス */
@@ -17578,7 +17722,7 @@ ObjectBase.prototype.isOutOfStage = function( ) {
 
 module.exports = ObjectBase;
 
-},{"lodash":1}],18:[function(require,module,exports){
+},{"lodash":1}],21:[function(require,module,exports){
 'use strict';
 
 /* 敵弾オブジェクト */
@@ -17637,7 +17781,7 @@ Bullet.prototype.notifyCollision = function(obj) {
 
 module.exports = Bullet;
 
-},{"./vector_base":23,"lodash":1}],19:[function(require,module,exports){
+},{"./vector_base":27,"lodash":1}],22:[function(require,module,exports){
 'use strict';
 
 /* 自機オブジェクト */
@@ -17855,7 +17999,47 @@ Character.prototype.notifyCollision = function(obj) {
 
 module.exports = Character;
 
-},{"./base":17,"./bullet":18,"./enemy":20,"lodash":1}],20:[function(require,module,exports){
+},{"./base":20,"./bullet":21,"./enemy":24,"lodash":1}],23:[function(require,module,exports){
+'use strict';
+
+/* エフェクトオブジェクト */
+
+// lodash
+var _ = require('lodash');
+
+// 基底クラス
+var BaseObject = require('./base');
+
+// constructor
+var Effect = function(id, scene) {
+	// 継承元new呼び出し
+	BaseObject.apply(this, arguments);
+};
+
+// 基底クラスを継承
+_.extend(Effect.prototype, BaseObject.prototype);
+_.extend(Effect, BaseObject);
+
+// 初期化
+Effect.prototype.init = function(obj) {
+	// アイテムの初期位置は敵の位置
+	this.x = obj.x;
+	this.y = obj.y;
+};
+
+// フレーム処理
+Effect.prototype.run = function(){
+	BaseObject.prototype.run.apply(this, arguments);
+};
+
+// 描画
+Effect.prototype.updateDisplay = function() {
+
+};
+
+module.exports = Effect;
+
+},{"./base":20,"lodash":1}],24:[function(require,module,exports){
 'use strict';
 
 /* 敵オブジェクト */
@@ -17983,7 +18167,7 @@ Enemy.prototype.notifyCollision = function(obj) {
 
 module.exports = Enemy;
 
-},{"./shot":22,"./vector_base":23,"lodash":1}],21:[function(require,module,exports){
+},{"./shot":26,"./vector_base":27,"lodash":1}],25:[function(require,module,exports){
 'use strict';
 
 /* アイテムオブジェクト */
@@ -18069,7 +18253,7 @@ Item.prototype.notifyCollision = function(obj) {
 
 module.exports = Item;
 
-},{"./vector_base":23,"lodash":1}],22:[function(require,module,exports){
+},{"./vector_base":27,"lodash":1}],26:[function(require,module,exports){
 'use strict';
 
 /* 自機弾オブジェクト */
@@ -18133,7 +18317,7 @@ Shot.prototype.notifyCollision = function(obj) {
 
 module.exports = Shot;
 
-},{"./base":17,"lodash":1}],23:[function(require,module,exports){
+},{"./base":20,"lodash":1}],27:[function(require,module,exports){
 'use strict';
 
 /* ベクトルを使って動くオブジェクトの基底クラス */
@@ -18371,7 +18555,7 @@ VectorBase.prototype._calculateAimedVector = function() {
 
 module.exports = VectorBase;
 
-},{"./base":17,"lodash":1}],24:[function(require,module,exports){
+},{"./base":20,"lodash":1}],28:[function(require,module,exports){
 'use strict';
 
 /* シーンの基底クラス */
@@ -18413,7 +18597,7 @@ BaseScene.prototype.updateDisplay = function(){
 
 module.exports = BaseScene;
 
-},{}],25:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 /* ローディング画面 */
@@ -18533,7 +18717,7 @@ LoadingScene.prototype._loadBGMs = function() {
 
 module.exports = LoadingScene;
 
-},{"./base":24,"lodash":1}],26:[function(require,module,exports){
+},{"./base":28,"lodash":1}],30:[function(require,module,exports){
 'use strict';
 
 /* オープニング画面 */
@@ -18624,7 +18808,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 module.exports = OpeningScene;
 
-},{"./base":24,"lodash":1}],27:[function(require,module,exports){
+},{"./base":28,"lodash":1}],31:[function(require,module,exports){
 'use strict';
 
 /* ゲームステージ画面 */
@@ -18640,6 +18824,8 @@ var ShotManager = require('../manager/shot');
 var EnemyManager = require('../manager/enemy');
 var BulletManager = require('../manager/bullet');
 var ItemManager = require('../manager/item');
+var EffectManager = require('../manager/effect');
+var BombManager = require('../manager/bomb');
 
 // constructor
 var StageScene = function(game) {
@@ -18651,6 +18837,9 @@ var StageScene = function(game) {
 
 	// スコア
 	this.score = 0;
+
+	// プレイヤーのボム所持数
+	this.bomb = null;
 
 	// 自機
 	this.character = new Character(1, this); //TODO:
@@ -18667,12 +18856,25 @@ var StageScene = function(game) {
 	// アイテム
 	this.itemmanager = new ItemManager(this);
 
+	// エフェクト
+	this.effectmanager = new EffectManager(this);
+
+	// ボム
+	this.bombmanager = new BombManager(this);
+
+
 	// サイドバーを除いたステージの大きさ
 	this.width = this.game.width - this.SIDE_WIDTH;
 	this.height= this.game.height;
 
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
+
+	// 前回FPSを計算した時刻(ミリ秒)
+	this.before_time = 0;
+
+	// FPS
+	this.fps = 0;
 };
 
 // 基底クラスを継承
@@ -18699,6 +18901,12 @@ StageScene.prototype.SHOW_RESULT_COUNT = 300;
 // ステージ終了カウント
 StageScene.prototype.STAGE_END_COUNT = 3500;
 
+// FPSの更新タイミング(フレーム)
+StageScene.prototype.FPS_SPAN = 30;
+
+
+
+
 // 初期化
 StageScene.prototype.init = function() {
 	BaseScene.prototype.init.apply(this, arguments);
@@ -18708,6 +18916,9 @@ StageScene.prototype.init = function() {
 
 	// スコア初期化
 	this.score = 0;
+
+	// ボム所持数初期化
+	this.bomb = 2;
 
 	// 自機を初期化
 	this.character.init();
@@ -18723,6 +18934,12 @@ StageScene.prototype.init = function() {
 
 	// アイテムを初期化
 	this.itemmanager.init();
+
+	// エフェクトを初期化
+	this.effectmanager.init();
+
+	// ボムを初期化
+	this.bombmanager.init();
 
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
@@ -18748,6 +18965,9 @@ StageScene.prototype.run = function(){
 	// ゲーム中
 	BaseScene.prototype.run.apply(this, arguments);
 
+	// FPS計算
+	this._calculateFps();
+
 	// 自機
 	this.character.run();
 
@@ -18762,6 +18982,13 @@ StageScene.prototype.run = function(){
 
 	// アイテム
 	this.itemmanager.run();
+
+	// エフェクト
+	this.effectmanager.run();
+
+	// ボム
+	this.bombmanager.run();
+
 
 	// アイテムと自機の衝突判定
 	this.itemmanager.checkCollisionWithCharacter(this.character);
@@ -18802,6 +19029,9 @@ StageScene.prototype._runContinue = function(){
 			this.character.init();
 			// ゲームを継続
 			this.changeState(this.STATE_SHOOTING);
+
+			// FPS計算用の時刻をリセット
+			this.before_time = 0;
 		}
 		else if(this.continue_select_index === 1) {
 			// オープニングに戻る
@@ -18856,7 +19086,11 @@ StageScene.prototype.updateDisplay = function(){
 	// アイテム
 	this.itemmanager.updateDisplay();
 
+	// エフェクト
+	this.effectmanager.updateDisplay();
 
+	// ボム
+	this.bombmanager.updateDisplay();
 
 	// サイドバー表示
 	this._showSidebar();
@@ -18889,9 +19123,15 @@ StageScene.prototype._showSidebar = function(){
 	this.game.surface.fillText('Player:', x + 70, y + 140);
 	this.game.surface.fillText(this.character.life, x + 140, y + 140);
 
+	// FPS
+	this.game.surface.fillText('FPS:', x + 70, y + 180);
+	if(this.fps) {
+		this.game.surface.fillText(this.fps, x + 140, y + 180);
+	}
 	// DEGUG
-	this.game.surface.fillText('Frame:', x + 70, y + 180);
-	this.game.surface.fillText(this.frame_count, x + 140, y + 180);
+	//this.game.surface.fillText('Frame:', x + 70, y + 220);
+	//this.game.surface.fillText(this.frame_count, x + 140, y + 220);
+
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
@@ -19042,10 +19282,19 @@ StageScene.prototype._showResult = function() {
 	this.game.surface.restore();
 } ;
 
+// FPSを計算
+StageScene.prototype._calculateFps = function() {
+	if((this.frame_count % this.FPS_SPAN) !== 0) {
+		return;
+	}
 
-
-
-
+	// 現在時刻(ミリ秒)を取得
+	var newTime = Date.now();
+	if(this.before_time) {
+		this.fps = parseInt(1000 * this.FPS_SPAN / ( newTime - this.before_time ));
+	}
+	this.before_time = newTime;
+} ;
 
 // ステージの状態の切り替え
 StageScene.prototype.changeState = function(state) {
@@ -19058,7 +19307,42 @@ StageScene.prototype.notifyCharacterDead = function() {
 	this.changeState(this.STATE_GAMEOVER);
 };
 
+// プレイヤーがボムを使用した時
+StageScene.prototype.notifyUseBomb = function() {
+	if( this.bomb <= 0) {
+		return ;
+	}
+
+	// ボム使用中でないか確かめる
+	if( this.is_bomb_using === true) {
+		return;
+	}
+
+	console.log('use bomb!');
+	// ボムの数を減らす
+	//this.bomb--;
+
+	//this.is_bomb_using = true;
+
+	// 敵を全滅させる
+	//this.enemymanager.remove_all();
+
+	// 敵弾を全滅させる
+	//this.bulletmanager.remove_all();
+
+	// 全てのアイテムを自機に吸引
+	//this.itemmanager.homing_all(this.character);
+
+	// 自機のスペルカードの使用を表示
+	//this.spellCardManager.create(this.character);
+
+	// ボム生成
+	//this.bombmanager.create(this.character);
+
+	// スペルカード使用音再生
+	//this.game.playSound('spellcard');
+};
 
 module.exports = StageScene;
 
-},{"../manager/bullet":13,"../manager/enemy":14,"../manager/item":15,"../manager/shot":16,"../object/character":19,"./base":24,"lodash":1}]},{},[11]);
+},{"../manager/bomb":14,"../manager/bullet":15,"../manager/effect":16,"../manager/enemy":17,"../manager/item":18,"../manager/shot":19,"../object/character":22,"./base":28,"lodash":1}]},{},[12]);
