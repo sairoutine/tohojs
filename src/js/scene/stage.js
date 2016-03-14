@@ -46,6 +46,12 @@ var StageScene = function(game) {
 
 	// コンティニュー画面にて Continue or Quit どっちにフォーカスがあるか
 	this.continue_select_index = 0;
+
+	// 前回FPSを計算した時刻(ミリ秒)
+	this.before_time = 0;
+
+	// FPS
+	this.fps = 0;
 };
 
 // 基底クラスを継承
@@ -71,6 +77,12 @@ StageScene.prototype.SHOW_RESULT_COUNT = 300;
 
 // ステージ終了カウント
 StageScene.prototype.STAGE_END_COUNT = 3500;
+
+// 1秒間のフレーム数
+StageScene.prototype.FPS_SPAN = 60;
+
+
+
 
 // 初期化
 StageScene.prototype.init = function() {
@@ -120,6 +132,9 @@ StageScene.prototype.run = function(){
 
 	// ゲーム中
 	BaseScene.prototype.run.apply(this, arguments);
+
+	// FPS計算
+	this._calculateFps();
 
 	// 自機
 	this.character.run();
@@ -265,6 +280,10 @@ StageScene.prototype._showSidebar = function(){
 	// DEGUG
 	this.game.surface.fillText('Frame:', x + 70, y + 180);
 	this.game.surface.fillText(this.frame_count, x + 140, y + 180);
+
+	// FPS
+	this.game.surface.fillText('FPS:', x + 70, y + 220);
+	this.game.surface.fillText(this.fps, x + 140, y + 220);
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
@@ -415,10 +434,20 @@ StageScene.prototype._showResult = function() {
 	this.game.surface.restore();
 } ;
 
+// FPSを計算
+StageScene.prototype._calculateFps = function() {
+	if((this.frame_count % this.FPS_SPAN) !== 0) {
+		return;
+	}
 
+	// 現在時刻(ミリ秒)を取得
+	var newTime = Date.now();
+	if(this.before_time) {
+		this.fps = parseInt(1000 * this.FPS_SPAN / ( newTime - this.before_time ));
+	}
 
-
-
+	this.before_time = newTime;
+} ;
 
 // ステージの状態の切り替え
 StageScene.prototype.changeState = function(state) {
