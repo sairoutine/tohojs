@@ -257,6 +257,8 @@ StageScene.prototype.updateDisplay = function(){
 	// アイテム
 	this.itemmanager.updateDisplay();
 
+	// エフェクト
+	this.effectmanager.updateDisplay();
 
 
 	// サイドバー表示
