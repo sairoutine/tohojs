@@ -51,7 +51,7 @@ var StageScene = function(game) {
 	this.before_time = 0;
 
 	// FPS
-	this.fps = this.FPS_SPAN;
+	this.fps = 0;
 };
 
 // 基底クラスを継承
@@ -78,8 +78,8 @@ StageScene.prototype.SHOW_RESULT_COUNT = 300;
 // ステージ終了カウント
 StageScene.prototype.STAGE_END_COUNT = 3500;
 
-// 1秒間のフレーム数
-StageScene.prototype.FPS_SPAN = 60;
+// FPSの更新タイミング(フレーム)
+StageScene.prototype.FPS_SPAN = 30;
 
 
 
@@ -286,7 +286,9 @@ StageScene.prototype._showSidebar = function(){
 
 	// FPS
 	this.game.surface.fillText('FPS:', x + 70, y + 220);
-	this.game.surface.fillText(this.fps, x + 140, y + 220);
+	if(this.fps) {
+		this.game.surface.fillText(this.fps, x + 140, y + 220);
+	}
 
 	/* TODO: imply BOMB
 	this.game.surface.fillText('Bomb:', x + 70, y + 180);
