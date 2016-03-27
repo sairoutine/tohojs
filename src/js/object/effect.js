@@ -18,6 +18,11 @@ var Effect = function(id, scene) {
 _.extend(Effect.prototype, BaseObject.prototype);
 _.extend(Effect, BaseObject);
 
+// エフェクトのサイズ
+Effect.prototype.spriteWidth  = function() { return 32; };
+Effect.prototype.spriteHeight = function() { return 32; };
+
+
 // 初期化
 Effect.prototype.init = function(obj) {
 	// エフェクトの位置は敵のいた位置
@@ -37,12 +42,11 @@ Effect.prototype.run = function(){
 // 描画
 Effect.prototype.updateDisplay = function() {
 	// TODO:
-	this.width = 32;
 	this.end_count = 10;
 
 	var x = Math.round(this.x);
 	var y = Math.round(this.y);
-	var r = Math.round(this.width * this.frame_count * 0.1);
+	var r = Math.round(this.spriteWidth() * this.frame_count * 0.1);
 
 	var cvs = document.createElement('canvas');
 	cvs.width = r*2 + 4;
