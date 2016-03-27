@@ -12,9 +12,6 @@ var BaseObject = require('./base');
 var Effect = function(id, scene) {
 	// 継承元new呼び出し
 	BaseObject.apply(this, arguments);
-
-	//TODO:
-	this.preCanvas = [];
 };
 
 // 基底クラスを継承
@@ -47,28 +44,25 @@ Effect.prototype.updateDisplay = function() {
 	var y = Math.round(this.y);
 	var r = Math.round(this.width * this.frame_count * 0.1);
 
-	if(this.preCanvas[this.frame_count] === undefined) {
-		var cvs = document.createElement('canvas');
-		cvs.width = r*2 + 4;
-		cvs.height = r*2 + 4;
-		var ctx = cvs.getContext('2d');
+	var cvs = document.createElement('canvas');
+	cvs.width = r*2 + 4;
+	cvs.height = r*2 + 4;
+	var ctx = cvs.getContext('2d');
 
-		ctx.beginPath();
-		ctx.fillStyle = 'rgb(255, 255, 255)';
-		ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.05;
-		ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
-		ctx.fill();
+	ctx.beginPath();
+	ctx.fillStyle = 'rgb(255, 255, 255)';
+	ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.05;
+	ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
+	ctx.fill();
 
-		ctx.beginPath();
-		ctx.strokeStyle = 'rgb(255, 255, 255)';
-		ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.1;
-		ctx.lineWidth = 3;
-		ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
-		ctx.stroke();
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgb(255, 255, 255)';
+	ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.1;
+	ctx.lineWidth = 3;
+	ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
+	ctx.stroke();
 
-		this.preCanvas[this.frame_count] = cvs;
-	}
-	this.game.surface.drawImage(this.preCanvas[this.frame_count], x-r-2, y-r-2);
+	this.game.surface.drawImage(cvs, x-r-2, y-r-2);
 
 };
 
