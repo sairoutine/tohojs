@@ -18,6 +18,9 @@ var Effect = function(id, scene) {
 _.extend(Effect.prototype, BaseObject.prototype);
 _.extend(Effect, BaseObject);
 
+// 何フレームで消滅するか
+Effect.prototype.VANISH_FRAME = 10;
+
 // エフェクトのサイズ
 Effect.prototype.spriteWidth  = function() { return 32; };
 Effect.prototype.spriteHeight = function() { return 32; };
@@ -34,16 +37,14 @@ Effect.prototype.init = function(obj) {
 Effect.prototype.run = function(){
 	BaseObject.prototype.run.apply(this, arguments);
 
-	if(this.end_count < this.frame_count) {
+	// 時間切れ消滅判定
+	if(this.VANISH_FRAME <= this.frame_count) {
 		this.stage.effectmanager.remove(this.id);
 	}
 };
 
 // 描画
 Effect.prototype.updateDisplay = function() {
-	// TODO:
-	this.end_count = 10;
-
 	var x = Math.round(this.x);
 	var y = Math.round(this.y);
 	var r = Math.round(this.spriteWidth() * this.frame_count * 0.1);
@@ -55,19 +56,18 @@ Effect.prototype.updateDisplay = function() {
 
 	ctx.beginPath();
 	ctx.fillStyle = 'rgb(255, 255, 255)';
-	ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.05;
+	ctx.globalAlpha = (this.VANISH_FRAME - this.frame_count + 1) * 0.05;
 	ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
 	ctx.fill();
 
 	ctx.beginPath();
 	ctx.strokeStyle = 'rgb(255, 255, 255)';
-	ctx.globalAlpha = (this.end_count - this.frame_count + 1) * 0.1;
+	ctx.globalAlpha = (this.VANISH_FRAME - this.frame_count + 1) * 0.1;
 	ctx.lineWidth = 3;
 	ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
 	ctx.stroke();
 
 	this.game.surface.drawImage(cvs, x-r-2, y-r-2);
-
 };
 
 module.exports = Effect;
