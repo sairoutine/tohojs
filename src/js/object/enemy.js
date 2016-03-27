@@ -110,11 +110,8 @@ Enemy.prototype.notifyCollision = function(obj) {
 		// スコアの加算
 		this.stage.score += 100;
 
-		// TODO: 死亡エフェクト再生
-		/*
-		this.effectManager.createExplosion(enemy);
-		this.effectManager.create(enemy, 'shockwave', null) ;
-		*/
+		// 死亡エフェクト再生
+		this.stage.effectmanager.create(this);
 
 		// ポイントアイテムの生成
 		if(this.powerItem || this.scoreItem) {
