@@ -54,12 +54,14 @@ Effect.prototype.updateDisplay = function() {
 	cvs.height = r*2 + 4;
 	var ctx = cvs.getContext('2d');
 
+	// 円の中
 	ctx.beginPath();
 	ctx.fillStyle = 'rgb(255, 255, 255)';
 	ctx.globalAlpha = (this.VANISH_FRAME - this.frame_count + 1) * 0.05;
 	ctx.arc(r+2, r+2, r, 0, Math.PI * 2);
 	ctx.fill();
 
+	// 円の外枠
 	ctx.beginPath();
 	ctx.strokeStyle = 'rgb(255, 255, 255)';
 	ctx.globalAlpha = (this.VANISH_FRAME - this.frame_count + 1) * 0.1;
