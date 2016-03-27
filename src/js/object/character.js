@@ -201,7 +201,8 @@ Character.prototype.notifyCollision = function(obj) {
 		// 死亡音再生
 		this.game.playSound('dead');
 
-		//TODO: 自機死亡エフェクト生成
+		// 自機死亡エフェクト生成
+		this.stage.effectmanager.create(this);
 
 		// 自機を死亡
 		this.die();
