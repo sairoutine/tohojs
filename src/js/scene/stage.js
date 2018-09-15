@@ -419,7 +419,7 @@ StageScene.prototype._showContinue = function() {
 
 	this.game.surface.fillStyle = 'rgb( 255, 255, 255 )' ;
 	this.game.surface.textAlign = 'center' ;
-	this.game.surface.textBaseAlign = 'middle' ;
+	//this.game.surface.textBaseline = 'middle' ;
 	this.game.surface.font = '16px Arial' ;
 
 	this.game.surface.globalAlpha = this.continue_select_index === 0 ? 1.0 : 0.2;

@@ -76,7 +76,7 @@ OpeningScene.prototype.updateDisplay = function(){
 
 	this.game.surface.font = "24px 'Comic Sans MS'" ;
 	this.game.surface.textAlign = 'center' ;
-	this.game.surface.textBaseAlign = 'middle' ;
+	//this.game.surface.textBaseline = 'middle' ;
 	this.game.surface.fillStyle = 'rgb( 0, 0, 0 )' ;
 	this.game.surface.fillText( 'Touhou Project', 120, 200 ) ;
 	this.game.surface.fillText( 'on Javascript',  120, 250 ) ;
